@@ -2,7 +2,8 @@
 
 =Introduction=
 
-=Knobs and Buttons=
+=Tweaking Gibberizer=
+==Knobs and Buttons==
 ===Weirdness===
 ===Distance===
 ===Persistence===
