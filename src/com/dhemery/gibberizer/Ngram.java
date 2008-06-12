@@ -1,21 +1,22 @@
 package com.dhemery.gibberizer;
 
 public class Ngram {
+	public static final Ngram NULL_NGRAM = new Ngram("", "", "");
 	private boolean isNameStarter;
 	private String lastCharacter;
 	private String prefix;
 	private String suffix;
 
+	private Ngram(String prefix, String suffix, String lastCharacter) {
+		initialize(prefix, suffix, lastCharacter);
+	}
+
 	public Ngram(int n, String input) {
-		if (input.length() < n) {
-			prefix = input;
-			suffix = input.substring(1);
-			lastCharacter = "";
-		} else {
-			prefix = input.substring(0, n - 1);
-			suffix = input.substring(1, n);
-			lastCharacter = input.substring(n - 1, n);
-		}
+		// TODO: Can this be refactored?
+		if (input.length() < n) 
+			initialize(input, input.substring(1), "");
+		else
+			initialize(input.substring(0, n - 1), input.substring(1, n), input.substring(n - 1, n));
 	}
 
 	public String getLastCharacter() {
@@ -28,6 +29,16 @@ public class Ngram {
 
 	public String getSuffix() {
 		return suffix;
+	}
+
+	private void initialize(String prefix, String suffix, String lastCharacter) {
+		this.prefix = prefix;
+		this.suffix = suffix;
+		this.lastCharacter = lastCharacter;
+	}
+
+	public boolean isNameEnder() {
+		return lastCharacter.isEmpty();
 	}
 
 	public boolean isNameStarter() {

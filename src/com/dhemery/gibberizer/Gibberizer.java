@@ -30,8 +30,7 @@ public class Gibberizer {
 
 	private static String getOutputString(List<String> names) {
 		String output = "";
-		for (String name : names)
-			output += name + "\n";
+		for (String name : names) output += name + "\n";
 		return output;
 	}
 
