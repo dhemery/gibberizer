@@ -7,33 +7,27 @@ public class Ngram {
 	private String suffix;
 
 	public Ngram(int n, String input) {
-		if(input.length() < n) {
+		if (input.length() < n) {
 			prefix = input;
 			suffix = input.substring(1);
 			lastCharacter = "";
-		}
-		else {
+		} else {
 			prefix = input.substring(0, n - 1);
 			suffix = input.substring(1, n);
 			lastCharacter = input.substring(n - 1, n);
 		}
 	}
 
-	public String getPrefix() {
-		return prefix;
-	}
-
 	public String getLastCharacter() {
 		return lastCharacter;
 	}
 
-	public String getSuffix() {
-		return suffix;
+	public String getPrefix() {
+		return prefix;
 	}
 
-	@Override
-	public String toString() {
-		return prefix + lastCharacter;
+	public String getSuffix() {
+		return suffix;
 	}
 
 	public boolean isNameStarter() {
@@ -42,5 +36,10 @@ public class Ngram {
 
 	public void setIsNameStarter(boolean isNameStarter) {
 		this.isNameStarter = isNameStarter;
+	}
+
+	@Override
+	public String toString() {
+		return prefix + lastCharacter;
 	}
 }

@@ -1,5 +1,6 @@
 package com.dhemery.gibberizer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -19,11 +20,11 @@ public class Gibberizer {
 
 	private static void gibberize() {
 		String input = inputText.getText();
-		NameAnalyzer analyzer = new NameAnalyzer(input, 3);
-		List<String> names = analyzer.getNames();
-		List<Ngram> ngrams = analyzer.getNgrams();
-		NameGenerator generator = new NameGenerator(names, ngrams);
-		List<String> nameList = generator.generateNames(100);
+		String[] nameArray = input.split("\\s+");
+		List<String> names = new ArrayList<String>();
+		for(String name : nameArray) names.add(name);
+		NameGenerator generator = new NameGenerator();
+		List<String> nameList = generator.generateNames(names, 3, 100);
 		String output = "";
 		for (String name : nameList)
 			output += name + "\n";

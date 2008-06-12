@@ -4,41 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NameAnalyzer {
-	private final List<Ngram> ngrams = new ArrayList<Ngram>();
-	private final List<String> names = new ArrayList<String>();
-	private final int ngramLength;
+	private int ngramLength;
 
-	public NameAnalyzer(String input, int ngramLength) {
+	public NameAnalyzer(int ngramLength) {
 		this.ngramLength = ngramLength;
-
-		for (String name : splitOnWhiteSpace(input)) {
-			names.add(name);
-			analyzeNgrams(name);
-		}
 	}
 
-	public void analyzeNgrams(String name) {
+	private List<Ngram> getNgrams(String name) {
+		List<Ngram> ngrams = new ArrayList<Ngram>();
 		int ngramCount = getNgramCount(name);
+		boolean isNameStarter = true;
 		for (int pos = 0; pos < ngramCount; pos++) {
 			Ngram ngram = new Ngram(ngramLength, name.substring(pos));
-			if (pos == 0) ngram.setIsNameStarter(true);
+			ngram.setIsNameStarter(isNameStarter);
 			ngrams.add(ngram);
+			isNameStarter = false;
 		}
-	}
-
-	public List<String> getNames() {
-		return names;
+		return ngrams;
 	}
 
 	private int getNgramCount(String name) {
 		return name.length() - ngramLength + 1;
 	}
 
-	public List<Ngram> getNgrams() {
+	public List<Ngram> getNgrams(List<String> names) {
+		List<Ngram> ngrams = new ArrayList<Ngram>();
+		for (String name : names) {
+			ngrams.addAll(getNgrams(name));
+		}
 		return ngrams;
-	}
-
-	private String[] splitOnWhiteSpace(String input) {
-		return input.split("\\s+");
 	}
 }
