@@ -1,10 +1,10 @@
 package com.dhemery.gibberizer.unittests;
 
-import com.dhemery.gibberizer.NGraphAbstractRandom;
+import com.dhemery.gibberizer.AbstractRandom;
 
-public class RandomConstant implements NGraphAbstractRandom {
-	int constant;
-	
+public class RandomConstant implements AbstractRandom {
+	private final int constant;
+
 	RandomConstant(int constant) {
 		this.constant = constant;
 	}

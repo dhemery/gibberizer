@@ -19,10 +19,11 @@ public class Gibberizer {
 
 	private static void gibberize() {
 		String input = inputText.getText();
-		NGraphs gibberizer = new NGraphs(input, 3);
+		NameGenerator gibberizer = new NameGenerator(input, 3);
 		List<String> nameList = gibberizer.generateNames(100);
 		String output = "";
-		for(String name : nameList) output += name + "\n";
+		for (String name : nameList)
+			output += name + "\n";
 		outputText.setText(output);
 	}
 
@@ -38,22 +39,31 @@ public class Gibberizer {
 		gibberizeButton.setLayoutData(new GridData());
 		gibberizeButton.setText("Gibberize");
 
-		inputText = new Text(top, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
-		inputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		inputText = new Text(top, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+				| SWT.WRAP);
+		inputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2,
+				1));
 		inputText.setEditable(true);
-		inputText.setBackground(inputText.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		inputText.setForeground(inputText.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+		inputText.setBackground(inputText.getDisplay().getSystemColor(
+				SWT.COLOR_WHITE));
+		inputText.setForeground(inputText.getDisplay().getSystemColor(
+				SWT.COLOR_INFO_FOREGROUND));
 
 		Label outputLabel = new Label(top, SWT.CENTER);
-		outputLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
+		outputLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true,
+				false));
 		outputLabel.setText("Gibberized:");
 
-		outputText = new Text(top, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
-		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		outputText = new Text(top, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+				| SWT.WRAP);
+		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				2, 1));
 		outputText.setEditable(false);
-		outputText.setBackground(inputText.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-		outputText.setForeground(inputText.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-	
+		outputText.setBackground(inputText.getDisplay().getSystemColor(
+				SWT.COLOR_INFO_BACKGROUND));
+		outputText.setForeground(inputText.getDisplay().getSystemColor(
+				SWT.COLOR_INFO_FOREGROUND));
+
 		gibberizeButton.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -75,9 +85,9 @@ public class Gibberizer {
 		shell.setText("Gibberizer");
 		initializeWindow(shell);
 		shell.open();
-		while(!shell.isDisposed()) {
-			if(!display.readAndDispatch()) display.sleep();
-		}
+		while (!shell.isDisposed())
+			if (!display.readAndDispatch())
+				display.sleep();
 		display.dispose();
 	}
 }
