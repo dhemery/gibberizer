@@ -1,4 +1,4 @@
-#summary How to use _*Gibberizer*_
+#summary How to use Gibberizer
 
 =Introduction=
 
