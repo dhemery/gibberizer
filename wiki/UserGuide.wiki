@@ -3,7 +3,7 @@
 =Introduction=
 
 =Knobs and Buttons=
-==Weirdness==
-==Distance==
-==Persistence==
-==Mass==
+===Weirdness===
+===Distance===
+===Persistence===
+===Mass===
