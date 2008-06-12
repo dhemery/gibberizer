@@ -2,7 +2,7 @@
 
 =Introduction=
 
-=Tweaking Gibberizer=
+=Custom Gibberish=
 ==Knobs and Buttons==
 ===Weirdness===
 ===Distance===
