@@ -1,31 +1,31 @@
 package com.dhemery.gibberizer.unittests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.dhemery.gibberizer.Snipper;
 
-
 public class SnipperTests {
-
-	int nGraphLength;
+	private int n;
 	private Snipper snipper;
 	private String target;
 
 	@Test
 	public void endingSnipEqualsTargetIfTargetIsShorterThanSnipLength() {
-		String target = "abcdef";
-		Snipper snipper = new Snipper(target.length() + 100);
+		n = target.length() + 100;
+		snipper = new Snipper(n);
 		String endingSnip = snipper.extractEndingSnip(target);
 		assertEquals(target, endingSnip);
 	}
 
 	@Test
 	public void endingSnipEqualsTargetIfTargetIsSnipLength() {
-		String target = "abcdef";
-		Snipper snipper = new Snipper(target.length() + 1);
+		int snipLength = target.length();
+		n = snipLength + 1;
+		snipper = new Snipper(n);
 		String endingSnip = snipper.extractEndingSnip(target);
 		assertEquals(target, endingSnip);
 	}
@@ -37,58 +37,59 @@ public class SnipperTests {
 	}
 
 	@Test
-	public void endingSnipLengthIsOneLessThanNGraphLength() {
+	public void endingSnipLengthIsNMinusOne() {
 		String endingSnip = snipper.extractStartingSnip(target);
-		assertEquals(nGraphLength - 1, endingSnip.length());
+		assertEquals(n - 1, endingSnip.length());
 	}
 
 	@Before
 	public void setUp() {
-		nGraphLength = 3;
+		n = 3;
 		target = "abcdefg";
-		snipper = new Snipper(nGraphLength);
-	}
-	
-	@Test
-	public void startingNGraphEqualsTargetIfTargetIsNGraphLength() {
-		String target = "abcdef";
-		Snipper snipper = new Snipper(target.length());
-		String nGraph = snipper.extractStartingNGraph(target);
-		assertEquals(target, nGraph);
+		snipper = new Snipper(n);
 	}
 
 	@Test
-	public void startingNGraphEqualsTargetIfTargetIsShorterThanNGraphLength() {
-		String target = "abcdef";
-		Snipper snipper = new Snipper(target.length() + 100);
-		String nGraph = snipper.extractStartingNGraph(target);
-		assertEquals(target, nGraph);
+	public void startingNgramEqualsTargetIfTargetHasLengthN() {
+		n = target.length();
+		snipper = new Snipper(n);
+		String ngram = snipper.extractStartingNgram(target);
+		assertEquals(target, ngram);
 	}
 
 	@Test
-	public void startingNGraphHasSpecifiedLength() {
-		String nGraph = snipper.extractStartingNGraph(target);
-		assertEquals(nGraphLength, nGraph.length());
+	public void startingNgramEqualsTargetIfTargetIsShorterThanN() {
+		n = target.length() + 100;
+		snipper = new Snipper(n);
+		String ngram = snipper.extractStartingNgram(target);
+		assertEquals(target, ngram);
 	}
 
 	@Test
-	public void startingNGraphIsPrefixOfTarget() {
-		String nGraph = snipper.extractStartingNGraph(target);
-		assertTrue(target.startsWith(nGraph));
+	public void startingNgramHasLengthN() {
+		String ngram = snipper.extractStartingNgram(target);
+		assertEquals(n, ngram.length());
+	}
+
+	@Test
+	public void startingNgramIsPrefixOfTarget() {
+		String ngram = snipper.extractStartingNgram(target);
+		assertTrue(target.startsWith(ngram));
 	}
 
 	@Test
 	public void startingSnipEqualsTargetIfTargetIsShorterThanSnipLength() {
-		String target = "abcdef";
-		Snipper snipper = new Snipper(target.length() + 100);
+		n = target.length() + 100;
+		Snipper snipper = new Snipper(n);
 		String startingSnip = snipper.extractStartingSnip(target);
 		assertEquals(target, startingSnip);
 	}
 
 	@Test
 	public void startingSnipEqualsTargetIfTargetIsSnipLength() {
-		String target = "abcdef";
-		Snipper snipper = new Snipper(target.length() + 1);
+		int snipLength = target.length();
+		n = snipLength + 1;
+		snipper = new Snipper(n);
 		String startingSnip = snipper.extractStartingSnip(target);
 		assertEquals(target, startingSnip);
 	}
@@ -100,8 +101,9 @@ public class SnipperTests {
 	}
 
 	@Test
-	public void startingSnipLengthIsOneLessThanNGraphLength() {
+	public void startingSnipLengthIsNMinusOne() {
 		String startingSnip = snipper.extractStartingSnip(target);
-		assertEquals(nGraphLength - 1, startingSnip.length());
+		assertEquals(n - 1, startingSnip.length());
 	}
+
 }

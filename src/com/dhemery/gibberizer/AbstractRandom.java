@@ -1,5 +1,5 @@
 package com.dhemery.gibberizer;
 
-public interface NGraphAbstractRandom {
+public interface AbstractRandom {
 	int nextInt(int range);
 }

@@ -1,7 +1,8 @@
 Allow names from input list
-Allow duplicates Number of names to generate
+Allow duplicates
+Number of names to generate
 Distance (number of feedback loops)
 Name length max
 Name length min
 Persistence (multiples of nameCount to attempt)
-Weirdness (length of NGraphs)
+Weirdness (length of Ngrams)

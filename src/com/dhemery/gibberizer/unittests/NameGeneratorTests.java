@@ -1,6 +1,5 @@
 package com.dhemery.gibberizer.unittests;
 
-
-public class NGraphTests {
+public class NameGeneratorTests {
 
 }
