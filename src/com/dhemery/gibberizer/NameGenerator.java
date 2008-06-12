@@ -9,6 +9,9 @@ public class NameGenerator {
 	private final AbstractRandom random = new DefaultRandom();
 	private final Hashtable<String, List<Ngram>> successorsByPrefix = new Hashtable<String, List<Ngram>>();
 
+	public NameGenerator() {
+	}
+
 	private void addToSuccessorList(Ngram ngram) {
 		String prefix = ngram.getPrefix();
 		List<Ngram> ngramsWithMatchingPrefix = successorsByPrefix.get(prefix);
@@ -33,24 +36,19 @@ public class NameGenerator {
 		return generatedName;
 	}
 
-	public List<String> generateNames(List<String> incomingNames, int ngramLength, int targetCount) {
-		NameAccumulator accumulator = new NameAccumulator(incomingNames, targetCount);
-
-		List<Ngram> ngrams = getNgrams(incomingNames, ngramLength);
+	public List<String> generateNames(List<Ngram> ngrams, NameValidator validator, int nameCount) {
+		NameAccumulator accumulator = new NameAccumulator(validator, nameCount);
 
 		for (Ngram ngram : ngrams) {
 			if (ngram.isNameStarter()) nameStarters.add(ngram);
 			else addToSuccessorList(ngram);
 		}
+
 		while (!accumulator.isDone()) {
-			accumulator.add(generateName());
+			String name = generateName();
+			accumulator.add(name);
 		}
 		return accumulator.getAccumulatedNames();
-	}
-
-	private List<Ngram> getNgrams(List<String> incomingNames, int ngramLength) {
-		NameAnalyzer analyzer = new NameAnalyzer(ngramLength);
-		return analyzer.getNgrams(incomingNames);
 	}
 
 	private Ngram selectRandomNameStarter() {

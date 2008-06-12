@@ -20,15 +20,39 @@ public class Gibberizer {
 
 	private static void gibberize() {
 		String input = inputText.getText();
-		String[] nameArray = input.split("\\s+");
-		List<String> names = new ArrayList<String>();
-		for(String name : nameArray) names.add(name);
-		NameGenerator generator = new NameGenerator();
-		List<String> nameList = generator.generateNames(names, 3, 100);
-		String output = "";
-		for (String name : nameList)
-			output += name + "\n";
+		List<String> names = getInputNames(input);
+		NameValidator validator = new NameValidator(names, false, false, 1, 1000);
+		List<Ngram> ngrams = getNgrams(names, 4);
+		List<String> outputNames = generateOutputNames(ngrams, validator, 100);
+		String output = getOutputString(outputNames);
 		outputText.setText(output);
+	}
+
+	private static String getOutputString(List<String> names) {
+		String output = "";
+		for (String name : names)
+			output += name + "\n";
+		return output;
+	}
+
+	private static List<String> generateOutputNames(List<Ngram> ngrams, NameValidator validator, int nameCount) {
+		return new NameGenerator().generateNames(ngrams, validator, nameCount);
+	}
+
+	private static List<Ngram> getNgrams(List<String> names, int ngramLength) {
+		return new NameAnalyzer(ngramLength).getNgrams(names);
+	}
+
+	private static List<String> getInputNames(String input) {
+		List<String> names = new ArrayList<String>();
+		for(String name : splitNamesOnWhiteSpace(input)) {
+			names.add(name);
+		}
+		return names;
+	}
+
+	private static String[] splitNamesOnWhiteSpace(String input) {
+		return input.split("\\s+");
 	}
 
 	private static void initializeWindow(Shell top) {
