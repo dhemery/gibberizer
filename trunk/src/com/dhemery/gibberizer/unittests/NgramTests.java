@@ -17,7 +17,7 @@ public class NgramTests {
 	public void setUp() {
 		n = 6;
 		given = "abcdefghij";
-		}
+	}
 
 	@Test
 	public void prefixMatchesFirstNMinusOneCharactersOfGivenString() {
@@ -71,5 +71,32 @@ public class NgramTests {
 	public void toStringEqualsPrefixPlusLastCharacter() {
 		Ngram ngram = new Ngram(n, given);
 		assertEquals(ngram.getPrefix() + ngram.getLastCharacter(), ngram.toString());
+	}
+
+	@Test
+	public void nullNgramHasEmptyPrefix() {
+		assertTrue(Ngram.NULL_NGRAM.getPrefix().isEmpty());
+	}
+
+	@Test
+	public void nullNgramHasEmptySuffix() {
+		assertTrue(Ngram.NULL_NGRAM.getSuffix().isEmpty());
+	}
+
+	@Test
+	public void nullNgramHasEmptyLastCharacter() {
+		assertTrue(Ngram.NULL_NGRAM.getLastCharacter().isEmpty());
+	}
+	
+	@Test
+	public void isNotNameEnderIfGivenStringIsAtLeastLengthN() {
+		Ngram ngram = new Ngram(given.length(), given);
+		assertFalse(ngram.isNameEnder());
+	}
+
+	@Test
+	public void isNameEnderIfGivenStringIsShorterThanN() {
+		Ngram ngram = new Ngram(given.length() + 1, given);
+		assertTrue(ngram.isNameEnder());
 	}
 }

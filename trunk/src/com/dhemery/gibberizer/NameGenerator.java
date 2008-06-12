@@ -7,43 +7,43 @@ import java.util.List;
 public class NameGenerator {
 	private final List<Ngram> nameStarters = new ArrayList<Ngram>();
 	private final AbstractRandom random = new DefaultRandom();
-	private final Hashtable<String, List<Ngram>> successorsByPrefix = new Hashtable<String, List<Ngram>>();
+	private final Hashtable<String, List<Ngram>> ngramsByPrefix = new Hashtable<String, List<Ngram>>();
 
 	public NameGenerator() {
 	}
 
-	private void addToSuccessorList(Ngram ngram) {
+	private void addToNgramsByPrefix(Ngram ngram) {
 		String prefix = ngram.getPrefix();
-		List<Ngram> ngramsWithMatchingPrefix = successorsByPrefix.get(prefix);
-		if (ngramsWithMatchingPrefix == null) {
-			ngramsWithMatchingPrefix = new ArrayList<Ngram>();
-			successorsByPrefix.put(prefix, ngramsWithMatchingPrefix);
-		}
-		ngramsWithMatchingPrefix.add(ngram);
+		List<Ngram> ngramsForPrefix = getNgramsForPrefix(prefix);
+		ngramsForPrefix.add(ngram);
 	}
 
-	private boolean canContinueAfter(Ngram ngram) {
-		return (ngram != null) && !ngram.getLastCharacter().isEmpty();
+	private void distributeNgramsToStarterAndSuccessorLists(List<Ngram> ngrams) {
+		// TODO: This distribution might better be done elsewhere. But where?
+		for (Ngram ngram : ngrams) {
+			if (ngram.isNameStarter()) nameStarters.add(ngram);
+			addToNgramsByPrefix(ngram);
+		}
 	}
 
 	public String generateName() {
 		Ngram ngram = selectRandomNameStarter();
 		String generatedName = ngram.getPrefix();
-		while (canContinueAfter(ngram)) {
+		while (!ngram.isNameEnder()) {
 			generatedName += ngram.getLastCharacter();
 			ngram = selectRandomSuccessor(ngram);
 		}
 		return generatedName;
 	}
 
-	public List<String> generateNames(List<Ngram> ngrams, NameValidator validator, int nameCount) {
+	public List<String> generateNames(List<Ngram> ngrams,
+			NameValidator validator, int nameCount) {
+		distributeNgramsToStarterAndSuccessorLists(ngrams);
+		return generateNames(validator, nameCount);
+	}
+
+	private List<String> generateNames(NameValidator validator, int nameCount) {
 		NameAccumulator accumulator = new NameAccumulator(validator, nameCount);
-
-		for (Ngram ngram : ngrams) {
-			if (ngram.isNameStarter()) nameStarters.add(ngram);
-			else addToSuccessorList(ngram);
-		}
-
 		while (!accumulator.isDone()) {
 			String name = generateName();
 			accumulator.add(name);
@@ -51,15 +51,31 @@ public class NameGenerator {
 		return accumulator.getAccumulatedNames();
 	}
 
+	public List<Ngram> getNgramsForPrefix(String prefix) {
+		List<Ngram> ngramsForPrefix = ngramsByPrefix.get(prefix);
+		if (ngramsForPrefix == null) {
+			ngramsForPrefix = new ArrayList<Ngram>();
+			ngramsByPrefix.put(prefix, ngramsForPrefix);
+		}
+		return ngramsForPrefix;
+	}
+
+	private List<Ngram> getPossibleSuccessors(Ngram ngram) {
+		String successorPrefix = ngram.getSuffix();
+		return getNgramsForPrefix(successorPrefix);
+	}
+
 	private Ngram selectRandomNameStarter() {
-		int randomNameStarterIndex = random.nextInt(nameStarters.size());
-		return nameStarters.get(randomNameStarterIndex);
+		return selectRandomNgram(nameStarters);
+	}
+
+	private Ngram selectRandomNgram(List<Ngram> ngrams) {
+		if(ngrams.size() < 1) return Ngram.NULL_NGRAM;
+		int randomIndex = random.nextInt(ngrams.size());
+		return ngrams.get(randomIndex);
 	}
 
 	private Ngram selectRandomSuccessor(Ngram ngram) {
-		List<Ngram> successors = successorsByPrefix.get(ngram.getSuffix());
-		if (successors == null) return null;
-		int randomSuccessorIndex = random.nextInt(successors.size());
-		return successors.get(randomSuccessorIndex);
+		return selectRandomNgram(getPossibleSuccessors(ngram));
 	}
 }
