@@ -19,8 +19,11 @@ public class Gibberizer {
 
 	private static void gibberize() {
 		String input = inputText.getText();
-		NameGenerator gibberizer = new NameGenerator(input, 3);
-		List<String> nameList = gibberizer.generateNames(100);
+		NameAnalyzer analyzer = new NameAnalyzer(input, 3);
+		List<String> names = analyzer.getNames();
+		List<Ngram> ngrams = analyzer.getNgrams();
+		NameGenerator generator = new NameGenerator(names, ngrams);
+		List<String> nameList = generator.generateNames(100);
 		String output = "";
 		for (String name : nameList)
 			output += name + "\n";

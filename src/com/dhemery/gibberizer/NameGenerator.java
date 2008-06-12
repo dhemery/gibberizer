@@ -5,90 +5,71 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class NameGenerator {
-	private static final String terminator = " ";
 	private final boolean allowInputEcho = false;
 	private final boolean allowDuplicates = false;
-	private final Hashtable<String, List<String>> hash = new Hashtable<String, List<String>>();
 	private final int maxNameLength = 10;
 	private final int minNameLength = 5;
-	private final List<String> names = new ArrayList<String>();
-	private final int ngramLength;
+	private final List<String> names;
+	private final List<Ngram> nameStarters = new ArrayList<Ngram>();
 	private final int persistence = 5;
 	private final AbstractRandom random = new DefaultRandom();
-	private final Snipper snipper;
+	private final Hashtable<String, List<Ngram>> successorsByPrefix = new Hashtable<String, List<Ngram>>();
 
-	public NameGenerator(String input, int ngramLength) {
-		this.ngramLength = ngramLength;
-		snipper = new Snipper(ngramLength);
-
-		String[] splitNames = input.split("\\s+");
-
-		for (String name : splitNames) {
-			names.add(name);
-			analyzeNgrams(name);
-		}
+	public NameGenerator(List<String> names, List<Ngram> ngrams) {
+		this.names = names;
+		for (Ngram ngram : ngrams)
+			if (ngram.isNameStarter()) nameStarters.add(ngram);
+			else addToSuccessorList(ngram);
 	}
 
-	public void analyzeNgrams(String name) {
-		String terminatedName = name + terminator;
-		for (int pos = 0; pos <= terminatedName.length() - ngramLength; pos++) {
-			String ngram = snipper.extractNgram(terminatedName, pos);
-			String ngramStartingSnip = snipper.extractStartingSnip(ngram);
-			List<String> list = hash.get(ngramStartingSnip);
-			if (list == null) {
-				list = new ArrayList<String>();
-				hash.put(ngramStartingSnip, list);
-			}
-			list.add(ngram.substring(ngramLength - 1));
+	private void addToSuccessorList(Ngram ngram) {
+		String prefix = ngram.getPrefix();
+		List<Ngram> ngramsWithMatchingPrefix = successorsByPrefix.get(prefix);
+		if (ngramsWithMatchingPrefix == null) {
+			ngramsWithMatchingPrefix = new ArrayList<Ngram>();
+			successorsByPrefix.put(prefix, ngramsWithMatchingPrefix);
 		}
+		ngramsWithMatchingPrefix.add(ngram);
+	}
+
+	private boolean canContinueAfter(Ngram ngram) {
+		return (ngram != null) && !ngram.getLastCharacter().isEmpty();
+	}
+
+	private boolean generateMoreNames(List<String> generatedNames,
+			int targetNameCount, int attemptCount) {
+		return (notEnoughNames(generatedNames, targetNameCount))
+				&& !(giveUp(targetNameCount, attemptCount));
 	}
 
 	public String generateName() {
-		String generatedName = grabRandomStartingSnip();
-		String continuation = getContinuation(generatedName);
-		while (!continuation.equals(terminator)) {
-			generatedName += continuation;
-			continuation = getContinuation(generatedName);
+		Ngram ngram = selectRandomNameStarter();
+		String generatedName = ngram.getPrefix();
+		while (canContinueAfter(ngram)) {
+			generatedName += ngram.getLastCharacter();
+			ngram = selectRandomSuccessor(ngram);
 		}
 		return generatedName;
 	}
 
-	public List<String> generateNames(int nameCount) {
+	public List<String> generateNames(int targetNameCount) {
 		int attemptCount = 0;
 		List<String> generatedNames = new ArrayList<String>();
-		while (generatedNames.size() < nameCount) {
-			String name = generateName().trim();
-			if (isValidName(generatedNames, name))
-				generatedNames.add(name);
-			if (attemptCount > nameCount * persistence)
-				break;
+		while (generateMoreNames(generatedNames, targetNameCount, attemptCount)) {
+			String name = generateName();
+			if (isValidName(generatedNames, name)) generatedNames.add(name);
 			attemptCount++;
 		}
 		return generatedNames;
 	}
 
-	public String getContinuation(List<String> possibleContinuations) {
-		if (possibleContinuations == null)
-			return terminator;
-		int randomIndex = random.nextInt(possibleContinuations.size());
-		return possibleContinuations.get(randomIndex);
+	private boolean giveUp(int targetNameCount, int attemptCount) {
+		return attemptCount >= targetNameCount * persistence;
 	}
 
-	public String getContinuation(String target) {
-		String endingSnip = snipper.extractEndingSnip(target);
-		List<String> matches = getMatches(endingSnip);
-		return getContinuation(matches);
-	}
-
-	public List<String> getMatches(String snip) {
-		return hash.get(snip);
-	}
-
-	public String grabRandomStartingSnip() {
-		int randomKeyIndex = random.nextInt(names.size());
-		String randomName = names.get(randomKeyIndex);
-		String randomKey = snipper.extractStartingSnip(randomName);
-		return randomKey;
+	private boolean hasAcceptableLength(String name) {
+		return (minNameLength <= name.length())
+				&& (name.length() <= maxNameLength);
 	}
 
 	private boolean isDisallowedDuplicate(List<String> generatedNames,
@@ -104,11 +85,6 @@ public class NameGenerator {
 		return generatedNames.contains(name);
 	}
 
-	private boolean isInLengthRange(String name) {
-		return (minNameLength <= name.length())
-				&& (name.length() <= maxNameLength);
-	}
-
 	private boolean isInputEcho(String name) {
 		return names.contains(name);
 	}
@@ -116,6 +92,23 @@ public class NameGenerator {
 	public boolean isValidName(List<String> generatedNames, String name) {
 		return !isDisallowedInputEcho(name)
 				&& !isDisallowedDuplicate(generatedNames, name)
-				&& isInLengthRange(name);
+				&& hasAcceptableLength(name);
+	}
+
+	private boolean notEnoughNames(List<String> generatedNames,
+			int targetNameCount) {
+		return generatedNames.size() < targetNameCount;
+	}
+
+	private Ngram selectRandomNameStarter() {
+		int randomNameStarterIndex = random.nextInt(nameStarters.size());
+		return nameStarters.get(randomNameStarterIndex);
+	}
+
+	private Ngram selectRandomSuccessor(Ngram ngram) {
+		List<Ngram> successors = successorsByPrefix.get(ngram.getSuffix());
+		if (successors == null) return null;
+		int randomSuccessorIndex = random.nextInt(successors.size());
+		return successors.get(randomSuccessorIndex);
 	}
 }
