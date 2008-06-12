@@ -1,9 +1,0 @@
-#summary How to use Gibberizer
-
-=Introduction=
-
-=Knobs and Buttons=
-==Weirdness==
-==Distance==
-==Persistence==
-==Mass==
