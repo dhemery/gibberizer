@@ -5,18 +5,14 @@ import java.util.List;
 
 public class NameAccumulator {
 	private final List<String> accumulatedNames = new ArrayList<String>();
-	private final boolean allowInputEcho = false;
-	private final boolean allowDuplicates = false;
 	private int attemptCount;
-	private final int maxNameLength = 10;
-	private final int minNameLength = 5;
-	private final List<String> inputNames;
+	private final int nameCount;
 	private final int persistence = 5;
-	private final int targetCount;
+	private final NameValidator validator;
 
-	public NameAccumulator(List<String> inputNames, int targetCount) {
-		this.inputNames = inputNames;
-		this.targetCount = targetCount;
+	public NameAccumulator(NameValidator validator, int nameCount) {
+		this.nameCount = nameCount;
+		this.validator = validator;
 	}
 
 	public void add(String name) {
@@ -24,12 +20,8 @@ public class NameAccumulator {
 		attemptCount++;
 	}
 
-	private boolean alreadyAccumulated(String name) {
-		return accumulatedNames.contains(name);
-	}
-
 	private boolean canAdd(String name) {
-		return !haveEnoughNames() && isValid(name);
+		return !haveEnoughNames() && validator.isAllowed(name, accumulatedNames);
 	}
 
 	public List<String> getAccumulatedNames() {
@@ -37,36 +29,14 @@ public class NameAccumulator {
 	}
 
 	private boolean giveUp() {
-		return attemptCount >= targetCount * persistence;
-	}
-
-	private boolean hasAcceptableLength(String name) {
-		return (minNameLength <= name.length())
-				&& (name.length() <= maxNameLength);
+		return attemptCount >= nameCount * persistence;
 	}
 
 	private boolean haveEnoughNames() {
-		return accumulatedNames.size() >= targetCount;
-	}
-
-	private boolean isDisallowedDuplicate(String name) {
-		return !allowDuplicates && alreadyAccumulated(name);
-	}
-
-	private boolean isDisallowedInputEcho(String name) {
-		return !allowInputEcho && isInputEcho(name);
+		return accumulatedNames.size() >= nameCount;
 	}
 
 	public boolean isDone() {
 		return haveEnoughNames() || giveUp();
-	}
-
-	private boolean isInputEcho(String name) {
-		return inputNames.contains(name);
-	}
-
-	private boolean isValid(String name) {
-		return !isDisallowedInputEcho(name) && !isDisallowedDuplicate(name)
-				&& hasAcceptableLength(name);
 	}
 }
