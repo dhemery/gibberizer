@@ -20,6 +20,30 @@ public class NameAnalyzerTests {
 	}
 
 	@Test
+	public void createsOneNgramForSingleNameShorterThanN() {
+		String threeLetterName = "abc";
+		names.add(threeLetterName);
+		int n = threeLetterName.length() + 1;
+		NameAnalyzer analyzer = new NameAnalyzer(n);
+
+		List<Ngram> ngrams = analyzer.getNgrams(names);
+
+		assertEquals(1, ngrams.size());
+	}
+
+	@Test
+	public void createsNgramThatMatchesNameIfNameShorterThanN() {
+		String threeLetterName = "abc";
+		names.add(threeLetterName);
+		int n = threeLetterName.length() + 1;
+		NameAnalyzer analyzer = new NameAnalyzer(n);
+
+		Ngram ngram = analyzer.getNgrams(names).get(0);
+
+		assertEquals(threeLetterName, ngram.toString());
+	}
+
+	@Test
 	public void createsOneNgramForSingleNLetterName() {
 		String tenLetterName = "abcdefghij";
 		names.add(tenLetterName);
@@ -93,6 +117,30 @@ public class NameAnalyzerTests {
 		assertFalse(getNgram("bcde", ngrams).isNameStarter());
 		assertFalse(getNgram("cdef", ngrams).isNameStarter());
 		assertFalse(getNgram("ghij", ngrams).isNameStarter());
+	}
+
+	@Test
+	public void marksLastNgramAsNameEnder() {
+		String tenLetterName = "abcdefghij";
+		names.add(tenLetterName);
+		NameAnalyzer analyzer = new NameAnalyzer(4);
+
+		List<Ngram> ngrams = analyzer.getNgrams(names);
+
+		assertTrue(getNgram("ghij", ngrams).isNameEnder());
+	}
+
+	@Test
+	public void marksNonLastNgramsAsNotNameEnders() {
+		String tenLetterName = "abcdefghij";
+		names.add(tenLetterName);
+		NameAnalyzer analyzer = new NameAnalyzer(4);
+
+		List<Ngram> ngrams = analyzer.getNgrams(names);
+
+		assertFalse(getNgram("abcd", ngrams).isNameEnder());
+		assertFalse(getNgram("efgh", ngrams).isNameEnder());
+		assertFalse(getNgram("fghi", ngrams).isNameEnder());
 	}
 
 	@Test

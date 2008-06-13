@@ -23,7 +23,7 @@ public class Gibberizer {
 		List<String> names = getInputNames(input);
 		NameValidator validator = new NameValidator(names, false, false, 1, 1000);
 		List<Ngram> ngrams = getNgrams(names, 4);
-		List<String> outputNames = generateOutputNames(ngrams, validator, 100);
+		List<String> outputNames = generateOutputNames(ngrams, validator, 10);
 		String output = getOutputString(outputNames);
 		outputText.setText(output);
 	}
