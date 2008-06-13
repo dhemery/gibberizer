@@ -33,7 +33,7 @@ public class NameGenerator {
 			generatedName += ngram.getLastCharacter();
 			ngram = selectRandomSuccessor(ngram);
 		}
-		return generatedName;
+		return generatedName + ngram.getLastCharacter();
 	}
 
 	public List<String> generateNames(List<Ngram> ngrams,

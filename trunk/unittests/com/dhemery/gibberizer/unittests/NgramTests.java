@@ -88,18 +88,6 @@ public class NgramTests {
 	}
 	
 	@Test
-	public void isNotNameEnderIfGivenStringIsAtLeastLengthN() {
-		Ngram ngram = new Ngram(given.length(), given);
-		assertFalse(ngram.isNameEnder());
-	}
-
-	@Test
-	public void isNameEnderIfGivenStringIsShorterThanN() {
-		Ngram ngram = new Ngram(given.length() + 1, given);
-		assertTrue(ngram.isNameEnder());
-	}
-	
-	@Test
 	public void equalIfSamePrefixAndLastLetter() {
 		Ngram ngram1 = new Ngram(4, given);
 		Ngram ngram2 = new Ngram(4, given);

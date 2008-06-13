@@ -13,17 +13,18 @@ public class NameAnalyzer {
 	private List<Ngram> getNgrams(String name) {
 		List<Ngram> ngrams = new ArrayList<Ngram>();
 		int ngramCount = getNgramCount(name);
-		boolean isNameStarter = true;
+		
 		for (int pos = 0; pos < ngramCount; pos++) {
-			Ngram ngram = new Ngram(ngramLength, name.substring(pos));
-			ngram.setIsNameStarter(isNameStarter);
-			ngrams.add(ngram);
-			isNameStarter = false;
+			ngrams.add(new Ngram(ngramLength, name.substring(pos)));
 		}
+
+		ngrams.get(0).setIsNameStarter(true);
+		ngrams.get(ngramCount - 1).setIsNameEnder(true);
 		return ngrams;
 	}
 
 	private int getNgramCount(String name) {
+		if(name.length() < ngramLength) return 1;
 		return name.length() - ngramLength + 1;
 	}
 
