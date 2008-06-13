@@ -1,6 +1,5 @@
 package com.dhemery.gibberizer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -19,39 +18,31 @@ public class Gibberizer {
 	private static Text outputText;
 
 	private static void gibberize() {
+		boolean allowInputEcho = false;
+		boolean allowDuplicates = false;
+		int delimiter = StringSplitter.END_OF_LINE;
+		int minStringLength = 1;
+		int maxStringLength = 1000;
+		int ngramLength = 7;
+		int persistence = 5;
+		int stringCount = 3;
+
+		StringSplitter splitter = new StringSplitter(delimiter);
+		StringParser parser = new StringParser(ngramLength);
+		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
+		StringBasket basket = new StringBasket(stringCount, filter, persistence);
+		StringBuilder builder = new StringBuilder();
+		StringCombiner combiner = new StringCombiner();
+
 		String input = inputText.getText();
-		List<String> names = getInputNames(input);
-		NameValidator validator = new NameValidator(names, false, false, 1, 1000);
-		List<Ngram> ngrams = getNgrams(names, 4);
-		List<String> outputNames = generateOutputNames(ngrams, validator, 10);
-		String output = getOutputString(outputNames);
+		List<String> inputStrings = splitter.split(input);
+		if (!allowInputEcho) filter.addProhibitedStringsList(inputStrings);
+		if (!allowDuplicates)
+			filter.addProhibitedStringsList(basket.getDeliveredStrings());
+		List<Ngram> ngrams = parser.parseNgrams(inputStrings);
+		builder.buildSequences(ngrams, basket);
+		String output = combiner.combine(basket.getDeliveredStrings());
 		outputText.setText(output);
-	}
-
-	private static String getOutputString(List<String> names) {
-		String output = "";
-		for (String name : names) output += name + "\n";
-		return output;
-	}
-
-	private static List<String> generateOutputNames(List<Ngram> ngrams, NameValidator validator, int nameCount) {
-		return new NameGenerator().generateNames(ngrams, validator, nameCount);
-	}
-
-	private static List<Ngram> getNgrams(List<String> names, int ngramLength) {
-		return new NameAnalyzer(ngramLength).getNgrams(names);
-	}
-
-	private static List<String> getInputNames(String input) {
-		List<String> names = new ArrayList<String>();
-		for(String name : splitNamesOnWhiteSpace(input)) {
-			names.add(name);
-		}
-		return names;
-	}
-
-	private static String[] splitNamesOnWhiteSpace(String input) {
-		return input.split("\\s+");
 	}
 
 	private static void initializeWindow(Shell top) {
@@ -113,8 +104,7 @@ public class Gibberizer {
 		initializeWindow(shell);
 		shell.open();
 		while (!shell.isDisposed())
-			if (!display.readAndDispatch())
-				display.sleep();
+			if (!display.readAndDispatch()) display.sleep();
 		display.dispose();
 	}
 }
