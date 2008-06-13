@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.dhemery.gibberizer.Ngram;
 
-
 public class NgramTests {
 
 	private String given;
@@ -98,5 +97,41 @@ public class NgramTests {
 	public void isNameEnderIfGivenStringIsShorterThanN() {
 		Ngram ngram = new Ngram(given.length() + 1, given);
 		assertTrue(ngram.isNameEnder());
+	}
+	
+	@Test
+	public void equalIfSamePrefixAndLastLetter() {
+		Ngram ngram1 = new Ngram(4, given);
+		Ngram ngram2 = new Ngram(4, given);
+		assertTrue(ngram1.equals(ngram2));
+	}
+	
+	@Test
+	public void notEqualIfDifferentPrefix() {
+		Ngram ngram1 = new Ngram(4, "abcdefg");
+		Ngram ngram2 = new Ngram(4, "bbcdefg");
+		assertFalse(ngram1.equals(ngram2));
+	}
+	
+	@Test
+	public void notEqualIfDifferentLastLetter() {
+		Ngram ngram1 = new Ngram(4, "abcdefg");
+		Ngram ngram2 = new Ngram(4, "abceefg");
+		assertFalse(ngram1.equals(ngram2));
+	}
+	
+	@Test
+	public void equalStringConversionDoesNotImplyEqualNgrams() {
+		Ngram ngram1 = new Ngram(4, "abcd"); // Prefix "abc", Last char "d"
+		Ngram ngram2 = new Ngram(5, "abcd"); // Prefix "abcd", Last char ""
+		assertEquals(ngram1.toString(), ngram2.toString()); // To demonstrate equal toString()
+		assertFalse(ngram1.equals(ngram2));
+	}
+	
+	@Test
+	public void equalityIsCaseInsensive() {
+		Ngram ngramLower = new Ngram(4, "abcd");
+		Ngram ngramUpper = new Ngram(4, "ABCD");
+		assertTrue(ngramLower.equals(ngramUpper));
 	}
 }

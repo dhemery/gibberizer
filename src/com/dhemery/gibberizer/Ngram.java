@@ -19,6 +19,13 @@ public class Ngram {
 			initialize(input.substring(0, n - 1), input.substring(1, n), input.substring(n - 1, n));
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		Ngram other = (Ngram)o;
+		return this.prefix.equalsIgnoreCase(other.prefix)
+			&& this.lastCharacter.equalsIgnoreCase(other.lastCharacter);
+	}
+
 	public String getLastCharacter() {
 		return lastCharacter;
 	}
