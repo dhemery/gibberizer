@@ -20,28 +20,29 @@ public class Gibberizer {
 	private static void gibberize() {
 		boolean allowInputEcho = false;
 		boolean allowDuplicates = false;
-		int delimiter = StringSplitter.END_OF_LINE;
+		int delimiter = StringSplitter.WHITESPACE;
 		int minStringLength = 1;
 		int maxStringLength = 1000;
-		int ngramLength = 7;
+		int ngramLength = 6;
 		int persistence = 5;
-		int stringCount = 3;
+		String outputDelimiter = " ";
+		int stringCount = 100;
 
-		StringSplitter splitter = new StringSplitter(delimiter);
-		StringParser parser = new StringParser(ngramLength);
+		StringSplitter splitter = new StringSplitter();
+		StringParser parser = new StringParser();
 		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
 		StringBasket basket = new StringBasket(stringCount, filter, persistence);
 		StringBuilder builder = new StringBuilder();
 		StringCombiner combiner = new StringCombiner();
 
 		String input = inputText.getText();
-		List<String> inputStrings = splitter.split(input);
+		List<String> inputStrings = splitter.split(input, delimiter);
 		if (!allowInputEcho) filter.addProhibitedStringsList(inputStrings);
 		if (!allowDuplicates)
 			filter.addProhibitedStringsList(basket.getDeliveredStrings());
-		List<Ngram> ngrams = parser.parseNgrams(inputStrings);
+		List<Ngram> ngrams = parser.parse(inputStrings, ngramLength);
 		builder.buildSequences(ngrams, basket);
-		String output = combiner.combine(basket.getDeliveredStrings());
+		String output = combiner.combine(basket.getDeliveredStrings(), outputDelimiter);
 		outputText.setText(output);
 	}
 

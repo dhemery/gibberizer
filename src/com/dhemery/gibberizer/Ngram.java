@@ -12,7 +12,7 @@ public class Ngram {
 		initialize(prefix, suffix, lastCharacter);
 	}
 
-	public Ngram(int n, String string) {
+	public Ngram(String string, int n) {
 		// TODO: Can this be refactored?
 		if(string.isEmpty()) initialize("", "", "");
 		else if(string.length() < n) initialize(string, string.substring(1), "");
