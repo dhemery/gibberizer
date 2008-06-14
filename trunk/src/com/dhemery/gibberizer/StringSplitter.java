@@ -5,20 +5,21 @@ import java.util.List;
 
 public class StringSplitter {
 	public static final int NONE = 0;
-	public static final int WHITESPACE = 0;
-	public static final int END_OF_LINE = 0;
+	public static final int WHITESPACE = 1;
+	public static final int END_OF_LINE = 2;
 
-	private String delimiterExpression = "";
-
-	public StringSplitter(int delimiter) {
-		if(delimiter == WHITESPACE) delimiterExpression = "\\s+";
-		if(delimiter == END_OF_LINE) delimiterExpression = "\\n+";
-	}
-
-	public List<String> split(String input) {
+	public List<String> split(String unsplitString, int delimiter) {
 		List<String> strings = new ArrayList<String>();
-		for(String string : input.split(delimiterExpression)) {
-			strings.add(string);
+		if(delimiter == NONE) {
+			strings.add(unsplitString);
+		} else {
+			String delimiterExpression = "";
+			if(delimiter == WHITESPACE) delimiterExpression = "\\s";
+			if(delimiter == END_OF_LINE) delimiterExpression = "[\\n\\r]";
+
+			for(String string : unsplitString.split(delimiterExpression)) {
+				strings.add(string);
+			}
 		}
 		return strings;
 	}
