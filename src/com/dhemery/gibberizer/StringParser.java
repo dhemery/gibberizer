@@ -8,29 +8,27 @@ public class StringParser {
 	public StringParser() {
 	}
 
+	private int getNgramCount(String string, int ngramLength) {
+		if (string.length() < ngramLength) return 1;
+		return string.length() - ngramLength + 1;
+	}
+
 	private List<Ngram> getNgrams(String string, int ngramLength) {
 		List<Ngram> ngrams = new ArrayList<Ngram>();
 		int ngramCount = getNgramCount(string, ngramLength);
 
-		for (int pos = 0; pos < ngramCount; pos++) {
+		for (int pos = 0; pos < ngramCount; pos++)
 			ngrams.add(new Ngram(string.substring(pos), ngramLength));
-		}
 
 		ngrams.get(0).setIsStarter(true);
 		ngrams.get(ngrams.size() - 1).setIsEnder(true);
 		return ngrams;
 	}
 
-	private int getNgramCount(String string, int ngramLength) {
-		if(string.length() < ngramLength) return 1;
-		return string.length() - ngramLength + 1;
-	}
-
 	public List<Ngram> parse(List<String> strings, int ngramLength) {
 		List<Ngram> ngrams = new ArrayList<Ngram>();
-		for (String string : strings) {
+		for (String string : strings)
 			ngrams.addAll(getNgrams(string, ngramLength));
-		}
 		return ngrams;
 	}
 }

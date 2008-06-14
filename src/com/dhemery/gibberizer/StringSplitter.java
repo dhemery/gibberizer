@@ -10,16 +10,14 @@ public class StringSplitter {
 
 	public List<String> split(String unsplitString, int delimiter) {
 		List<String> strings = new ArrayList<String>();
-		if(delimiter == NONE) {
-			strings.add(unsplitString);
-		} else {
+		if (delimiter == NONE) strings.add(unsplitString);
+		else {
 			String delimiterExpression = "";
-			if(delimiter == WHITESPACE) delimiterExpression = "\\s";
-			if(delimiter == END_OF_LINE) delimiterExpression = "[\\n\\r]";
+			if (delimiter == WHITESPACE) delimiterExpression = "\\s";
+			if (delimiter == END_OF_LINE) delimiterExpression = "[\\n\\r]";
 
-			for(String string : unsplitString.split(delimiterExpression)) {
+			for (String string : unsplitString.split(delimiterExpression))
 				strings.add(string);
-			}
 		}
 		return strings;
 	}

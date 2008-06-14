@@ -18,23 +18,23 @@ public class StringFilter {
 	}
 
 	public boolean canAdd(String string) {
-		return isWithinLengthRange(string) && !isOnProhibitedStringsList(string);
+		return isWithinLengthRange(string)
+				&& !isOnProhibitedStringsList(string);
 	}
 
 	private boolean isLongEnough(String string) {
-		if(minStringLength < 1) return true;
+		if (minStringLength < 1) return true;
 		return string.length() >= minStringLength;
 	}
 
 	private boolean isOnProhibitedStringsList(String string) {
-		for(List<String> prohibitedStringsList : prohibitedStringsLists) {
-			if(prohibitedStringsList.contains(string)) return true;
-		}
+		for (List<String> prohibitedStringsList : prohibitedStringsLists)
+			if (prohibitedStringsList.contains(string)) return true;
 		return false;
 	}
 
 	private boolean isShortEnough(String string) {
-		if(maxStringLength < 1) return true;
+		if (maxStringLength < 1) return true;
 		return string.length() <= maxStringLength;
 	}
 

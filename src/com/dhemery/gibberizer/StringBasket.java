@@ -7,7 +7,7 @@ public class StringBasket {
 	private int attemptCount;
 	private final List<String> deliveredStrings = new ArrayList<String>();
 	private final StringFilter filter;
-	private int persistence;
+	private final int persistence;
 	private final int stringCount;
 
 	public StringBasket(int stringCount, StringFilter filter, int persistence) {
@@ -17,8 +17,8 @@ public class StringBasket {
 	}
 
 	public void deliver(String string) {
-		if(isDone()) return;
-		if(filter.canAdd(string)) deliveredStrings.add(string);
+		if (isDone()) return;
+		if (filter.canAdd(string)) deliveredStrings.add(string);
 		attemptCount++;
 	}
 
