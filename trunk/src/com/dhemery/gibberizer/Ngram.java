@@ -8,22 +8,24 @@ public class Ngram {
 	private String prefix;
 	private String suffix;
 
+	public Ngram(String string, int n) {
+		// TODO: Can this be refactored?
+		if (string.isEmpty() || n < 1) initialize("", "", "");
+		else if (string.length() < n) initialize(string, string.substring(1),
+				"");
+		else initialize(string.substring(0, n - 1), string.substring(1, n),
+				string.substring(n - 1, n));
+	}
+
 	private Ngram(String prefix, String suffix, String lastCharacter) {
 		initialize(prefix, suffix, lastCharacter);
 	}
 
-	public Ngram(String string, int n) {
-		// TODO: Can this be refactored?
-		if(string.isEmpty()) initialize("", "", "");
-		else if(string.length() < n) initialize(string, string.substring(1), "");
-		else initialize(string.substring(0, n - 1), string.substring(1, n), string.substring(n - 1, n));
-	}
-
 	@Override
 	public boolean equals(Object o) {
-		Ngram other = (Ngram)o;
-		return this.prefix.equalsIgnoreCase(other.prefix)
-			&& this.lastCharacter.equalsIgnoreCase(other.lastCharacter);
+		Ngram other = (Ngram) o;
+		return prefix.equalsIgnoreCase(other.prefix)
+				&& lastCharacter.equalsIgnoreCase(other.lastCharacter);
 	}
 
 	public String getLastCharacter() {

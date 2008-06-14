@@ -15,11 +15,10 @@ public class StringBuilder {
 		ngramsForPrefix.add(ngram);
 	}
 
-	private void distributeNgramsToStarterAndSuccessorLists(List<Ngram> ngrams) {
-		for (Ngram ngram : ngrams) {
-			addToNgramsByPrefix(ngram);
-			if (ngram.isStarter()) starters.add(ngram);
-		}
+	public void buildSequences(List<Ngram> ngrams, StringBasket basket) {
+		distributeNgramsToStarterAndSuccessorLists(ngrams);
+		while (!basket.isDone())
+			basket.deliver(buildString());
 	}
 
 	public String buildString() {
@@ -32,10 +31,10 @@ public class StringBuilder {
 		return generatedString + ngram.getLastCharacter();
 	}
 
-	public void buildSequences(List<Ngram> ngrams, StringBasket basket) {
-		distributeNgramsToStarterAndSuccessorLists(ngrams);
-		while (!basket.isDone()) {
-			basket.deliver(buildString());
+	private void distributeNgramsToStarterAndSuccessorLists(List<Ngram> ngrams) {
+		for (Ngram ngram : ngrams) {
+			addToNgramsByPrefix(ngram);
+			if (ngram.isStarter()) starters.add(ngram);
 		}
 	}
 
@@ -54,7 +53,7 @@ public class StringBuilder {
 	}
 
 	private Ngram selectRandomNgram(List<Ngram> ngrams) {
-		if(ngrams.size() < 1) return Ngram.NULL_NGRAM;
+		if (ngrams.size() < 1) return Ngram.NULL_NGRAM;
 		int randomIndex = random.nextInt(ngrams.size());
 		return ngrams.get(randomIndex);
 	}
