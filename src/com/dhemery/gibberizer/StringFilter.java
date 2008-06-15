@@ -23,7 +23,6 @@ public class StringFilter {
 	}
 
 	private boolean isLongEnough(String string) {
-		if (minStringLength < 1) return true;
 		return string.length() >= minStringLength;
 	}
 

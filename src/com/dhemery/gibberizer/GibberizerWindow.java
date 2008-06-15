@@ -1,71 +1,77 @@
 package com.dhemery.gibberizer;
 
+import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 
-public class GibberizerWindow extends Composite {
-	private static final int interWidgetMargin = 2;
+public class GibberizerWindow extends ApplicationWindow {
+	private static final int interWidgetMargin = 3;
 	private static final int interGroupMargin = 10;
-	private Text inputText;
-	private Text outputText;
-	private Gibberizer gibberizer;
 
-	public GibberizerWindow(Composite parent) {
-		super(parent, SWT.NONE);
-		initializeGibberizer();
-		initializeWindow(this);
+	public static void main(String[] args) {
+		GibberizerWindow window = new GibberizerWindow();
+		window.setBlockOnOpen(true);
+		window.open();
+		Display.getCurrent().dispose();
 	}
 
-	private Button createButton(Composite parent, String name, int type) {
+	private Text inputText;
+	private Text outputText;
+
+	private Gibberizer gibberizer;
+
+	public GibberizerWindow() {
+		super(null);
+	}
+
+	private Button createButton(Composite parent, String name, int type, String toolTipText) {
 		Button button = new Button(parent, type);
 		button.setText(name);
+		button.setToolTipText(toolTipText);
 		return button;
 	}
 
-	private Button createCheckBoxButton(Composite parent, String name) {
-		return createButton(parent, name, SWT.CHECK);
+	private Button createCheckBoxButton(Composite parent, String name, String toolTipText) {
+		return createButton(parent, name, SWT.CHECK, toolTipText);
 	}
 
-	private Group createFormGroup(Composite parent, String name) {
-		return createGroup(parent, name, createFormLayout());
+	@Override
+	protected Control createContents(Composite parent) {
+		getShell().setText("Gibberizer");
+		Composite top = new Composite(parent, SWT.NONE);
+		initializeGibberizer();
+		initializeWindow(top);
+
+		return top;
 	}
 
-	private FormLayout createFormLayout() {
-		FormLayout formLayout = new FormLayout();
-		formLayout.marginHeight = 10;
-		formLayout.marginWidth = 10;
-		return formLayout;
+	private Group createGridGroup(Composite parent, String name, String toolTipText) {
+		return createGroup(parent, name, toolTipText);
 	}
 
-	private Group createGridGroup(Composite parent, String name) {
-		return createGroup(parent, name, createGridLayout());
-	}
-
-	private GridLayout createGridLayout() {
-		GridLayout layout = new GridLayout(2, false);
+	private GridLayout createGridLayout(int columnCount, int horizontalSpacing,
+			int verticalSpacing) {
+		GridLayout layout = new GridLayout(columnCount, false);
 		layout.marginHeight = interGroupMargin;
 		layout.marginWidth = interGroupMargin;
+		layout.horizontalSpacing = horizontalSpacing;
+		layout.verticalSpacing = horizontalSpacing;
 		return layout;
 	}
 
-	private Group createGroup(Composite parent, String name, Layout layout) {
+	private Group createGroup(Composite parent, String name, String toolTipText) {
 		Group group = new Group(parent, SWT.SHADOW_ETCHED_IN);
 		group.setText(name);
-		group.setLayout(layout);
+		group.setToolTipText(toolTipText);
 		return group;
 	}
 
@@ -75,151 +81,149 @@ public class GibberizerWindow extends Composite {
 		return label;
 	}
 
-	private Button createPushButton(Composite parent, String name) {
-		return createButton(parent, name, SWT.PUSH);
+	private Button createPushButton(Composite parent, String name, String toolTipText) {
+		return createButton(parent, name, SWT.PUSH, toolTipText);
 	}
 
-	private Button createRadioButton(Composite parent, String name) {
-		return createButton(parent, name, SWT.RADIO);
+	private Button createRadioButton(Composite parent, String name, int option, String toolTipText) {
+		Button button = createButton(parent, name, SWT.RADIO, toolTipText);
+		button.setData(option);
+		return button;
 	}
 
 	private Text createTextBox(Group group) {
-		Text buildCountText = new Text(group, SWT.BORDER | SWT.SINGLE);
-		buildCountText.setEditable(true);
-		buildCountText.setBackground(buildCountText.getDisplay()
-				.getSystemColor(SWT.COLOR_WHITE));
-		buildCountText.setForeground(buildCountText.getDisplay()
-				.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-		buildCountText.pack();
-		return buildCountText;
+		Text text = new Text(group, SWT.BORDER | SWT.SINGLE);
+		text.setEditable(true);
+		text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.setForeground(text.getDisplay().getSystemColor(
+				SWT.COLOR_INFO_FOREGROUND));
+
+		return text;
+	}
+
+	public String getInputText() {
+		return inputText.getText();
 	}
 
 	private Group initializeBuildParametersGroup(Composite parent) {
-		Group group = createGridGroup(parent, "Build");
+		Group group = createGridGroup(parent, "Build", "These parameters tell Gibberizer how to make strings of gibberish.");
+		group.setLayout(createGridLayout(2, interWidgetMargin,
+				interWidgetMargin));
 
-		Label buildCountLabel = createLabel(group, "Number of Strings:");
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = SWT.END;
-		gridData.verticalAlignment = SWT.CENTER;
-		buildCountLabel.setLayoutData(gridData);
-
+		Label buildCountLabel = createLabel(group, "Number of Gibs:");
 		Text buildCountText = createTextBox(group);
-		gridData = new GridData();
-		buildCountText.setLayoutData(gridData);
-
 		Label familiarityLabel = createLabel(group, "Familiarity:");
-		gridData = new GridData();
-		gridData.horizontalAlignment = SWT.END;
-		gridData.verticalAlignment = SWT.CENTER;
-		familiarityLabel.setLayoutData(gridData);
-
 		Text familiarityText = createTextBox(group);
-		gridData = new GridData();
-		familiarityText.setLayoutData(gridData);
-
 		Label persistenceLabel = createLabel(group, "Persistence:");
-		gridData = new GridData();
-		gridData.horizontalAlignment = SWT.END;
-		gridData.verticalAlignment = SWT.CENTER;
-		persistenceLabel.setLayoutData(gridData);
-
 		Text persistenceText = createTextBox(group);
-		gridData = new GridData();
-		persistenceText.setLayoutData(gridData);
 
-		group.pack();
+		buildCountLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+				false));
+		familiarityLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+				false));
+		persistenceLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
+				false));
+
 		return group;
 	}
 
 	private Group initializeFilterParametersGroup(Composite parent) {
-		Group group = createFormGroup(parent, "Filters");
+		Group group = createGridGroup(parent, "Filters", "These parameters tell Gibberizer what kinds of strings it is allowed to generate.");
+		group.setLayout(createGridLayout(1, interWidgetMargin,
+				interWidgetMargin));
 
-		Button allowInputEchoButton = createCheckBoxButton(group, "Allow echo");
+		Button allowInputEchoButton = createCheckBoxButton(group,
+				"Allow input echo", "Check to allow Gibberizer to generate a string that matches an input string.\nUncheck to force Gibberizer to generate strings that do not appear in the input.");
 		Button allowDuplicatesButton = createCheckBoxButton(group,
-				"Allow duplicates");
+				"Allow duplicates", "Check to allow Gibberizer to generate multiple copies of a string.\nUncheck to force Gibberizer to generate unique strings.");
 
-		positionAtTopLeft(allowInputEchoButton);
-		positionWidgetBelow(allowDuplicatesButton, allowInputEchoButton);
+		allowInputEchoButton
+				.addSelectionListener(new AllowInputEchoCheckBoxButtonListener(
+						gibberizer));
+		allowDuplicatesButton
+				.addSelectionListener(new AllowDuplicatesCheckBoxButtonListener(
+						gibberizer));
 
-		group.pack();
 		return group;
 	}
 
 	private Button initializeGibberizeButton(Composite parent) {
-		Button button = createPushButton(parent, "Gibberize");
-		button.pack();
-		initializeGibberizeButtonListeners(button);
+		Button button = createPushButton(parent, "Gibberize", "Generate strings of gibberish.");
+
 		return button;
 	}
 
-	private void initializeGibberizeButtonListeners(Button button) {
-		button.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				outputText.setText(gibberizer.gibberize(inputText.getText()));
-			}
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				outputText.setText(gibberizer.gibberize(inputText.getText()));
-			}
-		});
-	}
-
 	private void initializeGibberizer() {
-		gibberizer = new Gibberizer(this);
+		gibberizer = new Gibberizer();
 	}
 
 	private Group initializeInputFormatParametersGroup(Composite parent) {
-		Group group = createFormGroup(parent, "Split input at:");
+		Group group = createGridGroup(parent, "Split input at:", "Select how Gibberizer will split your input text into strings.");
+		group.setLayout(createGridLayout(1, interWidgetMargin,
+				interWidgetMargin));
 
-		Button whiteSpaceButton = createRadioButton(group, "White space");
-		Button newLineButton = createRadioButton(group, "New line");
-		Button dontSplitButton = createRadioButton(group, "Don't split");
+		Button whiteSpaceButton = createRadioButton(group, "White space",
+				StringSplitter.SPLIT_AT_WHITE_SPACE, "Gibberizer will read the input\nas strings separated by white space.");
+		Button newLineButton = createRadioButton(group, "New line",
+				StringSplitter.SPLIT_AT_LINE_BREAKS, "Gibberizer will read the input\nas one string per line.");
+		Button dontSplitButton = createRadioButton(group, "Do not split",
+				StringSplitter.DO_NOT_SPLIT,  "Gibberizer will read the input\nas a single string.");
+
+		InputFormatRadioButtonListener listener = new InputFormatRadioButtonListener(
+				gibberizer);
+		whiteSpaceButton.addSelectionListener(listener);
+		newLineButton.addSelectionListener(listener);
+		dontSplitButton.addSelectionListener(listener);
 
 		whiteSpaceButton.setSelection(true);
+		gibberizer.setInputDelimiterStyle((Integer) whiteSpaceButton.getData());
 
-		positionAtTopLeft(whiteSpaceButton);
-		positionWidgetBelow(newLineButton, whiteSpaceButton);
-		positionWidgetBelow(dontSplitButton, newLineButton);
-
-		group.pack();
 		return group;
 	}
 
-	private void initializeInputText(Composite parent) {
-		inputText = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+	private Text initializeInputText(Composite parent) {
+		Text text = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
 				| SWT.WRAP);
-		inputText.setEditable(true);
-		inputText.setBackground(inputText.getDisplay().getSystemColor(
-				SWT.COLOR_WHITE));
-		inputText.setForeground(inputText.getDisplay().getSystemColor(
+		text.setEditable(true);
+		text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		text.setForeground(text.getDisplay().getSystemColor(
 				SWT.COLOR_INFO_FOREGROUND));
-		inputText.setBounds(0, 0, 300, 200);
-		inputText.pack();
+
+		return text;
 	}
 
 	private Group initializeInputTextGroup(Composite parent) {
-		Group group = createGridGroup(parent, "Input");
-		initializeInputText(group);
-		group.pack();
+		Group group = createGridGroup(parent, "Input:", "");
+		group.setLayout(createGridLayout(1, 0, 0));
+
+		inputText = initializeInputText(group);
+
+		inputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		return group;
 	}
 
 	private Group initializeOutputFormatParametersGroup(Composite parent) {
-		Group group = createFormGroup(parent, "Separate output with:");
+		Group group = createGridGroup(parent, "Separate output strings with:", "Select how Gibberizer will format its output.");
+		group.setLayout(createGridLayout(1, interWidgetMargin,
+				interWidgetMargin));
 
-		Button whiteSpaceButton = createRadioButton(group, "White space");
-		Button newLineButton = createRadioButton(group, "New line");
-		Button twoNewLinesButton = createRadioButton(group, "2 new lines");
+		Button insertSpaceButton = createRadioButton(group, "Space",
+				StringCombiner.INSERT_SPACE, "Gibberizer will insert a space between strings.");
+		Button insertNewLineButton = createRadioButton(group, "Line break",
+				StringCombiner.INSERT_LINE_BREAK, "Gibberizer will insert a line break between strings.");
+		Button insertTwoNewLinesButton = createRadioButton(group,
+				"2 line breaks", StringCombiner.INSERT_2_LINE_BREAKS, "Gibberizer will insert two line breaks between strings.");
 
-		newLineButton.setSelection(true);
+		OutputFormatRadioButtonListener listener = new OutputFormatRadioButtonListener(
+				gibberizer);
+		insertSpaceButton.addSelectionListener(listener);
+		insertNewLineButton.addSelectionListener(listener);
+		insertTwoNewLinesButton.addSelectionListener(listener);
 
-		positionAtTopLeft(whiteSpaceButton);
-		positionWidgetBelow(newLineButton, whiteSpaceButton);
-		positionWidgetBelow(twoNewLinesButton, newLineButton);
+		insertNewLineButton.setSelection(true);
+		gibberizer.setOutputDelimiterStyle((Integer) insertNewLineButton.getData());
 
-		group.pack();
 		return group;
 	}
 
@@ -227,91 +231,72 @@ public class GibberizerWindow extends Composite {
 		Text text = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
 				| SWT.WRAP);
 		text.setEditable(false);
-		text.setBackground(inputText.getDisplay().getSystemColor(
+		text.setBackground(text.getDisplay().getSystemColor(
 				SWT.COLOR_INFO_BACKGROUND));
-		text.setForeground(inputText.getDisplay().getSystemColor(
+		text.setForeground(text.getDisplay().getSystemColor(
 				SWT.COLOR_INFO_FOREGROUND));
-		text.pack();
+
 		return text;
 	}
 
 	private Group initializeOutputTextGroup(Composite parent) {
-		Group group = createGridGroup(parent, "Output");
+		Group group = createGridGroup(parent, "Gibberish:", "");
+		group.setLayout(createGridLayout(1, 0, 0));
+
 		outputText = initializeOutputText(group);
-		GridData gridData = new GridData();
-		outputText.setLayoutData(gridData);
-		group.pack();
+
+		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		return group;
 	}
 
 	private Group initializeParametersGroup(Composite parent) {
-		Group parametersPanel = createFormGroup(parent, "Parameters");
+		Group group = createGridGroup(parent, "Parameters", "These parameters tell Gibberizer how to operate.");
+		group
+				.setLayout(createGridLayout(4, interGroupMargin,
+						interGroupMargin));
 
-		Group inputFormatParametersGroup = initializeInputFormatParametersGroup(parametersPanel);
-		Group buildParametersGroup = initializeBuildParametersGroup(parametersPanel);
-		Group filterParametersGroup = initializeFilterParametersGroup(parametersPanel);
-		Group outputFormatParametersGroup = initializeOutputFormatParametersGroup(parametersPanel);
+		Group inputFormatParametersGroup = initializeInputFormatParametersGroup(group);
+		Group buildParametersGroup = initializeBuildParametersGroup(group);
+		Group filterParametersGroup = initializeFilterParametersGroup(group);
+		Group outputFormatParametersGroup = initializeOutputFormatParametersGroup(group);
 
-		positionAtTopLeft(inputFormatParametersGroup);
-		positionGroupToRight(buildParametersGroup, inputFormatParametersGroup);
-		positionGroupToRight(filterParametersGroup, buildParametersGroup);
-		positionGroupToRight(outputFormatParametersGroup, filterParametersGroup);
+		inputFormatParametersGroup.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.BEGINNING, false, false));
+		buildParametersGroup.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.BEGINNING, false, false));
+		filterParametersGroup.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.BEGINNING, false, false));
+		outputFormatParametersGroup.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.BEGINNING, false, false));
 
-		parametersPanel.pack();
-
-		return parametersPanel;
+		return group;
 	}
 
 	private void initializeWindow(Composite parent) {
-		FormLayout formLayout = new FormLayout();
-		formLayout.marginHeight = interGroupMargin;
-		formLayout.marginWidth = interGroupMargin;
-		this.setLayout(formLayout);
+		parent.setLayout(createGridLayout(1, interGroupMargin,
+						interGroupMargin));
 
 		Group parametersGroup = initializeParametersGroup(parent);
 		Button gibberizeButton = initializeGibberizeButton(parent);
+		SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
+		Group inputTextGroup = initializeInputTextGroup(sashForm);
+		inputTextGroup.setToolTipText("Gibberizer will produce gibberish that is 'similar' to the text you enter here.");
+		Group outputTextGroup = initializeOutputTextGroup(sashForm);
+		outputTextGroup.setToolTipText("This area displays the strings of gibberish that Gibberizer generates");
 
-		Group inputTextGroup = initializeInputTextGroup(parent);
-		Group outputTextGroup = initializeOutputTextGroup(parent);
+		parametersGroup.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.BEGINNING, false, false));
+		gibberizeButton.setLayoutData(new GridData(SWT.BEGINNING,
+				SWT.BEGINNING, false, false));
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		positionAtTopLeft(parametersGroup);
-		positionGroupBelow(gibberizeButton, parametersGroup);
-		positionGroupBelow(inputTextGroup, gibberizeButton);
-		positionGroupBelow(outputTextGroup, inputTextGroup);
-		stretchLeftToRight(inputTextGroup);
-		stretchLeftToRight(outputTextGroup);
-		
-		pack();
+		gibberizeButton.addSelectionListener(new GibberizeButtonListener(
+				gibberizer, this));
 	}
 
-	private void stretchLeftToRight(Control control) {
-		FormData formData = (FormData) control.getLayoutData();
-		formData.left = new FormAttachment(0, 0);
-		formData.right = new FormAttachment(100, 0);
-	}
+	public void setOutputText(String text) {
+		outputText.setText(text);
 
-	private void positionAtTopLeft(Control control) {
-		FormData formData = new FormData();
-		formData.top = new FormAttachment(0, 0);
-		formData.left = new FormAttachment(0, 0);
-		control.setLayoutData(formData);
-	}
-
-	private void positionGroupBelow(Control composite, Control reference) {
-		FormData formData = new FormData();
-		formData.top = new FormAttachment(reference, interGroupMargin);
-		composite.setLayoutData(formData);
-	}
-
-	private void positionGroupToRight(Control composite, Control reference) {
-		FormData formData = new FormData();
-		formData.left = new FormAttachment(reference, interGroupMargin);
-		composite.setLayoutData(formData);
-	}
-
-	private void positionWidgetBelow(Control control, Control reference) {
-		FormData formData = new FormData();
-		formData.top = new FormAttachment(reference, interWidgetMargin);
-		control.setLayoutData(formData);
 	}
 }

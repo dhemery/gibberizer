@@ -4,21 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StringSplitter {
-	public static final int NONE = 0;
-	public static final int WHITESPACE = 1;
-	public static final int END_OF_LINE = 2;
+	public static final int DO_NOT_SPLIT = 0;
+	public static final int SPLIT_AT_WHITE_SPACE = 1;
+	public static final int SPLIT_AT_LINE_BREAKS = 2;
 
-	public List<String> split(String unsplitString, int delimiter) {
+	public List<String> split(String rawString, int delimiterStyle) {
 		List<String> strings = new ArrayList<String>();
-		if (delimiter == NONE) strings.add(unsplitString);
-		else {
-			String delimiterExpression = "";
-			if (delimiter == WHITESPACE) delimiterExpression = "\\s";
-			if (delimiter == END_OF_LINE) delimiterExpression = "[\\n\\r]";
 
-			for (String string : unsplitString.split(delimiterExpression))
-				strings.add(string);
+		if (rawString.isEmpty()) return strings;
+
+		if (delimiterStyle == DO_NOT_SPLIT) {
+			strings.add(rawString);
+			return strings;
 		}
+
+		String regEx = "";
+
+		if (delimiterStyle == SPLIT_AT_WHITE_SPACE) regEx = "\\s+";
+		if (delimiterStyle == SPLIT_AT_LINE_BREAKS) regEx = "[\\n\\r]+";
+
+		for (String line : rawString.split(regEx, -1))
+			if (!line.isEmpty()) strings.add(line);
 		return strings;
 	}
 }
