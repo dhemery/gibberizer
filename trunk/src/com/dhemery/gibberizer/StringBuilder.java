@@ -3,10 +3,11 @@ package com.dhemery.gibberizer;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Random;
 
 public class StringBuilder {
 	private final Hashtable<String, List<Ngram>> ngramsByPrefix = new Hashtable<String, List<Ngram>>();
-	private final AbstractRandom random = new DefaultRandom();
+	private final Random random = new Random();
 	private final List<Ngram> starters = new ArrayList<Ngram>();
 
 	private void addToNgramsByPrefix(Ngram ngram) {
@@ -52,9 +53,13 @@ public class StringBuilder {
 		return getNgramsForPrefix(successorPrefix);
 	}
 
+	protected int getRandomInt(int range) {
+		return random.nextInt(range);
+	}
+
 	private Ngram selectRandomNgram(List<Ngram> ngrams) {
 		if (ngrams.size() < 1) return Ngram.NULL_NGRAM;
-		int randomIndex = random.nextInt(ngrams.size());
+		int randomIndex = getRandomInt(ngrams.size());
 		return ngrams.get(randomIndex);
 	}
 
