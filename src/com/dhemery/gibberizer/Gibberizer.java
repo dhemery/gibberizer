@@ -2,42 +2,42 @@ package com.dhemery.gibberizer;
 
 import java.util.List;
 
+import com.dhemery.gibberizer.StringJoiner.JoinStyle;
+import com.dhemery.gibberizer.StringSplitter.SplitStyle;
+
 public class Gibberizer {
 	private boolean allowInputEcho = false;
 	private boolean allowDuplicates = false;
-	private int inputDelimiterStyle;
+	private JoinStyle joinStyle;
 	private final int minStringLength = 1;
 	private final int maxStringLength = 100000;
 	private final int ngramLength = 3;
 	private final int numberOfStringsToBuild = 10;
 	private final int persistence = 5;
-	private int outputDelimiterStyle;
+	private SplitStyle splitStyle;
 
 	private final StringSplitter splitter = new StringSplitter();
-	private final StringParser parser = new StringParser();
-	private final StringBuilder builder = new StringBuilder();
-	private final StringCombiner combiner = new StringCombiner();
-
-	public Gibberizer() {
-	}
+	private final NgramExtractor extractor = new NgramExtractor();
+	private final NgramJoiner builder = new NgramJoiner();
+	private final StringJoiner joiner = new StringJoiner();
 
 	public String gibberize(String input) {
 		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
 		StringBasket basket = new StringBasket(numberOfStringsToBuild, filter,
 				persistence);
-		basket.deliver("Input Delimiter: " + inputDelimiterStyle);
-		basket.deliver("Output Delimiter: " + outputDelimiterStyle);
+		basket.deliver("Input JoinStyle: " + splitStyle);
+		basket.deliver("Output JoinStyle: " + joinStyle);
 
-		List<String> inputStrings = splitter.split(input, inputDelimiterStyle);
+		List<String> inputStrings = splitter.split(input, splitStyle);
 		if (!allowInputEcho) filter.addProhibitedStringsList(inputStrings);
 		if (!allowDuplicates)
 			filter.addProhibitedStringsList(basket.getDeliveredStrings());
 		if(!inputStrings.isEmpty()) {
-			List<Ngram> ngrams = parser.parse(inputStrings, ngramLength);
+			List<Ngram> ngrams = extractor.parse(inputStrings, ngramLength);
 			builder.buildSequences(ngrams, basket);
 		}
-		return combiner.combine(basket.getDeliveredStrings(),
-				outputDelimiterStyle);
+		return joiner.combine(basket.getDeliveredStrings(),
+				joinStyle);
 	}
 
 	public void setAllowDuplicates(boolean allowDuplicates) {
@@ -48,11 +48,11 @@ public class Gibberizer {
 		this.allowInputEcho = allowInputEcho;
 	}
 
-	public void setInputDelimiterStyle(int newInputDelimiterStyle) {
-		inputDelimiterStyle = newInputDelimiterStyle;
+	public void setSplitStyle(SplitStyle newSplitStyle) {
+		splitStyle = newSplitStyle;
 	}
 
-	public void setOutputDelimiterStyle(int newOutputDelimiterStyle) {
-		outputDelimiterStyle = newOutputDelimiterStyle;
+	public void setJoinStyle(JoinStyle newJoinStyle) {
+		joinStyle = newJoinStyle;
 	}
 }
