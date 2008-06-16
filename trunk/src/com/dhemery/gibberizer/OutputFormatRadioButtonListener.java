@@ -20,6 +20,7 @@ public class OutputFormatRadioButtonListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Button button = (Button) e.widget;
+		if(!button.getSelection()) return;
 		int data = (Integer) button.getData();
 		gibberizer.setOutputDelimiterStyle(data);
 	}

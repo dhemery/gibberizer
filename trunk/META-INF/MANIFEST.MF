@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Gibberizer Plug-in
+Bundle-SymbolicName: com.dhemery.gibberizer
+Bundle-Version: 1.0.0
+Bundle-Vendor: Dale Emery
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.equinox.common

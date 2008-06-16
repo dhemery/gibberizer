@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="unittests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.eclipse.swt"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Program Files/eclipse/plugins/org.eclipse.jface.text_3.3.2.r332_20071017-0800.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/eclipse/plugins/org.eclipse.jface_3.3.2.M20080207-0800.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/eclipse/plugins/org.eclipse.core.commands_3.3.0.I20070605-0010.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/eclipse/plugins/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

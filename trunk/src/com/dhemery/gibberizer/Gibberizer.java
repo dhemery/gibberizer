@@ -25,6 +25,8 @@ public class Gibberizer {
 		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
 		StringBasket basket = new StringBasket(numberOfStringsToBuild, filter,
 				persistence);
+		basket.deliver("Input Delimiter: " + inputDelimiterStyle);
+		basket.deliver("Output Delimiter: " + outputDelimiterStyle);
 
 		List<String> inputStrings = splitter.split(input, inputDelimiterStyle);
 		if (!allowInputEcho) filter.addProhibitedStringsList(inputStrings);
