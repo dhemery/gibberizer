@@ -13,6 +13,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.dhemery.gibberizer.StringJoiner.JoinStyle;
+import com.dhemery.gibberizer.StringSplitter.SplitStyle;
+
 public class GibberizerWindow extends ApplicationWindow {
 	private static final int interWidgetMargin = 3;
 	private static final int interGroupMargin = 10;
@@ -85,9 +88,9 @@ public class GibberizerWindow extends ApplicationWindow {
 		return createButton(parent, name, SWT.PUSH, toolTipText);
 	}
 
-	private Button createRadioButton(Composite parent, String name, int option, String toolTipText) {
+	private Button createRadioButton(Composite parent, String name, Object data, String toolTipText) {
 		Button button = createButton(parent, name, SWT.RADIO, toolTipText);
-		button.setData(option);
+		button.setData(data);
 		return button;
 	}
 
@@ -111,11 +114,11 @@ public class GibberizerWindow extends ApplicationWindow {
 				interWidgetMargin));
 
 		Label buildCountLabel = createLabel(group, "Number of Gibs:");
-		Text buildCountText = createTextBox(group);
+		createTextBox(group);
 		Label familiarityLabel = createLabel(group, "Familiarity:");
-		Text familiarityText = createTextBox(group);
+		createTextBox(group);
 		Label persistenceLabel = createLabel(group, "Persistence:");
-		Text persistenceText = createTextBox(group);
+		createTextBox(group);
 
 		buildCountLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
 				false));
@@ -158,16 +161,16 @@ public class GibberizerWindow extends ApplicationWindow {
 	}
 
 	private Group initializeInputFormatParametersGroup(Composite parent) {
-		Group group = createGridGroup(parent, "Split input at:", "Select how Gibberizer will split your input text into strings.");
+		Group group = createGridGroup(parent, "Read input as:", "Select how Gibberizer will translate your input text into strings.");
 		group.setLayout(createGridLayout(1, interWidgetMargin,
 				interWidgetMargin));
 
-		Button whiteSpaceButton = createRadioButton(group, "White space",
-				StringSplitter.SPLIT_AT_WHITE_SPACE, "Gibberizer will read the input\nas strings separated by white space.");
-		Button newLineButton = createRadioButton(group, "New line",
-				StringSplitter.SPLIT_AT_LINE_BREAKS, "Gibberizer will read the input\nas one string per line.");
-		Button dontSplitButton = createRadioButton(group, "Do not split",
-				StringSplitter.DO_NOT_SPLIT,  "Gibberizer will read the input\nas a single string.");
+		Button whiteSpaceButton = createRadioButton(group, "Words",
+				SplitStyle.WORDS, "Gibberizer will read the input as words.\nThat is, as strings of characters separated by white space.");
+		Button newLineButton = createRadioButton(group, "Lines",
+				SplitStyle.LINES, "Gibberizer will read the input as lines.");
+		Button dontSplitButton = createRadioButton(group, "One String",
+				SplitStyle.ONE_STRING,  "Gibberizer will read the input as a single string.");
 
 		InputFormatRadioButtonListener listener = new InputFormatRadioButtonListener(
 				gibberizer);
@@ -176,7 +179,7 @@ public class GibberizerWindow extends ApplicationWindow {
 		dontSplitButton.addSelectionListener(listener);
 
 		whiteSpaceButton.setSelection(true);
-		gibberizer.setInputDelimiterStyle((Integer) whiteSpaceButton.getData());
+		gibberizer.setSplitStyle((SplitStyle) whiteSpaceButton.getData());
 
 		return group;
 	}
@@ -209,11 +212,11 @@ public class GibberizerWindow extends ApplicationWindow {
 				interWidgetMargin));
 
 		Button insertSpaceButton = createRadioButton(group, "Space",
-				StringCombiner.INSERT_SPACE, "Gibberizer will insert a space between strings.");
+				JoinStyle.SPACE, "Gibberizer will insert a space between strings.");
 		Button insertNewLineButton = createRadioButton(group, "Line break",
-				StringCombiner.INSERT_LINE_BREAK, "Gibberizer will insert a line break between strings.");
+				JoinStyle.LINE_BREAK, "Gibberizer will insert a line break between strings.");
 		Button insertTwoNewLinesButton = createRadioButton(group,
-				"2 line breaks", StringCombiner.INSERT_2_LINE_BREAKS, "Gibberizer will insert two line breaks between strings.");
+				"2 line breaks", JoinStyle.TWO_LINE_BREAKS, "Gibberizer will insert two line breaks between strings.");
 
 		OutputFormatRadioButtonListener listener = new OutputFormatRadioButtonListener(
 				gibberizer);
@@ -222,7 +225,7 @@ public class GibberizerWindow extends ApplicationWindow {
 		insertTwoNewLinesButton.addSelectionListener(listener);
 
 		insertNewLineButton.setSelection(true);
-		gibberizer.setOutputDelimiterStyle((Integer) insertNewLineButton.getData());
+		gibberizer.setJoinStyle((JoinStyle) insertNewLineButton.getData());
 
 		return group;
 	}

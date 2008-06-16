@@ -3,7 +3,7 @@ package com.dhemery.gibberizer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringParser {
+public class NgramExtractor {
 
 	private int getNgramCount(String string, int ngramLength) {
 		if (string.length() < ngramLength) return 1;

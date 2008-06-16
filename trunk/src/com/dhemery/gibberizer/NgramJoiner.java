@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-public class StringBuilder {
+public class NgramJoiner {
 	private final Hashtable<String, List<Ngram>> ngramsByPrefix = new Hashtable<String, List<Ngram>>();
 	private final Random random = new Random();
 	private final List<Ngram> starters = new ArrayList<Ngram>();
