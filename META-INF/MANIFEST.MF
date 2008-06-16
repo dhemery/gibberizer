@@ -4,7 +4,9 @@ Bundle-Name: Gibberizer
 Bundle-SymbolicName: com.dhemery.gibberizer;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Dale Emery
-Export-Package: com.dhemery.gibberizer;uses:="org.eclipse.jface.window,org.eclipse.swt.events,org.eclipse.swt.widgets"
-Require-Bundle: org.eclipse.jface,
- org.eclipse.equinox.common
 Eclipse-LazyStart: false
+Require-Bundle: com.dhemery.dalewriter,
+ org.eclipse.core.commands,
+ org.eclipse.equinox.common,
+ org.eclipse.jface,
+ org.eclipse.swt
