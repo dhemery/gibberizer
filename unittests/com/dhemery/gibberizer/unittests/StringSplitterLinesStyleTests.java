@@ -7,8 +7,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.dhemery.gibberizer.StringSplitter;
+import com.dhemery.gibberizer.StringSplitter.SplitStyle;
 
-public class StringSplitterLineBreaksTests {
+public class StringSplitterLinesStyleTests {
 
 	@Test
 	public void carriageReturnIsLineBreak() {
@@ -18,8 +19,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + carriageReturn + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -34,8 +34,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + newLine + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -47,8 +46,7 @@ public class StringSplitterLineBreaksTests {
 		String lineBreaks = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(lineBreaks,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(lineBreaks, SplitStyle.LINES);
 
 		assertEquals(0, splitStrings.size());
 	}
@@ -58,8 +56,7 @@ public class StringSplitterLineBreaksTests {
 		String emptyString = "";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(emptyString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(emptyString, SplitStyle.LINES);
 
 		assertEquals(0, splitStrings.size());
 	}
@@ -72,8 +69,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + newLine + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -89,8 +85,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + newLine + string2 + newLine + string3;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(3, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -106,8 +101,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + newLine + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -125,8 +119,7 @@ public class StringSplitterLineBreaksTests {
 				+ string3 + lineBreaks + string4;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(4, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -146,8 +139,7 @@ public class StringSplitterLineBreaksTests {
 				+ newLine + string4;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(4, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -164,8 +156,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + lineBreaks + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -180,8 +171,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = string1 + newLine + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -195,8 +185,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = newLines + nonNewLine;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(nonNewLine, splitStrings.get(0));
@@ -209,8 +198,7 @@ public class StringSplitterLineBreaksTests {
 		String rawString = nonNewLine + newLines;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_LINE_BREAKS);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.LINES);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(nonNewLine, splitStrings.get(0));

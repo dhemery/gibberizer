@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 
 public class StringSplitter {
-	enum SplitStyle { WORDS, LINES, ONE_STRING };
+	public enum SplitStyle { WORDS, LINES, ONE_STRING };
 
 	private static final EnumMap<SplitStyle, String> splitterExpressions = createEnumMap();
 

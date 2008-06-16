@@ -7,8 +7,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.dhemery.gibberizer.StringSplitter;
+import com.dhemery.gibberizer.StringSplitter.SplitStyle;
 
-public class StringSplitterWhiteSpaceTests {
+public class StringSplitterWordsStyleTests {
 
 	@Test
 	public void carriageReturnIsWhiteSpace() {
@@ -19,8 +20,7 @@ public class StringSplitterWhiteSpaceTests {
 
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -36,8 +36,7 @@ public class StringSplitterWhiteSpaceTests {
 
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -49,8 +48,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = "  \n \r \t\t    ";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(0, splitStrings.size());
 	}
@@ -60,8 +58,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = "";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(0, splitStrings.size());
 	}
@@ -71,8 +68,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = "abcdefg";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(rawString, splitStrings.get(0));
@@ -89,8 +85,7 @@ public class StringSplitterWhiteSpaceTests {
 				+ string4;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(4, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -110,8 +105,7 @@ public class StringSplitterWhiteSpaceTests {
 				+ string4;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(4, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -128,8 +122,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = string1 + white + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -144,8 +137,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = string1 + white + string2;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -161,8 +153,7 @@ public class StringSplitterWhiteSpaceTests {
 
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
@@ -176,8 +167,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = white + nonWhite;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(nonWhite, splitStrings.get(0));
@@ -190,8 +180,7 @@ public class StringSplitterWhiteSpaceTests {
 		String rawString = nonWhite + white;
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.SPLIT_AT_WHITE_SPACE);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(nonWhite, splitStrings.get(0));
