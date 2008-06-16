@@ -11,10 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.dhemery.gibberizer.Ngram;
-import com.dhemery.gibberizer.StringParser;
+import com.dhemery.gibberizer.NgramBag;
+import com.dhemery.gibberizer.NgramExtractor;
 
-public class StringParserTests {
-	StringParser parser;
+public class NgramExtractorTests {
+	NgramExtractor extractor;
 	private List<String> strings;
 
 	@Test
@@ -22,7 +23,7 @@ public class StringParserTests {
 		strings.add("abcde");
 		strings.add("fghij");
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
 		assertEquals(0, getInstanceCount("cdef", ngrams));
 		assertEquals(0, getInstanceCount("defg", ngrams));
@@ -34,7 +35,7 @@ public class StringParserTests {
 		String tenLetterString = "abcdefghij";
 		strings.add(tenLetterString);
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
 		assertEquals(1, getInstanceCount("abcd", ngrams));
 		assertEquals(1, getInstanceCount("bcde", ngrams));
@@ -51,7 +52,7 @@ public class StringParserTests {
 		strings.add("fghij");
 		strings.add("klmno");
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
 		assertEquals(1, getInstanceCount("abcd", ngrams));
 		assertEquals(1, getInstanceCount("bcde", ngrams));
@@ -67,7 +68,7 @@ public class StringParserTests {
 		strings.add(tenLetterString);
 		int n = tenLetterString.length();
 
-		Ngram ngram = parser.parse(strings, n).get(0);
+		Ngram ngram = extractor.extract(strings, n).getAll().get(0);
 
 		assertEquals(tenLetterString, ngram.toString());
 	}
@@ -78,7 +79,7 @@ public class StringParserTests {
 		strings.add(threeLetterString);
 		int n = threeLetterString.length() + 1;
 
-		Ngram ngram = parser.parse(strings, n).get(0);
+		Ngram ngram = extractor.extract(strings, n).getAll().get(0);
 
 		assertEquals(threeLetterString, ngram.toString());
 	}
@@ -89,9 +90,9 @@ public class StringParserTests {
 		strings.add(tenLetterString);
 		int n = tenLetterString.length();
 
-		List<Ngram> ngrams = parser.parse(strings, n);
+		NgramBag ngrams = extractor.extract(strings, n);
 
-		assertEquals(1, ngrams.size());
+		assertEquals(1, ngrams.getAll().size());
 	}
 
 	@Test
@@ -100,9 +101,9 @@ public class StringParserTests {
 		strings.add(threeLetterString);
 		int n = threeLetterString.length() + 1;
 
-		List<Ngram> ngrams = parser.parse(strings, n);
+		NgramBag ngrams = extractor.extract(strings, n);
 
-		assertEquals(1, ngrams.size());
+		assertEquals(1, ngrams.getAll().size());
 	}
 
 	@Test
@@ -110,9 +111,9 @@ public class StringParserTests {
 		String tenLetterString = "abcdefghij";
 		strings.add(tenLetterString);
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
-		assertEquals(7, ngrams.size());
+		assertEquals(7, ngrams.getAll().size());
 	}
 
 	@Test
@@ -122,7 +123,7 @@ public class StringParserTests {
 		strings.add("cdefgh");
 		strings.add("zzzzzz");
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
 		assertEquals(2, getInstanceCount("bcde", ngrams));
 		assertEquals(3, getInstanceCount("cdef", ngrams));
@@ -130,15 +131,15 @@ public class StringParserTests {
 		assertEquals(3, getInstanceCount("zzzz", ngrams));
 	}
 
-	private int getInstanceCount(String target, List<Ngram> ngrams) {
+	private int getInstanceCount(String target, NgramBag ngramBag) {
 		int instanceCount = 0;
-		for (Ngram ngram : ngrams)
+		for (Ngram ngram : ngramBag.getAll())
 			if (ngram.toString().equals(target)) instanceCount++;
 		return instanceCount;
 	}
 
-	private Ngram getNgram(String target, List<Ngram> ngrams) {
-		for (Ngram ngram : ngrams)
+	private Ngram getNgram(String target, NgramBag ngrams) {
+		for (Ngram ngram : ngrams.getAll())
 			if (ngram.toString().equals(target)) return ngram;
 		return null;
 	}
@@ -148,9 +149,9 @@ public class StringParserTests {
 		String tenLetterString = "abcdefghij";
 		strings.add(tenLetterString);
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
-		assertTrue(getNgram("abcd", ngrams).isStarter());
+		assertTrue(ngrams.getStarters().contains(getNgram("abcd", ngrams)));
 	}
 
 	@Test
@@ -158,9 +159,9 @@ public class StringParserTests {
 		String tenLetterString = "abcdefghij";
 		strings.add(tenLetterString);
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
-		assertTrue(getNgram("ghij", ngrams).isEnder());
+		assertTrue(ngrams.isEnder(getNgram("ghij", ngrams)));
 	}
 
 	@Test
@@ -168,11 +169,11 @@ public class StringParserTests {
 		String tenLetterString = "abcdefghij";
 		strings.add(tenLetterString);
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
-		assertFalse(getNgram("bcde", ngrams).isStarter());
-		assertFalse(getNgram("cdef", ngrams).isStarter());
-		assertFalse(getNgram("ghij", ngrams).isStarter());
+		assertFalse(ngrams.getStarters().contains(getNgram("bcde", ngrams)));
+		assertFalse(ngrams.getStarters().contains(getNgram("cdef", ngrams)));
+		assertFalse(ngrams.getStarters().contains(getNgram("ghij", ngrams)));
 	}
 
 	@Test
@@ -180,16 +181,16 @@ public class StringParserTests {
 		String tenLetterString = "abcdefghij";
 		strings.add(tenLetterString);
 
-		List<Ngram> ngrams = parser.parse(strings, 4);
+		NgramBag ngrams = extractor.extract(strings, 4);
 
-		assertFalse(getNgram("abcd", ngrams).isEnder());
-		assertFalse(getNgram("efgh", ngrams).isEnder());
-		assertFalse(getNgram("fghi", ngrams).isEnder());
+		assertFalse(ngrams.isEnder(getNgram("abcd", ngrams)));
+		assertFalse(ngrams.isEnder(getNgram("efgh", ngrams)));
+		assertFalse(ngrams.isEnder(getNgram("fghi", ngrams)));
 	}
 
 	@Before
 	public void setUp() {
-		parser = new StringParser();
+		extractor = new NgramExtractor();
 		strings = new ArrayList<String>();
 	}
 }

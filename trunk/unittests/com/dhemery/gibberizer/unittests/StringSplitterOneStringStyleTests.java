@@ -7,16 +7,16 @@ import java.util.List;
 import org.junit.Test;
 
 import com.dhemery.gibberizer.StringSplitter;
+import com.dhemery.gibberizer.StringSplitter.SplitStyle;
 
-public class StringSplitterNoSplitTests {
+public class StringSplitterOneStringStyleTests {
 
 	@Test
 	public void listIncludesOnlyRawStringIfRawStringIsNotEmpty() {
 		String rawString = "a";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.DO_NOT_SPLIT);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.ONE_STRING);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(rawString, splitStrings.get(0));
@@ -27,8 +27,7 @@ public class StringSplitterNoSplitTests {
 		String rawString = "";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.DO_NOT_SPLIT);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.ONE_STRING);
 
 		assertEquals(0, splitStrings.size());
 	}
@@ -38,8 +37,7 @@ public class StringSplitterNoSplitTests {
 		String rawString = "\t  \r\r\n\n\t \t \n";
 		StringSplitter splitter = new StringSplitter();
 
-		List<String> splitStrings = splitter.split(rawString,
-				StringSplitter.DO_NOT_SPLIT);
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.ONE_STRING);
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(rawString, splitStrings.get(0));

@@ -1,6 +1,5 @@
 package com.dhemery.gibberizer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NgramExtractor {
@@ -10,22 +9,22 @@ public class NgramExtractor {
 		return string.length() - ngramLength + 1;
 	}
 
-	private List<Ngram> getNgrams(String string, int ngramLength) {
-		List<Ngram> ngrams = new ArrayList<Ngram>();
+	private NgramBag extract(String string, int ngramLength, NgramBag ngramBag) {
 		int ngramCount = getNgramCount(string, ngramLength);
 
-		for (int pos = 0; pos < ngramCount; pos++)
-			ngrams.add(new Ngram(string.substring(pos), ngramLength));
-
-		ngrams.get(0).setIsStarter(true);
-		ngrams.get(ngrams.size() - 1).setIsEnder(true);
-		return ngrams;
+		for (int pos = 0; pos < ngramCount; pos++) {
+			Ngram ngram = new Ngram(string.substring(pos), ngramLength);
+			boolean isStarter = (pos == 0);
+			boolean isEnder = (pos == (ngramCount - 1));
+			ngramBag.add(ngram, isStarter, isEnder);
+		}
+		return ngramBag;
 	}
 
-	public List<Ngram> parse(List<String> strings, int ngramLength) {
-		List<Ngram> ngrams = new ArrayList<Ngram>();
+	public NgramBag extract(List<String> strings, int ngramLength) {
+		NgramBag ngramBag = new NgramBag();
 		for (String string : strings)
-			ngrams.addAll(getNgrams(string, ngramLength));
-		return ngrams;
+			extract(string, ngramLength, ngramBag);
+		return ngramBag;
 	}
 }

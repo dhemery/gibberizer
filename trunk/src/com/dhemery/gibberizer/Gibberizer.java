@@ -33,8 +33,8 @@ public class Gibberizer {
 		if (!allowDuplicates)
 			filter.addProhibitedStringsList(basket.getDeliveredStrings());
 		if(!inputStrings.isEmpty()) {
-			List<Ngram> ngrams = extractor.parse(inputStrings, ngramLength);
-			builder.buildSequences(ngrams, basket);
+			NgramBag ngramBag = extractor.extract(inputStrings, ngramLength);
+			builder.buildSequences(ngramBag, basket);
 		}
 		return joiner.combine(basket.getDeliveredStrings(),
 				joinStyle);

@@ -1,7 +1,5 @@
 package com.dhemery.gibberizer;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
@@ -16,7 +14,7 @@ public class NgramJoiner {
 	public String buildString(NgramBag ngramBag) {
 		Ngram ngram = selectRandomStarter(ngramBag);
 		String generatedString = ngram.getPrefix();
-		while (!ngram.isEnder()) {
+		while (!ngramBag.isEnder(ngram)) {
 			generatedString += ngram.getLastCharacter();
 			ngram = selectRandomSuccessor(ngram, ngramBag);
 		}
