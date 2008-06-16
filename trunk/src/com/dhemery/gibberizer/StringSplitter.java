@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import com.dhemery.gibberizer.StringJoiner.JoinStyle;
-
 public class StringSplitter {
 	enum SplitStyle { WORDS, LINES, ONE_STRING };
 

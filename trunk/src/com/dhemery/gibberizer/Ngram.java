@@ -2,8 +2,6 @@ package com.dhemery.gibberizer;
 
 public class Ngram {
 	public static final Ngram NULL_NGRAM = new Ngram("", "", "");
-	private boolean isEnder;
-	private boolean isStarter;
 	private String lastCharacter;
 	private String prefix;
 	private String suffix;
@@ -44,22 +42,6 @@ public class Ngram {
 		this.prefix = prefix;
 		this.suffix = suffix;
 		this.lastCharacter = lastCharacter;
-	}
-
-	public boolean isEnder() {
-		return isEnder;
-	}
-
-	public boolean isStarter() {
-		return isStarter;
-	}
-
-	public void setIsEnder(boolean isEnder) {
-		this.isEnder = isEnder;
-	}
-
-	public void setIsStarter(boolean isStarter) {
-		this.isStarter = isStarter;
 	}
 
 	@Override

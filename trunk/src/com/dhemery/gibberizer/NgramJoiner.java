@@ -6,51 +6,26 @@ import java.util.List;
 import java.util.Random;
 
 public class NgramJoiner {
-	private final Hashtable<String, List<Ngram>> ngramsByPrefix = new Hashtable<String, List<Ngram>>();
 	private final Random random = new Random();
-	private final List<Ngram> starters = new ArrayList<Ngram>();
 
-	private void addToNgramsByPrefix(Ngram ngram) {
-		String prefix = ngram.getPrefix();
-		List<Ngram> ngramsForPrefix = getNgramsForPrefix(prefix);
-		ngramsForPrefix.add(ngram);
-	}
-
-	public void buildSequences(List<Ngram> ngrams, StringBasket basket) {
-		distributeNgramsToStarterAndSuccessorLists(ngrams);
+	public void buildSequences(NgramBag ngramBag, StringBasket basket) {
 		while (!basket.isDone())
-			basket.deliver(buildString());
+			basket.deliver(buildString(ngramBag));
 	}
 
-	public String buildString() {
-		Ngram ngram = selectRandomStarter();
+	public String buildString(NgramBag ngramBag) {
+		Ngram ngram = selectRandomStarter(ngramBag);
 		String generatedString = ngram.getPrefix();
 		while (!ngram.isEnder()) {
 			generatedString += ngram.getLastCharacter();
-			ngram = selectRandomSuccessor(ngram);
+			ngram = selectRandomSuccessor(ngram, ngramBag);
 		}
 		return generatedString + ngram.getLastCharacter();
 	}
 
-	private void distributeNgramsToStarterAndSuccessorLists(List<Ngram> ngrams) {
-		for (Ngram ngram : ngrams) {
-			addToNgramsByPrefix(ngram);
-			if (ngram.isStarter()) starters.add(ngram);
-		}
-	}
-
-	public List<Ngram> getNgramsForPrefix(String prefix) {
-		List<Ngram> ngramsForPrefix = ngramsByPrefix.get(prefix);
-		if (ngramsForPrefix == null) {
-			ngramsForPrefix = new ArrayList<Ngram>();
-			ngramsByPrefix.put(prefix, ngramsForPrefix);
-		}
-		return ngramsForPrefix;
-	}
-
-	private List<Ngram> getPossibleSuccessors(Ngram ngram) {
+	private List<Ngram> getPossibleSuccessors(Ngram ngram, NgramBag ngramBag) {
 		String successorPrefix = ngram.getSuffix();
-		return getNgramsForPrefix(successorPrefix);
+		return ngramBag.getByPrefix(successorPrefix);
 	}
 
 	protected int getRandomInt(int range) {
@@ -63,11 +38,11 @@ public class NgramJoiner {
 		return ngrams.get(randomIndex);
 	}
 
-	private Ngram selectRandomStarter() {
-		return selectRandomNgram(starters);
+	private Ngram selectRandomStarter(NgramBag ngramBag) {
+		return selectRandomNgram(ngramBag.getStarters());
 	}
 
-	private Ngram selectRandomSuccessor(Ngram ngram) {
-		return selectRandomNgram(getPossibleSuccessors(ngram));
+	private Ngram selectRandomSuccessor(Ngram ngram, NgramBag ngramBag) {
+		return selectRandomNgram(getPossibleSuccessors(ngram, ngramBag));
 	}
 }
