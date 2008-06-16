@@ -8,23 +8,21 @@ public class StringSplitter {
 	public static final int SPLIT_AT_WHITE_SPACE = 1;
 	public static final int SPLIT_AT_LINE_BREAKS = 2;
 
+	private static final String matchNothing = "[^\\s\\S]+"; // Neither ws nor non-ws.
+	private static final String matchWhiteSpace = "\\s+";
+	private static final String matchLineBreak = "[\\n\\r]+";
+
+	private static String[] delimiters = { matchNothing, matchWhiteSpace, matchLineBreak };
+
 	public List<String> split(String rawString, int delimiterStyle) {
 		List<String> strings = new ArrayList<String>();
 
-		if (rawString.isEmpty()) return strings;
-
-		if (delimiterStyle == DO_NOT_SPLIT) {
-			strings.add(rawString);
-			return strings;
+		String[] arrayStrings = rawString.split(delimiters[delimiterStyle], -1);
+		for (String string : arrayStrings) {
+			if (!string.isEmpty()) {
+				strings.add(string);
+			}
 		}
-
-		String regEx = "";
-
-		if (delimiterStyle == SPLIT_AT_WHITE_SPACE) regEx = "\\s+";
-		if (delimiterStyle == SPLIT_AT_LINE_BREAKS) regEx = "[\\n\\r]+";
-
-		for (String line : rawString.split(regEx, -1))
-			if (!line.isEmpty()) strings.add(line);
 		return strings;
 	}
 }

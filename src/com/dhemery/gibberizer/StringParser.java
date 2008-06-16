@@ -5,9 +5,6 @@ import java.util.List;
 
 public class StringParser {
 
-	public StringParser() {
-	}
-
 	private int getNgramCount(String string, int ngramLength) {
 		if (string.length() < ngramLength) return 1;
 		return string.length() - ngramLength + 1;
