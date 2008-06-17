@@ -5,7 +5,3 @@ Bundle-SymbolicName: com.dhemery.gibberizer;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Dale Emery
 Eclipse-LazyStart: false
-Require-Bundle: org.eclipse.core.commands,
- org.eclipse.equinox.common,
- org.eclipse.jface,
- org.eclipse.swt
