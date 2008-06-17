@@ -96,12 +96,18 @@ public class GibberizerWindow extends ApplicationWindow {
 	}
 
 	private Text createTextBox(Group group) {
-		Text text = new Text(group, SWT.BORDER | SWT.SINGLE);
+		int spinnerTextLimit = 8;
+		int spinnerTextBoxWidth = 10 + spinnerTextLimit * 7;
+		Text text = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
 		text.setEditable(true);
+		text.setTextLimit(spinnerTextLimit);
 		text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		text.setForeground(text.getDisplay().getSystemColor(
 				SWT.COLOR_INFO_FOREGROUND));
 
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gridData.minimumWidth = spinnerTextBoxWidth;
+		text.setLayoutData(gridData);
 		return text;
 	}
 
@@ -114,35 +120,14 @@ public class GibberizerWindow extends ApplicationWindow {
 		group.setLayout(createGridLayout(2, interWidgetMargin,
 				interWidgetMargin));
 
-		int spinnerTextLimit = 8;
-		int spinnerTextBoxWidth = 10 + spinnerTextLimit * 7;
 		Label buildCountLabel = createLabel(group, "Number of Gibs:");
-
-		Text buildCountTextBox = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
-		buildCountTextBox.setEditable(true);
-		buildCountTextBox.setText("3");
-		buildCountTextBox.setTextLimit(spinnerTextLimit);
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gridData.minimumWidth = spinnerTextBoxWidth;
-		buildCountTextBox.setLayoutData(gridData);
+		createTextBox(group);
 		
 		Label familiarityLabel = createLabel(group, "Familiarity:");
-		Text familiarityTextBox = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
-		familiarityTextBox.setEditable(true);
-		familiarityTextBox.setText("3");
-		familiarityTextBox.setTextLimit(spinnerTextLimit);
-		gridData.minimumWidth = spinnerTextBoxWidth;
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		familiarityTextBox.setLayoutData(gridData);
+		createTextBox(group);
 
 		Label persistenceLabel = createLabel(group, "Persistence:");
-		Text persistenceTextBox = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
-		persistenceTextBox.setEditable(true);
-		persistenceTextBox.setText("3");
-		persistenceTextBox.setTextLimit(spinnerTextLimit);
-		gridData.minimumWidth = spinnerTextBoxWidth;
-		gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		persistenceTextBox.setLayoutData(gridData);
+		createTextBox(group);
 
 		buildCountLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
 				false));

@@ -1,27 +1,26 @@
 package com.dhemery.gibberizer;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 
 public class StringSplitter {
-	public enum SplitStyle { WORDS, LINES, ONE_STRING };
+	public enum SplitStyle {
+		WORDS("\\s+"), // Split at white space.
+		LINES("[\\n\\r]+"), // Split at line break.
+		ONE_STRING("[^\\s\\S]+");	// Don't split (r.e. matches sequence of characters that
+									// are neither white space nor non-white space)
 
-	private static final EnumMap<SplitStyle, String> splitterExpressions = createEnumMap();
+		private final String delimiterExpression;
 
-	private static EnumMap<SplitStyle, String> createEnumMap() {
-		EnumMap<SplitStyle, String> map = new EnumMap<SplitStyle, String>(SplitStyle.class);
-		map.put(SplitStyle.WORDS, "\\s+");
-		map.put(SplitStyle.LINES, "[\\n\\r]+");
-		map.put(SplitStyle.ONE_STRING, "[^\\s\\S]+"); // Neither ws nor non-ws.
-		return map;
-	}
+		SplitStyle(String delimiterExpression) {
+			this.delimiterExpression = delimiterExpression;
+		}
+	};
 
-	public List<String> split(String rawString, SplitStyle delimiterStyle) {
+	public List<String> split(String rawString, SplitStyle splitStyle) {
 		List<String> strings = new ArrayList<String>();
 
-		String splitterExpression = splitterExpressions.get(delimiterStyle);
-		String[] arrayStrings = rawString.split(splitterExpression, -1);
+		String[] arrayStrings = rawString.split(splitStyle.delimiterExpression, -1);
 		for (String string : arrayStrings) {
 			if (!string.isEmpty()) {
 				strings.add(string);
