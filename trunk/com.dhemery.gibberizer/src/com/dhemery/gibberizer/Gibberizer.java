@@ -25,8 +25,6 @@ public class Gibberizer {
 		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
 		StringBasket basket = new StringBasket(numberOfStringsToBuild, filter,
 				persistence);
-		basket.deliver("Input JoinStyle: " + splitStyle);
-		basket.deliver("Output JoinStyle: " + joinStyle);
 
 		List<String> inputStrings = splitter.split(input, splitStyle);
 		if (!allowInputEcho) filter.addProhibitedStringsList(inputStrings);

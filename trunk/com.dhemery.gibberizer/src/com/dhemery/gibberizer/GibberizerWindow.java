@@ -50,6 +50,7 @@ public class GibberizerWindow extends ApplicationWindow {
 	@Override
 	protected Control createContents(Composite parent) {
 		getShell().setText("Gibberizer");
+
 		Composite top = new Composite(parent, SWT.NONE);
 		initializeGibberizer();
 		initializeWindow(top);
@@ -113,12 +114,35 @@ public class GibberizerWindow extends ApplicationWindow {
 		group.setLayout(createGridLayout(2, interWidgetMargin,
 				interWidgetMargin));
 
+		int spinnerTextLimit = 8;
+		int spinnerTextBoxWidth = 10 + spinnerTextLimit * 7;
 		Label buildCountLabel = createLabel(group, "Number of Gibs:");
-		createTextBox(group);
+
+		Text buildCountTextBox = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
+		buildCountTextBox.setEditable(true);
+		buildCountTextBox.setText("3");
+		buildCountTextBox.setTextLimit(spinnerTextLimit);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gridData.minimumWidth = spinnerTextBoxWidth;
+		buildCountTextBox.setLayoutData(gridData);
+		
 		Label familiarityLabel = createLabel(group, "Familiarity:");
-		createTextBox(group);
+		Text familiarityTextBox = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
+		familiarityTextBox.setEditable(true);
+		familiarityTextBox.setText("3");
+		familiarityTextBox.setTextLimit(spinnerTextLimit);
+		gridData.minimumWidth = spinnerTextBoxWidth;
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		familiarityTextBox.setLayoutData(gridData);
+
 		Label persistenceLabel = createLabel(group, "Persistence:");
-		createTextBox(group);
+		Text persistenceTextBox = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
+		persistenceTextBox.setEditable(true);
+		persistenceTextBox.setText("3");
+		persistenceTextBox.setTextLimit(spinnerTextLimit);
+		gridData.minimumWidth = spinnerTextBoxWidth;
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		persistenceTextBox.setLayoutData(gridData);
 
 		buildCountLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
 				false));
@@ -248,7 +272,9 @@ public class GibberizerWindow extends ApplicationWindow {
 
 		outputText = initializeOutputText(group);
 
-		outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.heightHint = 200;
+		outputText.setLayoutData(gridData);
 
 		return group;
 	}
@@ -277,8 +303,8 @@ public class GibberizerWindow extends ApplicationWindow {
 	}
 
 	private void initializeWindow(Composite parent) {
-		parent.setLayout(createGridLayout(1, interGroupMargin,
-						interGroupMargin));
+		GridLayout layout = createGridLayout(1, interGroupMargin, interGroupMargin);
+		parent.setLayout(layout);
 
 		Group parametersGroup = initializeParametersGroup(parent);
 		Button gibberizeButton = initializeGibberizeButton(parent);
@@ -293,6 +319,7 @@ public class GibberizerWindow extends ApplicationWindow {
 		gibberizeButton.setLayoutData(new GridData(SWT.BEGINNING,
 				SWT.BEGINNING, false, false));
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		sashForm.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 
 		gibberizeButton.addSelectionListener(new GibberizeButtonListener(
 				gibberizer, this));
