@@ -11,32 +11,32 @@ For help when you're running Gibberizer, hover your mouse over any of the button
 These options tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
 
 || *Option* || *Effect* ||
-|| *Words* || Gibberizer reads your text as words.  That is, as strings of characters separated by white space. ||
-|| *Lines* || Gibberizer reads your text as lines. ||
-|| *One string* || Gibberizer reads your text as a single string. ||
+|| *[ReadInputAsWords Words]* || Gibberizer reads your text as words.  That is, as strings of characters separated by white space. ||
+|| *[ReadInputAsLines Lines]* || Gibberizer reads your text as lines. ||
+|| *[ReadInputAsOneString One string]* || Gibberizer reads your text as a single string. ||
 
 ==Create==
 
 These options tell Gibberizer how to create gibs from  your text.
 
 || *Option* || *Effect* ||
-|| *Batch Size* || The number of gibs to create. ||
-|| *Similarity* || The similarity of the gibs to the input text. ||
-|| *Persistence* || How hard gibberizer tries to create gibs that pass the filters before giving up. ||
+|| *[BatchSize Batch Size]* || The number of gibs to create. ||
+|| *[Similarity Similarity]* || The similarity of the gibs to the input text. ||
+|| *[Persistence Persistence]* || How hard gibberizer tries to create gibs that pass the filters before giving up. ||
 
 ==Filters==
 
 These options tell Gibberizer what kinds of gibs it is allowed to create.
 
 || *Option* || *Effect if checked* || *Effect if unchecked* ||
-|| *Allow input echo* || Gibberizer may create gibs that match input strings. || Gibberizer creates only gibs that do not appear in your text. ||
-|| *Allow duplicates* || Gibberizer may create multiple instances of a gib. || Gibberizer creates only unique gibs. ||
+|| *[AllowInputEcho Allow input echo]* || Gibberizer may create gibs that match input strings. || Gibberizer creates only gibs that do not appear in your text. ||
+|| *[AllowDuplicates Allow duplicates]* || Gibberizer may create multiple instances of a gib. || Gibberizer creates only unique gibs. ||
 
 ==Separate gibs by==
 
 These options tell Gibberizer how to format the gibs it creates.
 
 || *Option* || *Effect* ||
-|| *Space* || Gibberizer inserts a space between gibs. ||
-|| *New line* || Gibberizer starts a new line before each gib. ||
-|| *Blank line* || Gibberizer inserts a blank line between gibs. ||
+|| *[SeparateGibsBySpaces Space]* || Gibberizer inserts a space between gibs. ||
+|| *[SeparateGibsByNewLines New line]* || Gibberizer starts a new line before each gib. ||
+|| *[SeparateGibsByBlankLines Blank line]* || Gibberizer inserts a blank line between gibs. ||
