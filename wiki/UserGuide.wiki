@@ -1,4 +1,4 @@
-#summary How to use Gibberizer
+#summary How to use Gibberizer.
 
 =Introduction=
 
