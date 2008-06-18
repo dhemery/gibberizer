@@ -1,1 +1,1 @@
-#summary How and why Gibberizer gives up before creating all of the gibs you wanted, and what to do about it.
+#summary How and why Gibberizer sometimes gives up before creating all of the gibs you wanted, and what to do about it.
