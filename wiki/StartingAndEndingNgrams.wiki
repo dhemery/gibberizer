@@ -1,0 +1,1 @@
+#summary How the N-grams that start and end each string control the lengths of the gibs that Gibberizer creates.
