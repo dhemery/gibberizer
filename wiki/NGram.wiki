@@ -1,0 +1,7 @@
+#summary Definition of N-gram
+
+A *bigram* is a sequence of 2 adjacent letters or symbols.
+
+A *trigram* is a sequence of 3 adjacent letters or symbols.
+
+An *N-gram* is a sequence of *n* adjacent letters or symbols.
