@@ -2,15 +2,13 @@ package com.dhemery.gibberizer;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Spinner;
 
-public class GibberizeButtonListener implements SelectionListener {
+public class NgramLengthListener implements SelectionListener {
 	private final Gibberizer gibberizer;
-	private final GibberizerWindow window;
 
-	public GibberizeButtonListener(Gibberizer gibberizer,
-			GibberizerWindow window) {
+	public NgramLengthListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
-		this.window = window;
 	}
 
 	@Override
@@ -20,6 +18,7 @@ public class GibberizeButtonListener implements SelectionListener {
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		window.setOutputText(gibberizer.gibberize(window.getInputText()));
+		Spinner spinner = (Spinner)e.widget;
+		gibberizer.setNgramLength(spinner.getSelection());
 	}
 }

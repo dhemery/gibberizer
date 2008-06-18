@@ -6,20 +6,49 @@ import com.dhemery.gibberizer.StringJoiner.JoinStyle;
 import com.dhemery.gibberizer.StringSplitter.SplitStyle;
 
 public class Gibberizer {
-	private boolean allowInputEcho = false;
-	private boolean allowDuplicates = false;
-	private JoinStyle joinStyle;
 	private final int minStringLength = 1;
 	private final int maxStringLength = 100000;
-	private final int ngramLength = 3;
-	private final int numberOfStringsToBuild = 10;
-	private final int persistence = 5;
-	private SplitStyle splitStyle;
+
+	private boolean allowInputEcho = false;
+	private boolean allowDuplicates = false;
+	private JoinStyle joinStyle = JoinStyle.LINE_BREAK;
+	private int ngramLength = 3;
+	private int numberOfStringsToBuild = 10;
+	private int persistence = 5;
+	private SplitStyle splitStyle = SplitStyle.WORDS;
 
 	private final StringSplitter splitter = new StringSplitter();
 	private final NgramExtractor extractor = new NgramExtractor();
 	private final NgramJoiner builder = new NgramJoiner();
 	private final StringJoiner joiner = new StringJoiner();
+
+	public boolean getAllowDuplicates() {
+		return allowDuplicates;
+	}
+
+	public boolean getAllowInputEcho() {
+		return allowInputEcho;
+	}
+
+	public JoinStyle getJoinStyle() {
+		return joinStyle;
+	}
+
+	public int getNgramLength() {
+		return ngramLength;
+	}
+
+	public int getNumberOfStringsToBuild() {
+		return numberOfStringsToBuild;
+	}
+
+	public int getPersistence() {
+		return persistence;
+	}
+
+	public SplitStyle getSplitStyle() {
+		return splitStyle;
+	}
 
 	public String gibberize(String input) {
 		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
@@ -35,7 +64,7 @@ public class Gibberizer {
 			builder.buildSequences(ngramBag, basket);
 		}
 		return joiner.combine(basket.getDeliveredStrings(),
-				joinStyle);
+				getJoinStyle());
 	}
 
 	public void setAllowDuplicates(boolean allowDuplicates) {
@@ -46,11 +75,23 @@ public class Gibberizer {
 		this.allowInputEcho = allowInputEcho;
 	}
 
-	public void setSplitStyle(SplitStyle newSplitStyle) {
-		splitStyle = newSplitStyle;
-	}
-
 	public void setJoinStyle(JoinStyle newJoinStyle) {
 		joinStyle = newJoinStyle;
+	}
+
+	public void setNgramLength(int ngramLength) {
+		this.ngramLength = ngramLength;
+	}
+
+	public void setNumberOfStringsToBuild(int numberOfStringsToBuild) {
+		this.numberOfStringsToBuild = numberOfStringsToBuild;
+	}
+
+	public void setPersistence(int persistence) {
+		this.persistence = persistence;
+	}
+
+	public void setSplitStyle(SplitStyle newSplitStyle) {
+		splitStyle = newSplitStyle;
 	}
 }
