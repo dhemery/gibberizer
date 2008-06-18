@@ -2,7 +2,7 @@
 
 = The Overall Process =
 
-Gibberizer translates your text into 'lexically-similar' gibs using this process:
+Gibberizer translates your text into [Gib 'lexically-similar' gibs] using this process:
 
 *Step 1:* Gibberizer [SlicingTextIntoStrings slices your input text] into one or more strings.
 
