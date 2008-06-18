@@ -1,0 +1,10 @@
+#summary What's going on inside Gibberizer.
+
+= The Overall Process =
+
+Gibberizer translates your text into 'lexically-similar' gibs using this process:
+
+  # Gibberizer reads your input into one or more strings of text.
+  # Gibberizer parses each string into a set of ngrams, and makes a list of all ngrams from all strings.  It notes which ngrams start and end each string.
+  # Gibberizer creates gibs from the list of ngrams.  It throws out any gibs that are disallowed by the filters.  It continues until it can deliver all of the gibs you wanted, or until it gives up in despair.
+  # Gibberizer displays the list of gibs it created, separating them with spaces, new lines, or blank lines as you directed.
