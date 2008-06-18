@@ -1,4 +1,4 @@
-#summary Definition of N-gram
+#summary What is an N-Gram?
 
 A *bigram* is a sequence of 2 adjacent letters or symbols.
 
