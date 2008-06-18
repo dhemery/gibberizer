@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 import com.dhemery.gibberizer.StringJoiner.JoinStyle;
@@ -36,15 +37,16 @@ public class GibberizerWindow extends ApplicationWindow {
 		super(null);
 	}
 
-	private Button createButton(Composite parent, String name, int type, String toolTipText) {
+	private Button createButton(Composite parent, String name, int type, boolean isSelected, String toolTipText) {
 		Button button = new Button(parent, type);
 		button.setText(name);
+		button.setSelection(isSelected);
 		button.setToolTipText(toolTipText);
 		return button;
 	}
 
-	private Button createCheckBoxButton(Composite parent, String name, String toolTipText) {
-		return createButton(parent, name, SWT.CHECK, toolTipText);
+	private Button createCheckBoxButton(Composite parent, String name, boolean isSelected, String toolTipText) {
+		return createButton(parent, name, SWT.CHECK, isSelected, toolTipText);
 	}
 
 	@Override
@@ -86,29 +88,13 @@ public class GibberizerWindow extends ApplicationWindow {
 	}
 
 	private Button createPushButton(Composite parent, String name, String toolTipText) {
-		return createButton(parent, name, SWT.PUSH, toolTipText);
+		return createButton(parent, name, SWT.PUSH, false, toolTipText);
 	}
 
-	private Button createRadioButton(Composite parent, String name, Object data, String toolTipText) {
-		Button button = createButton(parent, name, SWT.RADIO, toolTipText);
+	private Button createRadioButton(Composite parent, String name, Object data, boolean isSelected, String toolTipText) {
+		Button button = createButton(parent, name, SWT.RADIO, isSelected, toolTipText);
 		button.setData(data);
 		return button;
-	}
-
-	private Text createTextBox(Group group) {
-		int spinnerTextLimit = 8;
-		int spinnerTextBoxWidth = 10 + spinnerTextLimit * 7;
-		Text text = new Text(group, SWT.BORDER | SWT.SINGLE | SWT.CENTER);
-		text.setEditable(true);
-		text.setTextLimit(spinnerTextLimit);
-		text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		text.setForeground(text.getDisplay().getSystemColor(
-				SWT.COLOR_INFO_FOREGROUND));
-
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gridData.minimumWidth = spinnerTextBoxWidth;
-		text.setLayoutData(gridData);
-		return text;
 	}
 
 	public String getInputText() {
@@ -121,13 +107,19 @@ public class GibberizerWindow extends ApplicationWindow {
 				interWidgetMargin));
 
 		Label buildCountLabel = createLabel(group, "Number of Gibs:");
-		createTextBox(group);
-		
+		Spinner buildCountSpinner = new Spinner(group, SWT.DEFAULT);
+		buildCountSpinner.setValues(gibberizer.getNumberOfStringsToBuild(), 1, 1000, 0, 1, 10);
+		buildCountSpinner.addSelectionListener(new BuildCountListener(gibberizer));
+
 		Label familiarityLabel = createLabel(group, "Familiarity:");
-		createTextBox(group);
+		Spinner familiaritySpinner = new Spinner(group, SWT.DEFAULT);
+		familiaritySpinner.setValues(gibberizer.getNgramLength(), 1, 20, 0, 1, 10);
+		familiaritySpinner.addSelectionListener(new NgramLengthListener(gibberizer));
 
 		Label persistenceLabel = createLabel(group, "Persistence:");
-		createTextBox(group);
+		Spinner persistenceSpinner = new Spinner(group, SWT.DEFAULT);
+		persistenceSpinner.setValues(gibberizer.getPersistence(), 1, 10, 0, 1, 1);
+		persistenceSpinner.addSelectionListener(new PersistenceListener(gibberizer));
 
 		buildCountLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false,
 				false));
@@ -145,15 +137,15 @@ public class GibberizerWindow extends ApplicationWindow {
 				interWidgetMargin));
 
 		Button allowInputEchoButton = createCheckBoxButton(group,
-				"Allow input echo", "Check to allow Gibberizer to generate a string that matches an input string.\nUncheck to force Gibberizer to generate strings that do not appear in the input.");
+				"Allow input echo", gibberizer.getAllowInputEcho(), "Check to allow Gibberizer to generate a string that matches an input string.\nUncheck to force Gibberizer to generate strings that do not appear in the input.");
 		Button allowDuplicatesButton = createCheckBoxButton(group,
-				"Allow duplicates", "Check to allow Gibberizer to generate multiple copies of a string.\nUncheck to force Gibberizer to generate unique strings.");
+				"Allow duplicates", gibberizer.getAllowDuplicates(), "Check to allow Gibberizer to generate multiple copies of a string.\nUncheck to force Gibberizer to generate unique strings.");
 
 		allowInputEchoButton
-				.addSelectionListener(new AllowInputEchoCheckBoxButtonListener(
+				.addSelectionListener(new AllowInputEchoListener(
 						gibberizer));
 		allowDuplicatesButton
-				.addSelectionListener(new AllowDuplicatesCheckBoxButtonListener(
+				.addSelectionListener(new AllowDuplicatesListener(
 						gibberizer));
 
 		return group;
@@ -175,13 +167,13 @@ public class GibberizerWindow extends ApplicationWindow {
 				interWidgetMargin));
 
 		Button whiteSpaceButton = createRadioButton(group, "Words",
-				SplitStyle.WORDS, "Gibberizer will read the input as words.\nThat is, as strings of characters separated by white space.");
+				SplitStyle.WORDS, gibberizer.getSplitStyle() == SplitStyle.WORDS, "Gibberizer will read the input as words.\nThat is, as strings of characters separated by white space.");
 		Button newLineButton = createRadioButton(group, "Lines",
-				SplitStyle.LINES, "Gibberizer will read the input as lines.");
+				SplitStyle.LINES, gibberizer.getSplitStyle() == SplitStyle.LINES, "Gibberizer will read the input as lines.");
 		Button dontSplitButton = createRadioButton(group, "One String",
-				SplitStyle.ONE_STRING,  "Gibberizer will read the input as a single string.");
+				SplitStyle.ONE_STRING, gibberizer.getSplitStyle() == SplitStyle.ONE_STRING, "Gibberizer will read the input as a single string.");
 
-		InputFormatRadioButtonListener listener = new InputFormatRadioButtonListener(
+		SplitStyleListener listener = new SplitStyleListener(
 				gibberizer);
 		whiteSpaceButton.addSelectionListener(listener);
 		newLineButton.addSelectionListener(listener);
@@ -193,7 +185,7 @@ public class GibberizerWindow extends ApplicationWindow {
 		return group;
 	}
 
-	private Text initializeInputText(Composite parent) {
+	private Text createInputText(Composite parent) {
 		Text text = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
 				| SWT.WRAP);
 		text.setEditable(true);
@@ -208,7 +200,7 @@ public class GibberizerWindow extends ApplicationWindow {
 		Group group = createGridGroup(parent, "Input:", "");
 		group.setLayout(createGridLayout(1, 0, 0));
 
-		inputText = initializeInputText(group);
+		inputText = createInputText(group);
 
 		inputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -221,13 +213,13 @@ public class GibberizerWindow extends ApplicationWindow {
 				interWidgetMargin));
 
 		Button insertSpaceButton = createRadioButton(group, "Space",
-				JoinStyle.SPACE, "Gibberizer will insert a space between strings.");
+				JoinStyle.SPACE, gibberizer.getJoinStyle() == JoinStyle.SPACE, "Gibberizer will insert a space between strings.");
 		Button insertNewLineButton = createRadioButton(group, "Line break",
-				JoinStyle.LINE_BREAK, "Gibberizer will insert a line break between strings.");
+				JoinStyle.LINE_BREAK, gibberizer.getJoinStyle() == JoinStyle.LINE_BREAK, "Gibberizer will insert a line break between strings.");
 		Button insertTwoNewLinesButton = createRadioButton(group,
-				"2 line breaks", JoinStyle.TWO_LINE_BREAKS, "Gibberizer will insert two line breaks between strings.");
+				"2 line breaks", JoinStyle.TWO_LINE_BREAKS, gibberizer.getJoinStyle() == JoinStyle.TWO_LINE_BREAKS, "Gibberizer will insert two line breaks between strings.");
 
-		OutputFormatRadioButtonListener listener = new OutputFormatRadioButtonListener(
+		JoinStyleListener listener = new JoinStyleListener(
 				gibberizer);
 		insertSpaceButton.addSelectionListener(listener);
 		insertNewLineButton.addSelectionListener(listener);
@@ -306,7 +298,7 @@ public class GibberizerWindow extends ApplicationWindow {
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		sashForm.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 
-		gibberizeButton.addSelectionListener(new GibberizeButtonListener(
+		gibberizeButton.addSelectionListener(new GibberizeListener(
 				gibberizer, this));
 	}
 

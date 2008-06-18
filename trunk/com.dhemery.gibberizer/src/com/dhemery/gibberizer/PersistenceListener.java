@@ -2,13 +2,12 @@ package com.dhemery.gibberizer;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Spinner;
 
-public class AllowDuplicatesCheckBoxButtonListener implements SelectionListener {
-
+public class PersistenceListener implements SelectionListener {
 	private final Gibberizer gibberizer;
 
-	public AllowDuplicatesCheckBoxButtonListener(Gibberizer gibberizer) {
+	public PersistenceListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
 	}
 
@@ -19,8 +18,7 @@ public class AllowDuplicatesCheckBoxButtonListener implements SelectionListener 
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		Button button = (Button) e.widget;
-		gibberizer.setAllowDuplicates(button.getSelection());
+		Spinner spinner = (Spinner)e.widget;
+		gibberizer.setPersistence(spinner.getSelection());
 	}
-
 }

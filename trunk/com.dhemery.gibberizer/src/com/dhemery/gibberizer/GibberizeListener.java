@@ -2,14 +2,15 @@ package com.dhemery.gibberizer;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
 
-public class AllowInputEchoCheckBoxButtonListener implements SelectionListener {
-
+public class GibberizeListener implements SelectionListener {
 	private final Gibberizer gibberizer;
+	private final GibberizerWindow window;
 
-	public AllowInputEchoCheckBoxButtonListener(Gibberizer gibberizer) {
+	public GibberizeListener(Gibberizer gibberizer,
+			GibberizerWindow window) {
 		this.gibberizer = gibberizer;
+		this.window = window;
 	}
 
 	@Override
@@ -19,8 +20,6 @@ public class AllowInputEchoCheckBoxButtonListener implements SelectionListener {
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		Button button = (Button) e.widget;
-		gibberizer.setAllowInputEcho(button.getSelection());
+		window.setOutputText(gibberizer.gibberize(window.getInputText()));
 	}
-
 }
