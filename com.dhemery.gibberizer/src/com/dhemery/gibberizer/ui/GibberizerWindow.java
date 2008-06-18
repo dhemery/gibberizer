@@ -1,4 +1,4 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.ui;
 
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
@@ -15,8 +15,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
-import com.dhemery.gibberizer.StringJoiner.JoinStyle;
-import com.dhemery.gibberizer.StringSplitter.SplitStyle;
+import com.dhemery.gibberizer.core.Gibberizer;
+import com.dhemery.gibberizer.core.JoinStyle;
+import com.dhemery.gibberizer.core.SplitStyle;
+import com.dhemery.gibberizer.listeners.AllowDuplicatesListener;
+import com.dhemery.gibberizer.listeners.AllowInputEchoListener;
+import com.dhemery.gibberizer.listeners.BatchSizeListener;
+import com.dhemery.gibberizer.listeners.GibberizeListener;
+import com.dhemery.gibberizer.listeners.JoinStyleListener;
+import com.dhemery.gibberizer.listeners.PersistenceListener;
+import com.dhemery.gibberizer.listeners.SimilarityListener;
+import com.dhemery.gibberizer.listeners.SplitStyleListener;
 
 public class GibberizerWindow extends ApplicationWindow {
 	private static final int interWidgetMargin = 3;

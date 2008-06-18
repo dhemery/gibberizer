@@ -1,4 +1,4 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 import java.util.ArrayList;
 import java.util.List;

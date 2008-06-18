@@ -1,4 +1,4 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 public class Ngram {
 	public static final Ngram NULL_NGRAM = new Ngram("", "", "");

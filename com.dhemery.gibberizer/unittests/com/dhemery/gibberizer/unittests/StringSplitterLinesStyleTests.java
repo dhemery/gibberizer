@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.dhemery.gibberizer.StringSplitter;
-import com.dhemery.gibberizer.StringSplitter.SplitStyle;
+import com.dhemery.gibberizer.core.SplitStyle;
+import com.dhemery.gibberizer.core.StringSplitter;
 
 public class StringSplitterLinesStyleTests {
 

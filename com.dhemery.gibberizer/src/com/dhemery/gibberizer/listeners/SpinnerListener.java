@@ -1,13 +1,18 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.listeners;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Spinner;
 
-public class PersistenceListener implements SelectionListener {
+import com.dhemery.gibberizer.core.Gibberizer;
+
+public abstract class SpinnerListener implements SelectionListener {
+
 	private final Gibberizer gibberizer;
 
-	public PersistenceListener(Gibberizer gibberizer) {
+	protected abstract void execute(int selection);
+
+	public SpinnerListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
 	}
 
@@ -19,6 +24,10 @@ public class PersistenceListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Spinner spinner = (Spinner)e.widget;
-		gibberizer.setPersistence(spinner.getSelection());
+		execute(spinner.getSelection());
+	}
+
+	public Gibberizer getGibberizer() {
+		return gibberizer;
 	}
 }

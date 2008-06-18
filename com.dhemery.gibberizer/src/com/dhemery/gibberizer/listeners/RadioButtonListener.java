@@ -1,14 +1,22 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.listeners;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 
-public class AllowDuplicatesListener implements SelectionListener {
+import com.dhemery.gibberizer.core.Gibberizer;
+
+public abstract class RadioButtonListener implements SelectionListener {
 
 	private final Gibberizer gibberizer;
 
-	public AllowDuplicatesListener(Gibberizer gibberizer) {
+	protected abstract void execute(Object data);
+	
+	public Gibberizer getGibberizer() {
+		return gibberizer;
+	}
+	
+	public RadioButtonListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
 	}
 
@@ -20,7 +28,6 @@ public class AllowDuplicatesListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Button button = (Button) e.widget;
-		gibberizer.setAllowDuplicates(button.getSelection());
+		execute(button.getData());
 	}
-
 }

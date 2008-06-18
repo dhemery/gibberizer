@@ -1,4 +1,4 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -12,16 +12,12 @@ public class NgramBag {
 
 	public void add(Ngram ngram, boolean isStarter, boolean isEnder) {
 		ngrams.add(ngram);
-		getNgramsForPrefix(ngram.getPrefix()).add(ngram);
+		getNgramsByPrefix(ngram.getPrefix()).add(ngram);
 		if(isStarter) starters.add(ngram);
 		if(isEnder) enders.add(ngram);
 	}
 
-	public List<Ngram> getByPrefix(String prefix) {
-		return ngramsByPrefix.get(prefix);
-	}
-
-	private List<Ngram> getNgramsForPrefix(String prefix) {
+	public List<Ngram> getNgramsByPrefix(String prefix) {
 		List<Ngram> ngramsForPrefix = ngramsByPrefix.get(prefix);
 		if (ngramsForPrefix == null) {
 			ngramsForPrefix = new ArrayList<Ngram>();

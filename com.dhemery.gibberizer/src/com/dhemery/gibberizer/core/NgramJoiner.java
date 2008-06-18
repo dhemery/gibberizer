@@ -1,4 +1,4 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 import java.util.List;
 import java.util.Random;
@@ -23,7 +23,7 @@ public class NgramJoiner {
 
 	private List<Ngram> getPossibleSuccessors(Ngram ngram, NgramBag ngramBag) {
 		String successorPrefix = ngram.getSuffix();
-		return ngramBag.getByPrefix(successorPrefix);
+		return ngramBag.getNgramsByPrefix(successorPrefix);
 	}
 
 	protected int getRandomInt(int range) {
