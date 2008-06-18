@@ -6,7 +6,7 @@ import java.util.Random;
 public class NgramJoiner {
 	private final Random random = new Random();
 
-	public void buildSequences(NgramBag ngramBag, StringBasket basket) {
+	public void createGibs(NgramBag ngramBag, StringBasket basket) {
 		while (!basket.isDone())
 			basket.deliver(buildString(ngramBag));
 	}

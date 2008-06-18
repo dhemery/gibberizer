@@ -4,10 +4,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Spinner;
 
-public class NgramLengthListener implements SelectionListener {
+public class SimilarityListener implements SelectionListener {
 	private final Gibberizer gibberizer;
 
-	public NgramLengthListener(Gibberizer gibberizer) {
+	public SimilarityListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
 	}
 
@@ -19,6 +19,6 @@ public class NgramLengthListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Spinner spinner = (Spinner)e.widget;
-		gibberizer.setNgramLength(spinner.getSelection());
+		gibberizer.setSimilarity(spinner.getSelection());
 	}
 }
