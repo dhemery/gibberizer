@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dhemery.gibberizer.Ngram;
+import com.dhemery.gibberizer.core.Ngram;
 
 public class NgramTests {
 

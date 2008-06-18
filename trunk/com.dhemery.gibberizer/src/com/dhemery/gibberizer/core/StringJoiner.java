@@ -1,20 +1,8 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 import java.util.List;
 
 public class StringJoiner {
-	enum JoinStyle {
-		SPACE(" "),
-		NEW_LINE("\n"),
-		BLANK_LINE("\n\n");
-		
-		private final String delimiter;
-		
-		JoinStyle(String delimiter) {
-			this.delimiter = delimiter;
-		}
-	};
-
 	public String combine(List<String> strings, JoinStyle joinStyle) {
 		if (strings.size() == 0)
 		{

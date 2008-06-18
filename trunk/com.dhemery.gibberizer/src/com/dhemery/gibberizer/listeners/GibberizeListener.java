@@ -1,7 +1,10 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.listeners;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+
+import com.dhemery.gibberizer.core.Gibberizer;
+import com.dhemery.gibberizer.ui.GibberizerWindow;
 
 public class GibberizeListener implements SelectionListener {
 	private final Gibberizer gibberizer;

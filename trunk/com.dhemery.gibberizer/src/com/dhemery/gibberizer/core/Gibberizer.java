@@ -1,18 +1,16 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 import java.util.List;
 
-import com.dhemery.gibberizer.StringJoiner.JoinStyle;
-import com.dhemery.gibberizer.StringSplitter.SplitStyle;
 
 public class Gibberizer {
 	private static String warning = 
 		"*************************************************\n" +
-		"Warning:  Could not create acceptable gibberish.\n" +
+		"Could not create acceptable gibberish.\n\n" +
 		"Some things you can try:\n" +
 		"   - Allow input echo.\n" +
 		"   - Allow duplicates.\n" +
-		"   - Increase or decrease similarity.\n" +
+		"   - Decrease similarity.\n" +
 		"   - Increase persistence.\n" +
 		"   - Increase the batch size.\n" +
 		"   - Add more input text.\n" +

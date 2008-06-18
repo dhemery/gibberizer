@@ -10,9 +10,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dhemery.gibberizer.Ngram;
-import com.dhemery.gibberizer.NgramBag;
-import com.dhemery.gibberizer.NgramExtractor;
+import com.dhemery.gibberizer.core.Ngram;
+import com.dhemery.gibberizer.core.NgramBag;
+import com.dhemery.gibberizer.core.NgramExtractor;
 
 public class NgramExtractorTests {
 	NgramExtractor extractor;

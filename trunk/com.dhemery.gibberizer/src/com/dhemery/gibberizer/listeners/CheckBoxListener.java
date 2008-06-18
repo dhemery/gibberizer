@@ -1,16 +1,22 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.listeners;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 
-import com.dhemery.gibberizer.StringSplitter.SplitStyle;
+import com.dhemery.gibberizer.core.Gibberizer;
 
-public class SplitStyleListener implements SelectionListener {
+public abstract class CheckBoxListener implements SelectionListener {
 
 	private final Gibberizer gibberizer;
 
-	public SplitStyleListener(Gibberizer gibberizer) {
+	protected abstract void execute(boolean isSelected);
+	
+	public Gibberizer getGibberizer() {
+		return gibberizer;
+	}
+	
+	public CheckBoxListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
 	}
 
@@ -22,9 +28,6 @@ public class SplitStyleListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Button button = (Button) e.widget;
-		if(!button.getSelection()) return;
-		SplitStyle data = (SplitStyle) button.getData();
-		gibberizer.setSplitStyle(data);
+		execute(button.getSelection());
 	}
-
 }
