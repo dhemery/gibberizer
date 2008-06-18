@@ -6,7 +6,7 @@ Gibberizer translates your text into 'lexically-similar' gibs using this process
 
 *Step 1:* Gibberizer slices your input text into one or more strings.  (See SlicingTextIntoStrings.)
 
-*Step 2:* Gibberizer parses each string into a set of N-grams, and makes a list of all ngrams from all strings.  (See ParsingNgrams.)  It notes which N-grams start and end each string.  (See StartingAndEndingNgrams.)
+*Step 2:* Gibberizer parses each string into a set of N-grams, and makes a list of all N-grams from all strings.  (See ParsingNgrams.)  It notes which N-grams start and end each string.  (See StartingAndEndingNgrams.)
 
 *Step 3:* Gibberizer creates gibs from the list of N-grams.  It throws out any gibs that are disallowed by the filters.  (See FilteringGibs.)  It continues until it can deliver all of the gibs you wanted, or until it gives up in despair.  (See GivingUp.)
 
