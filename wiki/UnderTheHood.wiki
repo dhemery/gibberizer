@@ -4,7 +4,7 @@
 
 Gibberizer translates your text into 'lexically-similar' gibs using this process:
 
-*Step 1:* Gibberizer slices your input text into one or more strings.  (See SlicingTextIntoStrings.)
+*Step 1:* Gibberizer [SlicingTextIntoStrings slices your input text] into one or more strings.
 
 *Step 2:* Gibberizer parses each string into a set of N-grams, and makes a list of all N-grams from all strings.  (See ParsingNgrams.)  It notes which N-grams start and end each string.  (See StartingAndEndingNgrams.)
 
