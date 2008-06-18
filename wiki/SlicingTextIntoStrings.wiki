@@ -1,0 +1,1 @@
+#summary How Gibberizer slices your text into strings, and how that affects Gibberizer's operation.
