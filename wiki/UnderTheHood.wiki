@@ -4,20 +4,10 @@
 
 Gibberizer translates your text into 'lexically-similar' gibs using this process:
 
-  # Gibberizer reads your input text into one or more strings.
+*Step 1:* Gibberizer slices your input text into one or more strings.  (See SlicingTextIntoStrings.)
 
-  # Gibberizer parses each string into a set of ngrams, and makes a list of all ngrams from all strings.  It notes which ngrams start and end each string.
+*Step 2:* Gibberizer parses each string into a set of N-grams, and makes a list of all ngrams from all strings.  (See ParsingNgrams.)  It notes which N-grams start and end each string.  (See StartingAndEndingNgrams.)
 
-  # Gibberizer creates gibs from the list of ngrams.  It throws out any gibs that are disallowed by the filters.  It continues until it can deliver all of the gibs you wanted, or until it gives up in despair.
+*Step 3:* Gibberizer creates gibs from the list of N-grams.  It throws out any gibs that are disallowed by the filters.  (See FilteringGibs.)  It continues until it can deliver all of the gibs you wanted, or until it gives up in despair.  (See GivingUp.)
 
-  # Gibberizer displays the list of gibs it created, separating them with spaces, new lines, or blank lines as you directed.
-
-==Slicing input into strings==
-
-==Parsing strings into N-grams==
-
-==Starting and Ending N-grams==
-
-==Creating Gibs from a List of N-grams==
-
-==Filtering Echoes and Duplicates==
+*Step 4:* Gibberizer displays the list of gibs it created, separating them with spaces, new lines, or blank lines as you directed.
