@@ -4,10 +4,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Spinner;
 
-public class BuildCountListener implements SelectionListener {
+public class BatchSizeListener implements SelectionListener {
 	private final Gibberizer gibberizer;
 
-	public BuildCountListener(Gibberizer gibberizer) {
+	public BatchSizeListener(Gibberizer gibberizer) {
 		this.gibberizer = gibberizer;
 	}
 
@@ -19,6 +19,6 @@ public class BuildCountListener implements SelectionListener {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Spinner spinner = (Spinner)e.widget;
-		gibberizer.setNumberOfStringsToBuild(spinner.getSelection());
+		gibberizer.setBatchSize(spinner.getSelection());
 	}
 }

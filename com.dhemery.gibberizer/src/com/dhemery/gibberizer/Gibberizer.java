@@ -6,20 +6,33 @@ import com.dhemery.gibberizer.StringJoiner.JoinStyle;
 import com.dhemery.gibberizer.StringSplitter.SplitStyle;
 
 public class Gibberizer {
+	private static String warning = 
+		"*************************************************\n" +
+		"Warning:  Could not create acceptable gibberish.\n" +
+		"Some things you can try:\n" +
+		"   - Allow input echo.\n" +
+		"   - Allow duplicates.\n" +
+		"   - Increase or decrease similarity.\n" +
+		"   - Increase persistence.\n" +
+		"   - Increase the batch size.\n" +
+		"   - Add more input text.\n" +
+		"   - Run again with the same parameters.\n" +
+		"*************************************************";
+
 	private final int minStringLength = 1;
 	private final int maxStringLength = 100000;
 
 	private boolean allowInputEcho = false;
 	private boolean allowDuplicates = false;
-	private JoinStyle joinStyle = JoinStyle.LINE_BREAK;
+	private JoinStyle joinStyle = JoinStyle.NEW_LINE;
 	private int ngramLength = 3;
-	private int numberOfStringsToBuild = 10;
+	private int batchSize = 10;
 	private int persistence = 5;
 	private SplitStyle splitStyle = SplitStyle.WORDS;
 
 	private final StringSplitter splitter = new StringSplitter();
 	private final NgramExtractor extractor = new NgramExtractor();
-	private final NgramJoiner builder = new NgramJoiner();
+	private final NgramJoiner generator = new NgramJoiner();
 	private final StringJoiner joiner = new StringJoiner();
 
 	public boolean getAllowDuplicates() {
@@ -30,20 +43,20 @@ public class Gibberizer {
 		return allowInputEcho;
 	}
 
+	public int getBatchSize() {
+		return batchSize;
+	}
+
 	public JoinStyle getJoinStyle() {
 		return joinStyle;
 	}
 
-	public int getNgramLength() {
-		return ngramLength;
-	}
-
-	public int getNumberOfStringsToBuild() {
-		return numberOfStringsToBuild;
-	}
-
 	public int getPersistence() {
 		return persistence;
+	}
+
+	public int getSimilarity() {
+		return ngramLength;
 	}
 
 	public SplitStyle getSplitStyle() {
@@ -52,8 +65,7 @@ public class Gibberizer {
 
 	public String gibberize(String input) {
 		StringFilter filter = new StringFilter(minStringLength, maxStringLength);
-		StringBasket basket = new StringBasket(numberOfStringsToBuild, filter,
-				persistence);
+		StringBasket basket = new StringBasket(batchSize, filter, persistence);
 
 		List<String> inputStrings = splitter.split(input, splitStyle);
 		if (!allowInputEcho) filter.addProhibitedStringsList(inputStrings);
@@ -61,10 +73,15 @@ public class Gibberizer {
 			filter.addProhibitedStringsList(basket.getDeliveredStrings());
 		if(!inputStrings.isEmpty()) {
 			NgramBag ngramBag = extractor.extract(inputStrings, ngramLength);
-			builder.buildSequences(ngramBag, basket);
+			generator.createGibs(ngramBag, basket);
 		}
-		return joiner.combine(basket.getDeliveredStrings(),
-				getJoinStyle());
+		List<String> gibs = basket.getDeliveredStrings();
+		if(gibs.isEmpty()) {
+			return warning;
+		}
+		else {
+			return joiner.combine(gibs, joinStyle);
+		}
 	}
 
 	public void setAllowDuplicates(boolean allowDuplicates) {
@@ -75,20 +92,20 @@ public class Gibberizer {
 		this.allowInputEcho = allowInputEcho;
 	}
 
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+
 	public void setJoinStyle(JoinStyle newJoinStyle) {
 		joinStyle = newJoinStyle;
 	}
 
-	public void setNgramLength(int ngramLength) {
-		this.ngramLength = ngramLength;
-	}
-
-	public void setNumberOfStringsToBuild(int numberOfStringsToBuild) {
-		this.numberOfStringsToBuild = numberOfStringsToBuild;
-	}
-
 	public void setPersistence(int persistence) {
 		this.persistence = persistence;
+	}
+
+	public void setSimilarity(int ngramLength) {
+		this.ngramLength = ngramLength;
 	}
 
 	public void setSplitStyle(SplitStyle newSplitStyle) {
