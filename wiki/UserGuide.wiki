@@ -2,9 +2,19 @@
 
 =Introduction=
 
-=Custom Gibberish=
-==Knobs and Buttons==
-===Weirdness===
-===Distance===
-===Persistence===
-===Mass===
+=Parameters=
+==Read input as:==
+  * Words
+  * Lines
+  * One string
+==Create==
+  * Batch Size
+  * Similarity
+  * Persistence
+==Filters==
+  * Allow input echo
+  * Allow duplicates
+==Separate gibs by==
+  * Space
+  * New line
+  * Blank line
