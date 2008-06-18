@@ -1,3 +1,3 @@
-#summary What is a gib?
+#summary What is a gib, and what makes it lexically similar to the input text?
 
 A *gib* (pronounced like _jib_) is a string of gibberish created by Gibberizer.
