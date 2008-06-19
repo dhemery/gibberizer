@@ -34,7 +34,7 @@ public class StringSplitterOneStringStyleTests {
 
 	@Test
 	public void preservesRawStringOfWhiteSpace() {
-		String rawString = "\t  \r\r\n\n\t \t \n";
+		String rawString = "\t  \r\r \n\n\t \t \n";
 		StringSplitter splitter = new StringSplitter();
 
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.ONE_STRING);

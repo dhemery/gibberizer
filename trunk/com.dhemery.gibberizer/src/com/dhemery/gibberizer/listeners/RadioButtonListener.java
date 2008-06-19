@@ -1,12 +1,13 @@
 package com.dhemery.gibberizer.listeners;
 
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.JRadioButton;
 
 import com.dhemery.gibberizer.core.Gibberizer;
 
-public abstract class RadioButtonListener implements SelectionListener {
+public abstract class RadioButtonListener implements ItemListener {
 
 	private final Gibberizer gibberizer;
 
@@ -21,13 +22,8 @@ public abstract class RadioButtonListener implements SelectionListener {
 	}
 
 	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		widgetSelected(e);
-	}
-
-	@Override
-	public void widgetSelected(SelectionEvent e) {
-		Button button = (Button) e.widget;
-		execute(button.getData());
+	public void itemStateChanged(ItemEvent e) {
+		JRadioButton button = (JRadioButton) e.getItem();
+		execute(button.getClientProperty("style"));
 	}
 }

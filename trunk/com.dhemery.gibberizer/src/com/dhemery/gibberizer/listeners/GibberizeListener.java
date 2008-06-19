@@ -1,12 +1,12 @@
 package com.dhemery.gibberizer.listeners;
 
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import com.dhemery.gibberizer.core.Gibberizer;
 import com.dhemery.gibberizer.ui.GibberizerWindow;
 
-public class GibberizeListener implements SelectionListener {
+public class GibberizeListener implements ActionListener {
 	private final Gibberizer gibberizer;
 	private final GibberizerWindow window;
 
@@ -17,12 +17,7 @@ public class GibberizeListener implements SelectionListener {
 	}
 
 	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		widgetSelected(e);
-	}
-
-	@Override
-	public void widgetSelected(SelectionEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		window.setOutputText(gibberizer.gibberize(window.getInputText()));
 	}
 }

@@ -1,12 +1,13 @@
 package com.dhemery.gibberizer.listeners;
 
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.JCheckBox;
 
 import com.dhemery.gibberizer.core.Gibberizer;
 
-public abstract class CheckBoxListener implements SelectionListener {
+public abstract class CheckBoxListener implements ItemListener {
 
 	private final Gibberizer gibberizer;
 
@@ -21,13 +22,8 @@ public abstract class CheckBoxListener implements SelectionListener {
 	}
 
 	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		widgetSelected(e);
-	}
-
-	@Override
-	public void widgetSelected(SelectionEvent e) {
-		Button button = (Button) e.widget;
-		execute(button.getSelection());
+	public void itemStateChanged(ItemEvent e) {
+		JCheckBox button = (JCheckBox) e.getItem();
+		execute(button.isSelected());
 	}
 }
