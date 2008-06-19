@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -17,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeListener;
 
 import com.dhemery.gibberizer.core.Gibberizer;
@@ -60,19 +62,20 @@ public class GibberizerWindow {
         });
     }
 
-    public GibberizerWindow() {
-        JFrame frame = new JFrame("Gibberizer");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private JTextArea inputTextArea;
+
+	private JTextArea outputTextArea;
+	private Gibberizer gibberizer;
+
+	public GibberizerWindow() {
 		initializeGibberizer();
+
+		JFrame frame = new JFrame("Gibberizer");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(initializeWindow());
         frame.pack();
         frame.setVisible(true);
     }
-
-	private JTextArea inputTextArea;
-	private JTextArea outputTextArea;
-
-	private Gibberizer gibberizer;
 
 	private JCheckBox createCheckBoxButton(String name, String toolTipText,
 			ItemListener listener, boolean isSelected) {
@@ -80,12 +83,6 @@ public class GibberizerWindow {
 		checkBox.setToolTipText(toolTipText);
 		checkBox.addItemListener(listener);
 		return checkBox;
-	}
-
-	private JTextArea createTextArea(boolean isEditable) {
-		JTextArea textArea = new JTextArea(10, 40);
-		textArea.setEditable(isEditable);
-		return textArea;
 	}
 
 	private JRadioButton createJoinStyleButton(String name, String toolTipText,
@@ -96,15 +93,23 @@ public class GibberizerWindow {
 	}
 
 	private JLabel createLabel(String name, String toolTipText) {
-		JLabel label = new JLabel();
-		label.setName(name);
+		JLabel label = new JLabel(name);
 		label.setToolTipText(toolTipText);
 		return label;
+	}
+
+	private JPanel createPanel(String name, String toolTipText) {
+		JPanel panel = new JPanel();
+		panel.setBorder(BorderFactory.createTitledBorder(name));
+		panel.setName(name);
+		panel.setToolTipText(toolTipText);
+		return panel;
 	}
 
 	private JButton createPushButton(String name, String toolTipText,
 			ActionListener listener) {
 		JButton button = new JButton(name);
+		button.setToolTipText(toolTipText);
 		button.addActionListener(listener);
 		return button;
 	}
@@ -113,19 +118,18 @@ public class GibberizerWindow {
 			ItemListener listener,
 			boolean isSelected, Object data) {
 		JRadioButton button = new JRadioButton(name, isSelected);
+		button.setToolTipText(toolTipText);
 		button.addItemListener(listener);
 		return button;
 	}
 
-	private JSpinner createSpinner(String name, String toolTipText,
-			ChangeListener listener,
+	private JSpinner createSpinner(JLabel label, ChangeListener listener,
 			int maxValue, int initialValue) {
-
-		JLabel label = createLabel(name, toolTipText);
 
 		SpinnerNumberModel model = new SpinnerNumberModel(initialValue, 1, maxValue, 1);
 		JSpinner spinner = new JSpinner(model);
-		spinner.setToolTipText(toolTipText);
+		spinner.setName(label.getName());
+		spinner.setToolTipText(label.getToolTipText());
 		spinner.addChangeListener(listener);
 		return spinner;
 	}
@@ -136,27 +140,43 @@ public class GibberizerWindow {
 		return createRadioButton(name, toolTipText, listener, isSelected, style);
 	}
 
+	private JTextArea createTextArea(boolean isEditable) {
+		JTextArea textArea = new JTextArea(10, 40);
+		textArea.setEditable(isEditable);
+		return textArea;
+	}
+
 	public String getInputText() {
 		return inputTextArea.getText();
 	}
 
 	private JPanel initializeBuildParametersPanel() {
 		JPanel panel = createPanel("Create", "Tell Gibberizer how to create gibs.");
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(createSpinner("Batch size:",
-				"The number of gibs to create.",
+		JLabel batchSizeLabel = createLabel("BatchSize:", "The number of gibs to create.");
+		JSpinner batchSizeSpinner = createSpinner(batchSizeLabel,
 				new BatchSizeListener(gibberizer),
-				1000, gibberizer.getBatchSize()));
+				1000, gibberizer.getBatchSize());
 
-		panel.add(createSpinner("Similarity:",
-				"The similarity of the gibs to the input strings.",
+		JLabel similarityLabel = createLabel("Similarity:",
+				"The similarity of the gibs to the input strings.");
+		JSpinner similaritySpinner = createSpinner(similarityLabel,
 				new SimilarityListener(gibberizer),
-				 20, gibberizer.getSimilarity()));
+				 20, gibberizer.getSimilarity());
 
-		panel.add(createSpinner("Persistence:",
-				"How hard Gibberizer tries to create gibs\nthat pass the filters before giving up.",
+		JLabel persistenceLabel = createLabel("Persistence:",
+				"How hard Gibberizer tries to create gibs\nthat pass the filters before giving up.");
+		JSpinner persistenceSpinner = createSpinner(persistenceLabel,
 				new PersistenceListener(gibberizer),
-				10,gibberizer.getPersistence()));
+				10,gibberizer.getPersistence());
+
+		panel.add(batchSizeLabel);
+		panel.add(batchSizeSpinner);
+		panel.add(similarityLabel);
+		panel.add(similaritySpinner);
+		panel.add(persistenceLabel);
+		panel.add(persistenceSpinner);
 
 		return panel;
 	}
@@ -164,6 +184,7 @@ public class GibberizerWindow {
 	private JPanel initializeFilterParametersPanel() {
 		JPanel panel = createPanel("Filters",
 				"Tell Gibberizer what gibs it is allowed to create.");
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		panel.add(createCheckBoxButton("Allow input echo",
 				"Check to allow Gibberizer to create gibs that match input strings.\nUncheck to force Gibberizer to createss gibs that do not appear in your text.",
@@ -189,6 +210,7 @@ public class GibberizerWindow {
 	private JPanel initializeInputFormatParametersPanel() {
 		JPanel panel = createPanel("Read input as:",
 				"Tell Gibberizer how to divide your input text into strings.");
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		SplitStyleListener listener = new SplitStyleListener(gibberizer);
 
@@ -216,14 +238,6 @@ public class GibberizerWindow {
 		return panel;
 	}
 
-	private JPanel createPanel(String name, String toolTipText) {
-		JPanel panel = new JPanel();
-		panel.setBorder(BorderFactory.createLineBorder(Color.black));
-		panel.setName(name);
-		panel.setToolTipText(toolTipText);
-		return panel;
-	}
-
 	private JPanel initializeInputTextGroup() {
 		JPanel panel = createPanel("Input:",
 				"Gibberizer will create gibberish that is 'similar' to the text you enter here.");
@@ -237,6 +251,7 @@ public class GibberizerWindow {
 	private JPanel initializeOutputFormatParametersPanel() {
 		JPanel panel = createPanel("Separate gibs by:",
 				"Tell Gibberizer how to format the gibs it creates.");
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		JoinStyleListener joinStyleListener = new JoinStyleListener(gibberizer);
 
@@ -268,7 +283,6 @@ public class GibberizerWindow {
 	private JPanel initializeOutputTextGroup() {
 		JPanel panel = createPanel("Gibberish:",
 				"This area displays the gibs (strings of gibberish) that Gibberizer creates.");
-
 		outputTextArea = createTextArea(false);
 		panel.add(outputTextArea);
 
@@ -277,7 +291,7 @@ public class GibberizerWindow {
 
 	private JPanel initializeParametersGroup() {
 		JPanel panel = createPanel("Parameters", "Tell Gibberizer how to operate.");
-
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.add(initializeInputFormatParametersPanel());
 		panel.add(initializeBuildParametersPanel());
 		panel.add(initializeFilterParametersPanel());
@@ -287,6 +301,7 @@ public class GibberizerWindow {
 
 	private JPanel initializeWindow() {
 		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(initializeParametersGroup());
 		panel.add(initializeGibberizeButton());
 		panel.add(initializeInputTextGroup());
