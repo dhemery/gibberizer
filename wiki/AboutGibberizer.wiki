@@ -1,1 +1,0 @@
-#summary What Gibberizer does and how you might use it.
