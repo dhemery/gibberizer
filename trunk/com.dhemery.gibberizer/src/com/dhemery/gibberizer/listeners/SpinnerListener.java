@@ -17,7 +17,6 @@ public abstract class SpinnerListener implements ChangeListener {
 		this.gibberizer = gibberizer;
 	}
 
-	@Override
 	public void stateChanged(ChangeEvent e) {
 		JSpinner spinner = (JSpinner)e.getSource();
 		SpinnerNumberModel model = (SpinnerNumberModel)spinner.getModel();

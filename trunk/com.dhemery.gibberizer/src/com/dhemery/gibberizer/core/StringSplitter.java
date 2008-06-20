@@ -12,7 +12,7 @@ public class StringSplitter {
 		
 		String[] arrayStrings = normalizedString.split(delimiterExpression, -1);
 		for (String string : arrayStrings) {
-			if (!string.isEmpty()) {
+			if (string.length() > 0) {
 				strings.add(string);
 			}
 		}

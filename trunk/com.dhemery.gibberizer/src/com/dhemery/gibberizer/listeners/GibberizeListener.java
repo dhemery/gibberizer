@@ -16,7 +16,6 @@ public class GibberizeListener implements ActionListener {
 		this.window = window;
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		window.setOutputText(gibberizer.gibberize(window.getInputText()));
 	}

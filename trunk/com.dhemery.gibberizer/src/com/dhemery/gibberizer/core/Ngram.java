@@ -8,7 +8,7 @@ public class Ngram {
 
 	public Ngram(String string, int n) {
 		// TODO: Can this be refactored?
-		if (string.isEmpty() || n < 1) initialize("", "", "");
+		if (string.length() < 1 || n < 1) initialize("", "", "");
 		else if (string.length() < n) initialize(string, string.substring(1),
 				"");
 		else initialize(string.substring(0, n - 1), string.substring(1, n),
