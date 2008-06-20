@@ -1,26 +1,25 @@
 package com.dhemery.gibberizer.ui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
@@ -41,8 +40,9 @@ import com.dhemery.gibberizer.listeners.SpinnerListener;
 import com.dhemery.gibberizer.listeners.SplitStyleListener;
 
 public class GibberizerWindow {
-	private static final int interWidgetMargin = 3;
-	private static final int interGroupMargin = 10;
+	private static final int parameterPanePadding = 10;
+	private static final int spinnerPadding = parameterPanePadding / 2;
+	private static final int windowPadding = 4;
 
     public static void main(String[] args) {
         try {
@@ -84,7 +84,7 @@ public class GibberizerWindow {
         frame.setVisible(true);
     }
 
-	private JCheckBox createCheckBoxButton(String name, String toolTipText,
+	private JCheckBox createCheckBox(String name, String toolTipText,
 			ItemListener listener, boolean isSelected) {
 		JCheckBox checkBox = new JCheckBox(name, isSelected);
 		checkBox.setToolTipText(toolTipText);
@@ -135,6 +135,15 @@ public class GibberizerWindow {
 		return button;
 	}
 
+	private JScrollPane createScrollPane(Component component, String name, String toolTipText) {
+		JScrollPane scrollPane = new JScrollPane(component);
+		scrollPane.setBorder(BorderFactory.createTitledBorder(name));
+		scrollPane.setToolTipText(toolTipText);
+		scrollPane.setVerticalScrollBarPolicy(
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		return scrollPane;
+	}
+
 	private JSpinner createSpinner(String name, String toolTipText, SpinnerListener listener,
 			int maxValue, int initialValue) {
 
@@ -144,6 +153,26 @@ public class GibberizerWindow {
 		spinner.setToolTipText(toolTipText);
 		spinner.addChangeListener(listener);
 		return spinner;
+	}
+
+	private void createSpinnerPanel(JPanel panel, String name, String toolTipText,
+			SpinnerListener listener,
+			int maxValue, int initialValue) {
+		GridBagConstraints constraints = new GridBagConstraints();
+
+		JLabel label = createLabel(name, toolTipText);
+		constraints.gridx = 0;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.anchor = GridBagConstraints.LINE_END;
+		panel.add(label, constraints);
+
+		JSpinner spinner = createSpinner(name, toolTipText,
+				listener, maxValue, initialValue);
+		constraints.gridx = 1;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.anchor = GridBagConstraints.LINE_START;
+		constraints.insets = new Insets(0, spinnerPadding, spinnerPadding, 0);
+		panel.add(spinner, constraints);
 	}
 
 	private JRadioButton createSplitStyleRadioButton(String name, String toolTipText,
@@ -160,32 +189,12 @@ public class GibberizerWindow {
 
 		return textArea;
 	}
-
+	
 	public String getInputText() {
 		return inputTextArea.getText();
 	}
 
-	private void createSpinnerPanel(JPanel panel, String name, String toolTipText,
-			SpinnerListener listener,
-			int maxValue, int initialValue) {
-		GridBagConstraints constraints = new GridBagConstraints();
-
-		JLabel label = createLabel(name, toolTipText);
-		label.setAlignmentX(1.0f);
-		constraints.gridx = 0;
-		constraints.gridy = GridBagConstraints.RELATIVE;
-		constraints.anchor = GridBagConstraints.LINE_END;
-		panel.add(label, constraints);
-
-		JSpinner spinner = createSpinner(name, toolTipText,
-				listener, maxValue, initialValue);
-		spinner.setAlignmentX(0.0f);
-		constraints.gridx = 1;
-		constraints.gridy = GridBagConstraints.RELATIVE;
-		constraints.anchor = GridBagConstraints.LINE_END;
-		panel.add(spinner, constraints);
-	}
-	private JPanel initializeBuildParametersPanel() {
+	private JPanel initializeBuildParametersPane() {
 		JPanel panel = createPanel("Create", "Tell Gibberizer how to create gibs.");
 		panel.setLayout(new GridBagLayout());
 
@@ -210,16 +219,16 @@ public class GibberizerWindow {
 		return panel;
 	}
 
-	private JPanel initializeFilterParametersPanel() {
+	private JPanel initializeFilterParametersPane() {
 		JPanel panel = createPanel("Filters",
 				"Tell Gibberizer what gibs it is allowed to create.");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-		panel.add(createCheckBoxButton("Allow input echo",
+		panel.add(createCheckBox("Allow input echo",
 				"Check to allow Gibberizer to create gibs that match input strings.\nUncheck to force Gibberizer to createss gibs that do not appear in your text.",
 				new AllowInputEchoListener(gibberizer),
 				gibberizer.getAllowInputEcho()));
-		panel.add(createCheckBoxButton("Allow duplicates",
+		panel.add(createCheckBox("Allow duplicates",
 				"Check to allow Gibberizer to create multiple instances of a gib.\nUncheck to force Gibberizer to create unique gibs.",
 				new AllowDuplicatesListener(gibberizer),
 				gibberizer.getAllowDuplicates()));
@@ -236,7 +245,7 @@ public class GibberizerWindow {
 		gibberizer = new Gibberizer();
 	}
 
-	private JPanel initializeInputFormatParametersPanel() {
+	private JPanel initializeInputFormatParametersPane() {
 		JPanel panel = createPanel("Read input as:",
 				"Tell Gibberizer how to divide your input text into strings.");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -267,25 +276,14 @@ public class GibberizerWindow {
 		return panel;
 	}
 
-	private JPanel initializeInputTextPane() {
-		JPanel panel = createPanel("Input:",
-				"Gibberizer will create gibberish that is 'similar' to the text you enter here.");
-
+	private JScrollPane initializeInputTextPane() {
 		inputTextArea = createTextArea(true);
-
-		panel.add(wrapInScrollPane(inputTextArea));
-
-		return panel;
+		return createScrollPane(inputTextArea,
+				"Input:",
+				"Gibberizer will create gibberish that is 'similar' to the text you enter here.");
 	}
 
-	private JScrollPane wrapInScrollPane(JComponent component) {
-		JScrollPane scrollPane = new JScrollPane(component);
-		scrollPane.setVerticalScrollBarPolicy(
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		return scrollPane;
-	}
-
-	private JPanel initializeOutputFormatParametersPanel() {
+	private JPanel initializeOutputFormatParametersPane() {
 		JPanel panel = createPanel("Separate gibs by:",
 				"Tell Gibberizer how to format the gibs it creates.");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -317,34 +315,72 @@ public class GibberizerWindow {
 		return panel;
 	}
 
-	private JPanel initializeOutputTextPane() {
-		JPanel panel = createPanel("Gibberish:",
-				"This area displays the gibs (strings of gibberish) that Gibberizer creates.");
-
+	private JScrollPane initializeOutputTextPane() {
 		outputTextArea = createTextArea(false);
 
-		panel.add(wrapInScrollPane(outputTextArea));
-
-		return panel;
+		return createScrollPane(outputTextArea,
+				"Gibberish:",
+				"This area displays the gibs (strings of gibberish) that Gibberizer creates.");
 	}
 
 	private JPanel initializeParameterPane() {
 		JPanel panel = createPanel("Parameters", "Tell Gibberizer how to operate.");
-		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-		panel.add(initializeInputFormatParametersPanel());
-		panel.add(initializeBuildParametersPanel());
-		panel.add(initializeFilterParametersPanel());
-		panel.add(initializeOutputFormatParametersPanel());
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = GridBagConstraints.RELATIVE;
+		constraints.gridy = 0;
+		constraints.insets = new Insets(windowPadding, windowPadding, windowPadding, windowPadding);
+		constraints.ipadx = parameterPanePadding;
+		constraints.ipady = parameterPanePadding;
+		
+		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.fill = GridBagConstraints.NONE;
+
+		panel.add(initializeInputFormatParametersPane(), constraints);
+		panel.add(initializeBuildParametersPane(), constraints);
+		panel.add(initializeFilterParametersPane(), constraints);
+		panel.add(initializeOutputFormatParametersPane(), constraints);
 		return panel;
+	}
+
+	private JSplitPane initializeTextPanes() {
+		JScrollPane inputTextPane = initializeInputTextPane();
+		JScrollPane outputTextPane = initializeOutputTextPane();
+
+		JSplitPane textAreasPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				inputTextPane, outputTextPane);
+		textAreasPane.setOneTouchExpandable(true);
+		textAreasPane.setDividerSize(7);
+		textAreasPane.setResizeWeight(0.3f);
+		textAreasPane.setPreferredSize(new Dimension(100, 400));
+
+		return textAreasPane;
 	}
 
 	private JPanel initializeWindow() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(initializeParameterPane());
-		panel.add(initializeGibberizeButton());
-		panel.add(initializeInputTextPane());
-		panel.add(initializeOutputTextPane());
+		panel.setLayout(new GridBagLayout());
+
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.gridx = 0;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.insets = new Insets(windowPadding, windowPadding, windowPadding, windowPadding);
+
+		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.fill = GridBagConstraints.NONE;
+		panel.add(initializeParameterPane(), constraints);
+		
+		panel.add(initializeGibberizeButton(), constraints);
+
+		constraints.fill = GridBagConstraints.BOTH;
+		constraints.weightx = 1.0f;
+		constraints.weighty = 1.0f;
+		constraints.anchor = GridBagConstraints.PAGE_END;
+
+		panel.add(initializeTextPanes(), constraints);
+
 		return panel;
 	}
 
