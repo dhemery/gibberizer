@@ -1,1 +1,0 @@
-#summary Using Gibberizer to create weird-but-familiar variations of historical documents.
