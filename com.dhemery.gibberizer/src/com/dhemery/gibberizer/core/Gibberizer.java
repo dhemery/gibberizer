@@ -4,7 +4,11 @@ import java.util.List;
 
 
 public class Gibberizer {
-	private static String warning = 
+	public static final int MAX_BATCH_SIZE = 1000;
+	public static final int MAX_PERSISTENCE = 20;
+	public static final int MAX_SIMILARITY = 20;
+
+	private static final String warning = 
 		"*************************************************\n" +
 		"Could not create acceptable gibberish.\n\n" +
 		"Some things you can try:\n" +
