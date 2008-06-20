@@ -5,42 +5,39 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.Border;
 
 import com.dhemery.gibberizer.core.Gibberizer;
 import com.dhemery.gibberizer.core.JoinStyle;
 import com.dhemery.gibberizer.core.SplitStyle;
-import com.dhemery.gibberizer.listeners.AllowDuplicatesListener;
-import com.dhemery.gibberizer.listeners.AllowInputEchoListener;
-import com.dhemery.gibberizer.listeners.BatchSizeListener;
-import com.dhemery.gibberizer.listeners.GibberizeListener;
-import com.dhemery.gibberizer.listeners.JoinStyleListener;
-import com.dhemery.gibberizer.listeners.PersistenceListener;
-import com.dhemery.gibberizer.listeners.SimilarityListener;
-import com.dhemery.gibberizer.listeners.SpinnerListener;
-import com.dhemery.gibberizer.listeners.SplitStyleListener;
+import com.dhemery.gibberizer.widgets.AllowDuplicatesCheckBox;
+import com.dhemery.gibberizer.widgets.AllowInputEchoCheckBox;
+import com.dhemery.gibberizer.widgets.BatchSizeSpinner;
+import com.dhemery.gibberizer.widgets.GibberizeButton;
+import com.dhemery.gibberizer.widgets.JoinStyleRadioButton;
+import com.dhemery.gibberizer.widgets.PersistenceSpinner;
+import com.dhemery.gibberizer.widgets.SimilaritySpinner;
+import com.dhemery.gibberizer.widgets.SplitStyleRadioButton;
 
-public class GibberizerWindow {
+public class GibberizerWindow extends JFrame implements Runnable {
 	private static final int parameterPanePadding = 10;
+	private static final long serialVersionUID = 1L;
 	private static final int spinnerPadding = parameterPanePadding / 2;
 	private static final int windowPadding = 4;
 	private static final String version = "0.1.1";
@@ -62,125 +59,46 @@ public class GibberizerWindow {
            // handle exception
         }
 
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new GibberizerWindow();
-            }
-
-        });
+        SwingUtilities.invokeLater(new GibberizerWindow());
     }
 
     private JTextArea inputTextArea;
-
 	private JTextArea outputTextArea;
 	private Gibberizer gibberizer;
 
 	public GibberizerWindow() {
-		initializeGibberizer();
-
-		JFrame frame = new JFrame("Gibberizer " + version);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(initializeWindow());
-        frame.pack();
-        frame.setVisible(true);
+		super("Gibberizer " + version);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        initializeGibberizer();
+        setContentPane(initializeWindow());
+        pack();
     }
-
-	private JCheckBox createCheckBox(String name, String toolTipText,
-			ItemListener listener, boolean isSelected) {
-		JCheckBox checkBox = new JCheckBox(name, isSelected);
-		checkBox.setToolTipText(toolTipText);
-		checkBox.addItemListener(listener);
-		return checkBox;
-	}
-
-	private JRadioButton createJoinStyleButton(String name, String toolTipText,
-			JoinStyleListener listener,
-			JoinStyle style) {
-		boolean isSelected = (gibberizer.getJoinStyle() == style);
-		return createRadioButton(name, toolTipText, listener, isSelected, style);
-	}
 
 	private JLabel createLabel(String name, String toolTipText) {
 		JLabel label = new JLabel(name);
+		label.setName(name);
 		label.setToolTipText(toolTipText);
 		return label;
 	}
 
 	private JPanel createPanel(String name, String toolTipText) {
 		JPanel panel = new JPanel();
-		Border border = BorderFactory.createTitledBorder(name);
-		panel.setBorder(border);
 		panel.setName(name);
 		panel.setToolTipText(toolTipText);
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.setAlignmentY(Component.TOP_ALIGNMENT);
+		panel.setBorder(BorderFactory.createTitledBorder(name));
 		return panel;
-	}
-
-	private JButton createPushButton(String name, String toolTipText,
-			ActionListener listener) {
-		JButton button = new JButton(name);
-		button.setToolTipText(toolTipText);
-		button.addActionListener(listener);
-		button.setAlignmentX(Component.LEFT_ALIGNMENT);
-		button.setAlignmentY(Component.TOP_ALIGNMENT);
-		return button;
-	}
-
-	private JRadioButton createRadioButton(String name, String toolTipText,
-			ItemListener listener,
-			boolean isSelected, Object data) {
-		JRadioButton button = new JRadioButton(name, isSelected);
-		button.setToolTipText(toolTipText);
-		button.addItemListener(listener);
-		button.putClientProperty("style", data);
-		return button;
 	}
 
 	private JScrollPane createScrollPane(Component component, String name, String toolTipText) {
 		JScrollPane scrollPane = new JScrollPane(component);
-		scrollPane.setBorder(BorderFactory.createTitledBorder(name));
+		scrollPane.setName(name);
 		scrollPane.setToolTipText(toolTipText);
+		scrollPane.setBorder(BorderFactory.createTitledBorder(name));
 		scrollPane.setVerticalScrollBarPolicy(
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		return scrollPane;
-	}
-
-	private JSpinner createSpinner(String name, String toolTipText, SpinnerListener listener,
-			int maxValue, int initialValue) {
-
-		SpinnerNumberModel model = new SpinnerNumberModel(initialValue, 1, maxValue, 1);
-		JSpinner spinner = new JSpinner(model);
-		spinner.setName(name);
-		spinner.setToolTipText(toolTipText);
-		spinner.addChangeListener(listener);
-		return spinner;
-	}
-
-	private void createSpinnerPanel(JPanel panel, String name, String toolTipText,
-			SpinnerListener listener,
-			int maxValue, int initialValue) {
-		GridBagConstraints constraints = new GridBagConstraints();
-
-		JLabel label = createLabel(name, toolTipText);
-		constraints.gridx = 0;
-		constraints.gridy = GridBagConstraints.RELATIVE;
-		constraints.anchor = GridBagConstraints.LINE_END;
-		panel.add(label, constraints);
-
-		JSpinner spinner = createSpinner(name, toolTipText,
-				listener, maxValue, initialValue);
-		constraints.gridx = 1;
-		constraints.gridy = GridBagConstraints.RELATIVE;
-		constraints.anchor = GridBagConstraints.LINE_START;
-		constraints.insets = new Insets(0, spinnerPadding, spinnerPadding, 0);
-		panel.add(spinner, constraints);
-	}
-
-	private JRadioButton createSplitStyleRadioButton(String name, String toolTipText,
-			SplitStyle style, SplitStyleListener listener) {
-		boolean isSelected = (gibberizer.getSplitStyle() == style);
-		return createRadioButton(name, toolTipText, listener, isSelected, style);
 	}
 
 	private JTextArea createTextArea(boolean isEditable) {
@@ -191,32 +109,29 @@ public class GibberizerWindow {
 
 		return textArea;
 	}
-	
+
 	public String getInputText() {
 		return inputTextArea.getText();
 	}
-
+	
 	private JPanel initializeBuildParametersPane() {
 		JPanel panel = createPanel("Create", "Tell Gibberizer how to create gibs.");
 		panel.setLayout(new GridBagLayout());
 
-		createSpinnerPanel(panel,
-				"BatchSize:",
+		positionSpinner(panel,
+				new BatchSizeSpinner("BatchSize:",
 				"The number of gibs to create.",
-				new BatchSizeListener(gibberizer),
-				1000, gibberizer.getBatchSize());
+				gibberizer));
 
-		createSpinnerPanel(panel,
-				"Similarity:",
+		positionSpinner(panel,
+				new SimilaritySpinner("Similarity:",
 				"The similarity of the gibs to the input strings.",
-				new SimilarityListener(gibberizer),
-				 20, gibberizer.getSimilarity());
+				gibberizer));
 
-		createSpinnerPanel(panel,
-				"Persistence:",
+		positionSpinner(panel,
+				new PersistenceSpinner("Persistence:",
 				"How hard Gibberizer tries to create gibs\nthat pass the filters before giving up.",
-				new PersistenceListener(gibberizer),
-				10,gibberizer.getPersistence());
+				gibberizer));
 
 		return panel;
 	}
@@ -226,21 +141,15 @@ public class GibberizerWindow {
 				"Tell Gibberizer what gibs it is allowed to create.");
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-		panel.add(createCheckBox("Allow input echo",
+		panel.add(new AllowInputEchoCheckBox("Allow input echo",
 				"Check to allow Gibberizer to create gibs that match input strings.\nUncheck to force Gibberizer to createss gibs that do not appear in your text.",
-				new AllowInputEchoListener(gibberizer),
-				gibberizer.getAllowInputEcho()));
-		panel.add(createCheckBox("Allow duplicates",
+				gibberizer));
+
+		panel.add(new AllowDuplicatesCheckBox("Allow duplicates",
 				"Check to allow Gibberizer to create multiple instances of a gib.\nUncheck to force Gibberizer to create unique gibs.",
-				new AllowDuplicatesListener(gibberizer),
-				gibberizer.getAllowDuplicates()));
+				gibberizer));
 
 		return panel;
-	}
-
-	private JButton initializeGibberizeButton() {
-		return createPushButton("Gibberize", "Create gibs (strings of gibberish).",
-				new GibberizeListener(gibberizer, this));
 	}
 
 	private void initializeGibberizer() {
@@ -248,34 +157,24 @@ public class GibberizerWindow {
 	}
 
 	private JPanel initializeInputFormatParametersPane() {
-		JPanel panel = createPanel("Read input as:",
-				"Tell Gibberizer how to divide your input text into strings.");
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-		SplitStyleListener listener = new SplitStyleListener(gibberizer);
-
-		JRadioButton wordsSplitStyleButton = createSplitStyleRadioButton("Words",
-				"Gibberizer reads your text as words.\nThat is, as strings of characters separated by white space.",
-				SplitStyle.WORDS, listener);
-		JRadioButton linesSplitStyleButton = createSplitStyleRadioButton("Lines",
-				"Gibberizer reads your text as lines.",
-				SplitStyle.LINES,
-				listener);
-		JRadioButton oneStringSplitStyleButton = createSplitStyleRadioButton("One String",
-				"Gibberizer reads your text as a single string.",
-				SplitStyle.ONE_STRING,
-				listener);
-
 		ButtonGroup group = new ButtonGroup();
-		group.add(wordsSplitStyleButton);
-		group.add(linesSplitStyleButton);
-		group.add(oneStringSplitStyleButton);
 
-		panel.add(wordsSplitStyleButton);
-		panel.add(linesSplitStyleButton);
-		panel.add(oneStringSplitStyleButton);
+		group.add(new SplitStyleRadioButton("Words",
+				"Gibberizer reads your text as words.\nThat is, as strings of characters separated by white space.",
+				gibberizer,
+				SplitStyle.WORDS));
+		group.add(new SplitStyleRadioButton("Lines",
+				"Gibberizer reads your text as lines.",
+				gibberizer,
+				SplitStyle.LINES));
+		group.add(new SplitStyleRadioButton("One String",
+				"Gibberizer reads your text as a single string.",
+				gibberizer,
+				SplitStyle.ONE_STRING));
 
-		return panel;
+		return createRadioButtonPanel("Read input as:",
+				"Tell Gibberizer how to divide your input text into strings.",
+				group);
 	}
 
 	private JScrollPane initializeInputTextPane() {
@@ -286,34 +185,33 @@ public class GibberizerWindow {
 	}
 
 	private JPanel initializeOutputFormatParametersPane() {
-		JPanel panel = createPanel("Separate gibs by:",
-				"Tell Gibberizer how to format the gibs it creates.");
+		ButtonGroup group = new ButtonGroup();
+		group.add(new JoinStyleRadioButton("Space",
+				"Gibberizer inserts a space between gibs.",
+				gibberizer,
+				JoinStyle.SPACE));
+		group.add(new JoinStyleRadioButton("New line",
+				"Gibberizer starts a new line before each gib.",
+				gibberizer,
+				JoinStyle.NEW_LINE));
+		group.add(new JoinStyleRadioButton("Blank Line",
+				"Gibberizer inserts a blank line between gibs.",
+				gibberizer,
+				JoinStyle.BLANK_LINE));
+
+		return createRadioButtonPanel("Separate gibs by:",
+				"Tell Gibberizer how to format the gibs it creates.",
+				group);
+	}
+
+	private JPanel createRadioButtonPanel(String name, String toolTipText, ButtonGroup group) {
+		JPanel panel = createPanel(name, toolTipText);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-		JoinStyleListener joinStyleListener = new JoinStyleListener(gibberizer);
-
-		JRadioButton spaceJoinStyleButton = createJoinStyleButton("Space",
-				"Gibberizer inserts a space between gibs.",
-				joinStyleListener,
-				JoinStyle.SPACE);
-		JRadioButton newLineJoinStyleButton = createJoinStyleButton("New line",
-				"Gibberizer starts a new line before each gib.",
-				joinStyleListener,
-				JoinStyle.NEW_LINE);
-		JRadioButton blankLineJoinStyleButton = createJoinStyleButton("Blank Line",
-				"Gibberizer inserts a blank line between gibs.",
-				joinStyleListener,
-				JoinStyle.BLANK_LINE);
-
-		ButtonGroup group = new ButtonGroup();
-		group.add(spaceJoinStyleButton);
-		group.add(newLineJoinStyleButton);
-		group.add(blankLineJoinStyleButton);
-
-		panel.add(spaceJoinStyleButton);
-		panel.add(newLineJoinStyleButton);
-		panel.add(blankLineJoinStyleButton);
-
+		Enumeration<AbstractButton> buttons = group.getElements();
+		while (buttons.hasMoreElements()) {
+			panel.add((AbstractButton) buttons.nextElement());
+		}
 		return panel;
 	}
 
@@ -375,7 +273,7 @@ public class GibberizerWindow {
 		constraints.fill = GridBagConstraints.NONE;
 		panel.add(initializeParameterPane(), constraints);
 		
-		panel.add(initializeGibberizeButton(), constraints);
+		panel.add(new GibberizeButton("Gibberize", "Create gibs (strings of gibberish).", gibberizer, this), constraints);
 
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.weightx = 1.0f;
@@ -385,6 +283,26 @@ public class GibberizerWindow {
 		panel.add(initializeTextPanes(), constraints);
 
 		return panel;
+	}
+
+	public void run() {
+        setVisible(true);
+	}
+
+	private void positionSpinner(JPanel panel, JSpinner spinner) {
+		GridBagConstraints constraints = new GridBagConstraints();
+
+		JLabel label = createLabel(spinner.getName(), spinner.getToolTipText());
+		constraints.gridx = 0;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.anchor = GridBagConstraints.LINE_END;
+		panel.add(label, constraints);
+
+		constraints.gridx = 1;
+		constraints.gridy = GridBagConstraints.RELATIVE;
+		constraints.anchor = GridBagConstraints.LINE_START;
+		constraints.insets = new Insets(0, spinnerPadding, spinnerPadding, 0);
+		panel.add(spinner, constraints);
 	}
 
 	public void setOutputText(String text) {
