@@ -6,9 +6,17 @@ For help when you're running Gibberizer, hover your mouse over any of the button
 
 =Parameters=
 
+Gibberizer has four sets of knobs and buttons you can tweak:
+  * *Read input as*:  These parameters tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
+  * *Create*:  These parameters tell Gibberizer how many gibs to create, how similar to make them to your input text, and how long to keep trying if the muse isn't working.
+  * *Filters*:  These parameters tell Gibberizer what kinds of gibs it is allowed to deliver to you.
+  * *Separate gibs by*:  These parameters tell Gibberizer how to format the gibs it creates.
+
+These options are described in more detail below.
+
 ==Read input as:==
 
-These options tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
+These parameters tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
 
 || *Option* || *Effect* ||
 || *[ReadInputAsWords Words]* || Gibberizer reads your text as words.  That is, as strings of characters separated by white space. Use this when you want Gibberizer to create words that are similar to the words in your text. ||
@@ -17,7 +25,7 @@ These options tell Gibberizer how to read the text you enter:  As words, as line
 
 ==Create==
 
-These options tell Gibberizer how to create gibs from  your text.
+These parameters tell Gibberizer how many gibs to create, how similar to make them to your input text, and how long to keep trying if the muse isn't working.
 
 || *Option* || *Effect* ||
 || *[BatchSize Batch Size]* || The number of gibs to create. ||
@@ -26,7 +34,7 @@ These options tell Gibberizer how to create gibs from  your text.
 
 ==Filters==
 
-These options tell Gibberizer what kinds of gibs it is allowed to create.
+These parameters tell Gibberizer what kinds of gibs it is allowed to deliver to you.
 
 || *Option* || *Effect if checked* || *Effect if unchecked* ||
 || *[AllowInputEcho Allow input echo]* || Gibberizer may create gibs that match input strings. || Gibberizer creates only gibs that do not appear in your text. ||
@@ -34,7 +42,7 @@ These options tell Gibberizer what kinds of gibs it is allowed to create.
 
 ==Separate gibs by==
 
-These options tell Gibberizer how to format the gibs it creates.
+These parameters tell Gibberizer how to format the gibs it creates.
 
 || *Option* || *Effect* ||
 || *[SeparateGibsBySpaces Space]* || Gibberizer inserts a space between gibs. ||
