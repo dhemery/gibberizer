@@ -19,7 +19,7 @@ Gibberizer requires:
 ==Help==
 
   * For help when you're running Gibberizer, hover your mouse over any of the buttons or words in the Parameters area at the top of the Gibberizer window.
-  * Or poke around on the [http://code.google.com/p/gibberizer/w/list Wiki].
+  * Or poke around on the [http://code.google.com/p/gibberizer/w/list Wiki], which as of June 20 2008 is mostly just a big tease.
   * Whatever you do, don't wake me up before noon.
 
 ==Parameters==
