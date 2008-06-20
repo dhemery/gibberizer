@@ -43,6 +43,7 @@ public class GibberizerWindow {
 	private static final int parameterPanePadding = 10;
 	private static final int spinnerPadding = parameterPanePadding / 2;
 	private static final int windowPadding = 4;
+	private static final String version = "0.1.0";
 
     public static void main(String[] args) {
         try {
@@ -77,7 +78,7 @@ public class GibberizerWindow {
 	public GibberizerWindow() {
 		initializeGibberizer();
 
-		JFrame frame = new JFrame("Gibberizer");
+		JFrame frame = new JFrame("Gibberizer " + version);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(initializeWindow());
         frame.pack();
