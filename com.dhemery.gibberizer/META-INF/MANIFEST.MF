@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gibberizer
 Bundle-SymbolicName: com.dhemery.gibberizer;singleton:=true
-Bundle-Version: 0.1.0
+Bundle-Version: 0.1.1
 Bundle-Vendor: Dale Emery
 Export-Package: com.dhemery.gibberizer.core,
- com.dhemery.gibberizer.listeners,
+ com.dhemery.gibberizer.listeners;uses:="com.dhemery.gibberizer.ui,javax.swing.event,com.dhemery.gibberizer.core",
  com.dhemery.gibberizer.ui,
- com.dhemery.gibberizer.unittests
+ com.dhemery.gibberizer.unittests;uses:="com.dhemery.gibberizer.core"

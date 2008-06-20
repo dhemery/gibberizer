@@ -21,7 +21,6 @@ public abstract class CheckBoxListener implements ItemListener {
 		this.gibberizer = gibberizer;
 	}
 
-	@Override
 	public void itemStateChanged(ItemEvent e) {
 		JCheckBox button = (JCheckBox) e.getItem();
 		execute(button.isSelected());

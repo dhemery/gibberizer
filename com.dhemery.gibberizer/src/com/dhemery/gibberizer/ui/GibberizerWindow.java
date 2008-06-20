@@ -43,7 +43,7 @@ public class GibberizerWindow {
 	private static final int parameterPanePadding = 10;
 	private static final int spinnerPadding = parameterPanePadding / 2;
 	private static final int windowPadding = 4;
-	private static final String version = "0.1.0";
+	private static final String version = "0.1.1";
 
     public static void main(String[] args) {
         try {

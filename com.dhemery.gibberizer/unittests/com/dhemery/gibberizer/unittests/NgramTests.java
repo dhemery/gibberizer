@@ -47,7 +47,7 @@ public class NgramTests {
 	public void lastCharacterIsEmptyIfGivenStringIsShorterThanN() {
 		n = string.length() + 1;
 		Ngram ngram = new Ngram(string, n);
-		assertTrue(ngram.getLastCharacter().isEmpty());
+		assertTrue(ngram.getLastCharacter().length() == 0);
 	}
 
 	@Test
@@ -73,17 +73,17 @@ public class NgramTests {
 
 	@Test
 	public void nullNgramHasEmptyLastCharacter() {
-		assertTrue(Ngram.NULL_NGRAM.getLastCharacter().isEmpty());
+		assertTrue(Ngram.NULL_NGRAM.getLastCharacter().length() == 0);
 	}
 
 	@Test
 	public void nullNgramHasEmptyPrefix() {
-		assertTrue(Ngram.NULL_NGRAM.getPrefix().isEmpty());
+		assertTrue(Ngram.NULL_NGRAM.getPrefix().length() == 0);
 	}
 
 	@Test
 	public void nullNgramHasEmptySuffix() {
-		assertTrue(Ngram.NULL_NGRAM.getSuffix().isEmpty());
+		assertTrue(Ngram.NULL_NGRAM.getSuffix().length() == 0);
 	}
 
 	@Test
