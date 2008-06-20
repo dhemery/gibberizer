@@ -32,7 +32,7 @@ Gibberizer has four sets of knobs and buttons you can tweak:
 
 These options are described in more detail below.
 
-==Read input as:==
+===Read input as:===
 
 These parameters tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
 
@@ -41,7 +41,7 @@ These parameters tell Gibberizer how to read the text you enter:  As words, as l
 || *[ReadInputAsLines Lines]* || Gibberizer reads your text as lines.  Use this when you want Gibberizer to generate paragraphs that are similar to the paragraphs in your text. ||
 || *[ReadInputAsOneString One string]* || Gibberizer reads your text as a single string.  Use this when you want Gibberizer to create Gibberish that is similar to the whole chunk of text you entered. ||
 
-==Create==
+===Create===
 
 These parameters tell Gibberizer how many gibs to create, how similar to make them to your input text, and how long to keep trying if the muse isn't working.
 
@@ -50,7 +50,7 @@ These parameters tell Gibberizer how many gibs to create, how similar to make th
 || *[Similarity Similarity]* || The similarity of the gibs to the input text. Lower numbers produce weirder gibberish.  Higher numbers produce more-and-more familiar gibberish.  Set this to 3 or 4 to create words or names.  Set it to 8 or higher to generate whole sentences that are _almost_ meaningful. ||
 || *[Persistence Persistence]* || This tells Gibberizer how long to try to create gibs that pass the filters (see below) before it gives up in despair. If you disallow duplicates and input echoes (see below), it may be impossible or sloooow for Gibberizer to create the number of gibs you've asked for.  A higher _persistence_ tells Gibberizer try harder, even if it takes a long time. ||
 
-==Filters==
+===Filters===
 
 These parameters tell Gibberizer what kinds of gibs it is allowed to deliver to you.
 
@@ -58,7 +58,7 @@ These parameters tell Gibberizer what kinds of gibs it is allowed to deliver to 
 || *[AllowInputEcho Allow input echo]* || Gibberizer may create gibs that match input strings. || Gibberizer creates only gibs that do not appear in your text. ||
 || *[AllowDuplicates Allow duplicates]* || Gibberizer may create multiple instances of a gib. || Gibberizer creates only unique gibs. ||
 
-==Separate gibs by==
+===Separate gibs by===
 
 These parameters tell Gibberizer how to format the gibs it creates.
 
