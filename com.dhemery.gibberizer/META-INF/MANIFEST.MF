@@ -4,3 +4,7 @@ Bundle-Name: Gibberizer
 Bundle-SymbolicName: com.dhemery.gibberizer;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Dale Emery
+Export-Package: com.dhemery.gibberizer.core,
+ com.dhemery.gibberizer.listeners,
+ com.dhemery.gibberizer.ui,
+ com.dhemery.gibberizer.unittests
