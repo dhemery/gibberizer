@@ -1,0 +1,33 @@
+#summary A few ways to play with Gibberizer
+
+= Creating Names =
+
+  * Enter 20 or more names into Gibberizer.  Try:
+    * First names from baby names web sites.
+    * Last names from US Census Bureau listings.
+    * The names of all of the US Presidents.
+    * Names from Lord of the Rings.
+    * Names from your family and friends.
+  * Set Gibberizer to read your text as Words or Lines.
+  * Set familiarity to 3 or 4.
+  * Set Gibberizer to insert a New Line after each gib.
+  * Gibberize a whole bunch of times.
+  * Fiddle with the knobs and Gibberize some more.
+
+= Hysterical Documents =
+
+  * Enter the text of a historical document into Gibberizer.  Try one of these (or any other that tickles your fancy):
+    * The Gettysburg Address.
+    * The Bill of Rights.
+    * The Gibberizer User Guide.
+  * Set Gibberizer to read the text as Lines or One String.
+  * Set familarity to 6 or higher.  A familiarity of 8 is often good.
+  * You may want to set Gibberizer to insert a blank line between gibs.
+  * Gibberize a whole bunch of times.
+  * Fiddle with the knobs and Gibberize some more.
+
+= Your Own Writing =
+  * Enter a scene or section or chapter from your own writing.
+  * Follow the directions for Hysterical Documents (above).
+  * Gibberize a whole bunch of times.
+  * Fiddle with the knobs and Gibberize some more.
