@@ -8,7 +8,9 @@ public class StringSplitter {
 		List<String> strings = new ArrayList<String>();
 		String normalizedString = rawString.replaceAll("\r\n", "\n");
 
-		String[] arrayStrings = normalizedString.split(splitStyle.delimiterExpression, -1);
+		String delimiterExpression = splitStyle.delimiterExpression;
+		
+		String[] arrayStrings = normalizedString.split(delimiterExpression, -1);
 		for (String string : arrayStrings) {
 			if (!string.isEmpty()) {
 				strings.add(string);

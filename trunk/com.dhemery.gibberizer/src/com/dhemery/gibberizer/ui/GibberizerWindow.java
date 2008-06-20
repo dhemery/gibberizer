@@ -132,6 +132,7 @@ public class GibberizerWindow {
 		JRadioButton button = new JRadioButton(name, isSelected);
 		button.setToolTipText(toolTipText);
 		button.addItemListener(listener);
+		button.putClientProperty("style", data);
 		return button;
 	}
 
@@ -317,6 +318,7 @@ public class GibberizerWindow {
 
 	private JScrollPane initializeOutputTextPane() {
 		outputTextArea = createTextArea(false);
+//		outputTextArea.setBackground(null);
 
 		return createScrollPane(outputTextArea,
 				"Gibberish:",
