@@ -9,7 +9,7 @@
     * Names from Lord of the Rings.
     * Names from your family and friends.
   * Set Gibberizer to read your text as Words or Lines.
-  * Set familiarity to 3 or 4.
+  * Set familiarity to 3 or 4.  (A familiarity of 3 or 4 is good for playing with words or names.)
   * Set Gibberizer to insert a New Line after each gib.
   * Gibberize a whole bunch of times.
   * Fiddle with the knobs and Gibberize some more.
@@ -21,7 +21,7 @@
     * The Bill of Rights.
     * The Gibberizer User Guide.
   * Set Gibberizer to read the text as Lines or One String.
-  * Set familarity to 6 or higher.  A familiarity of 8 is often good.
+  * Set familarity to 6 or higher.  A familiarity of 8 is often good.  (A familiarity of 6 or higher is good for fiddling with not just words but whole phrases.)
   * You may want to set Gibberizer to insert a blank line between gibs.
   * Gibberize a whole bunch of times.
   * Fiddle with the knobs and Gibberize some more.
