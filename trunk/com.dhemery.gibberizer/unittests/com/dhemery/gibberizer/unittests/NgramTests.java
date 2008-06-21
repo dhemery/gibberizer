@@ -14,11 +14,79 @@ public class NgramTests {
 	private String string;
 	private int n;
 
+	@Before
+	public void setUp() {
+		n = 6;
+		string = "abcdefghij";
+	}
+
+	@Test
+	public void prefixMatchesFirstNMinusOneCharactersOfGivenString() {
+		String desiredPrefix = string.substring(0, n - 1);
+		Ngram ngram = new Ngram(string, n);
+		assertEquals(desiredPrefix, ngram.getPrefix());
+	}
+
+	@Test
+	public void suffixMatchesCharactersOneThroughNOfGivenString() {
+		String desiredSuffix = string.substring(1, n);
+		Ngram ngram = new Ngram(string, n);
+		assertEquals(desiredSuffix, ngram.getSuffix());
+	}
+
+	@Test
+	public void lastCharacterHasLengthOne() {
+		Ngram ngram = new Ngram(string, n);
+		assertEquals(1, ngram.getLastCharacter().length());
+	}
+
+	@Test
+	public void lastCharacterMatchesCharacterAtPositionNMinusOneFromGivenString() {
+		Ngram ngram = new Ngram(string, n);
+		String desiredSuffix = string.substring(n - 1, n);
+		assertEquals(desiredSuffix, ngram.getLastCharacter());
+	}
+
+	@Test
+	public void prefixEqualsGivenStringIfGivenStringIsShorterThanN() {
+		n = string.length() + 1;
+		Ngram ngram = new Ngram(string, n);
+		assertEquals(string, ngram.getPrefix());
+	}
+
+	@Test
+	public void suffixMatchesTailOfGivenStringIfGivenStringIsShorterThanN() {
+		n = string.length() + 1;
+		Ngram ngram = new Ngram(string, n);
+		assertTrue(string.endsWith(ngram.getSuffix()));
+	}
+
+	@Test
+	public void lastCharacterIsEmptyIfGivenStringIsShorterThanN() {
+		n = string.length() + 1;
+		Ngram ngram = new Ngram(string, n);
+		assertTrue(ngram.getLastCharacter().length() == 0);
+	}
+
 	@Test
 	public void equalIfSamePrefixAndLastLetter() {
 		Ngram ngram1 = new Ngram(string, n);
 		Ngram ngram2 = new Ngram(string, n);
 		assertTrue(ngram1.equals(ngram2));
+	}
+
+	@Test
+	public void notEqualIfDifferentPrefix() {
+		Ngram ngram1 = new Ngram("abcdefg", 4);
+		Ngram ngram2 = new Ngram("bbcdefg", 4);
+		assertFalse(ngram1.equals(ngram2));
+	}
+
+	@Test
+	public void notEqualIfDifferentLastLetter() {
+		Ngram ngram1 = new Ngram("abcdefg", 4);
+		Ngram ngram2 = new Ngram("abceefg", 4);
+		assertFalse(ngram1.equals(ngram2));
 	}
 
 	@Test
@@ -38,45 +106,6 @@ public class NgramTests {
 	}
 
 	@Test
-	public void lastCharacterHasLengthOne() {
-		Ngram ngram = new Ngram(string, n);
-		assertEquals(1, ngram.getLastCharacter().length());
-	}
-
-	@Test
-	public void lastCharacterIsEmptyIfGivenStringIsShorterThanN() {
-		n = string.length() + 1;
-		Ngram ngram = new Ngram(string, n);
-		assertTrue(ngram.getLastCharacter().length() == 0);
-	}
-
-	@Test
-	public void lastCharacterMatchesCharacterAtPositionNMinusOneFromGivenString() {
-		Ngram ngram = new Ngram(string, n);
-		String desiredSuffix = string.substring(n - 1, n);
-		assertEquals(desiredSuffix, ngram.getLastCharacter());
-	}
-
-	@Test
-	public void notEqualIfDifferentLastLetter() {
-		Ngram ngram1 = new Ngram("abcdefg", 4);
-		Ngram ngram2 = new Ngram("abceefg", 4);
-		assertFalse(ngram1.equals(ngram2));
-	}
-
-	@Test
-	public void notEqualIfDifferentPrefix() {
-		Ngram ngram1 = new Ngram("abcdefg", 4);
-		Ngram ngram2 = new Ngram("bbcdefg", 4);
-		assertFalse(ngram1.equals(ngram2));
-	}
-
-	@Test
-	public void nullNgramHasEmptyLastCharacter() {
-		assertTrue(Ngram.NULL_NGRAM.getLastCharacter().length() == 0);
-	}
-
-	@Test
 	public void nullNgramHasEmptyPrefix() {
 		assertTrue(Ngram.NULL_NGRAM.getPrefix().length() == 0);
 	}
@@ -87,37 +116,8 @@ public class NgramTests {
 	}
 
 	@Test
-	public void prefixEqualsGivenStringIfGivenStringIsShorterThanN() {
-		n = string.length() + 1;
-		Ngram ngram = new Ngram(string, n);
-		assertEquals(string, ngram.getPrefix());
-	}
-
-	@Test
-	public void prefixMatchesFirstNMinusOneCharactersOfGivenString() {
-		String desiredPrefix = string.substring(0, n - 1);
-		Ngram ngram = new Ngram(string, n);
-		assertEquals(desiredPrefix, ngram.getPrefix());
-	}
-
-	@Before
-	public void setUp() {
-		n = 6;
-		string = "abcdefghij";
-	}
-
-	@Test
-	public void suffixMatchesCharactersOneThroughNOfGivenString() {
-		String desiredSuffix = string.substring(1, n);
-		Ngram ngram = new Ngram(string, n);
-		assertEquals(desiredSuffix, ngram.getSuffix());
-	}
-
-	@Test
-	public void suffixMatchesTailOfGivenStringIfGivenStringIsShorterThanN() {
-		n = string.length() + 1;
-		Ngram ngram = new Ngram(string, n);
-		assertTrue(string.endsWith(ngram.getSuffix()));
+	public void nullNgramHasEmptyLastCharacter() {
+		assertTrue(Ngram.NULL_NGRAM.getLastCharacter().length() == 0);
 	}
 
 	@Test

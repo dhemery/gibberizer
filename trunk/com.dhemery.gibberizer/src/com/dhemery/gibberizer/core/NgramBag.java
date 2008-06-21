@@ -17,6 +17,10 @@ public class NgramBag {
 		if(isEnder) enders.add(ngram);
 	}
 
+	public List<Ngram> getAll() {
+		return ngrams;
+	}
+
 	public List<Ngram> getNgramsByPrefix(String prefix) {
 		List<Ngram> ngramsForPrefix = ngramsByPrefix.get(prefix);
 		if (ngramsForPrefix == null) {
@@ -28,10 +32,6 @@ public class NgramBag {
 
 	public List<Ngram> getStarters() {
 		return starters;
-	}
-
-	public List<Ngram> getAll() {
-		return ngrams;
 	}
 
 	public boolean isEnder(Ngram ngram) {

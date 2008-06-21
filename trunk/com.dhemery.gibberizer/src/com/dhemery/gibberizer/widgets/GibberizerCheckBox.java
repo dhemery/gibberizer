@@ -11,18 +11,18 @@ public abstract class GibberizerCheckBox extends JCheckBox implements ItemListen
 	private static final long serialVersionUID = 1L;
 	private final Gibberizer gibberizer;
 
-	protected abstract void execute();
-	
-	public Gibberizer getGibberizer() {
-		return gibberizer;
-	}
-
 	public GibberizerCheckBox(String name, String toolTipText, Gibberizer gibberizer, boolean isSelected) {
 		super(name, isSelected);
 		setName(name);
 		setToolTipText(toolTipText);
 		this.gibberizer = gibberizer;
 		addItemListener(this);
+	}
+	
+	protected abstract void execute();
+
+	public Gibberizer getGibberizer() {
+		return gibberizer;
 	}
 
 	public void itemStateChanged(ItemEvent e) {

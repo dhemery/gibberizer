@@ -15,12 +15,6 @@ public abstract class GibberizerRadioButton extends JRadioButton implements Item
 	private static final long serialVersionUID = 1L;
 	private final Gibberizer gibberizer;
 
-	protected abstract void select();
-	
-	public Gibberizer getGibberizer() {
-		return gibberizer;
-	}
-	
 	public GibberizerRadioButton(String name, String toolTipText, Gibberizer gibberizer, boolean isSelected) {
 		super(name, isSelected);
 		setName(name);
@@ -28,8 +22,14 @@ public abstract class GibberizerRadioButton extends JRadioButton implements Item
 		this.gibberizer = gibberizer;
 		addItemListener(this);
 	}
-
+	
+	public Gibberizer getGibberizer() {
+		return gibberizer;
+	}
+	
 	public void itemStateChanged(ItemEvent e) {
 		if(isSelected()) select();
 	}
+
+	protected abstract void select();
 }
