@@ -6,11 +6,6 @@ import java.util.Random;
 public class NgramJoiner {
 	private final Random random = new Random();
 
-	public void createGibs(NgramBag ngramBag, StringBasket basket) {
-		while (!basket.isDone())
-			basket.deliver(buildString(ngramBag));
-	}
-
 	public String buildString(NgramBag ngramBag) {
 		Ngram ngram = selectRandomStarter(ngramBag);
 		String generatedString = ngram.getPrefix();
@@ -19,6 +14,11 @@ public class NgramJoiner {
 			ngram = selectRandomSuccessor(ngram, ngramBag);
 		}
 		return generatedString + ngram.getLastCharacter();
+	}
+
+	public void createGibs(NgramBag ngramBag, StringBasket basket) {
+		while (!basket.isDone())
+			basket.deliver(buildString(ngramBag));
 	}
 
 	private List<Ngram> getPossibleSuccessors(Ngram ngram, NgramBag ngramBag) {

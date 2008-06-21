@@ -4,9 +4,11 @@ import java.util.List;
 
 public class NgramExtractor {
 
-	private int getNgramCount(String string, int ngramLength) {
-		if (string.length() < ngramLength) return 1;
-		return string.length() - ngramLength + 1;
+	public NgramBag extract(List<String> strings, int ngramLength) {
+		NgramBag ngramBag = new NgramBag();
+		for (String string : strings)
+			extract(string, ngramLength, ngramBag);
+		return ngramBag;
 	}
 
 	private NgramBag extract(String string, int ngramLength, NgramBag ngramBag) {
@@ -21,10 +23,8 @@ public class NgramExtractor {
 		return ngramBag;
 	}
 
-	public NgramBag extract(List<String> strings, int ngramLength) {
-		NgramBag ngramBag = new NgramBag();
-		for (String string : strings)
-			extract(string, ngramLength, ngramBag);
-		return ngramBag;
+	private int getNgramCount(String string, int ngramLength) {
+		if (string.length() < ngramLength) return 1;
+		return string.length() - ngramLength + 1;
 	}
 }

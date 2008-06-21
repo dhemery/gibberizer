@@ -12,6 +12,16 @@ import com.dhemery.gibberizer.core.StringSplitter;
 public class StringSplitterOneStringStyleTests {
 
 	@Test
+	public void noStringsIfRawStringIsEmpty() {
+		String rawString = "";
+		StringSplitter splitter = new StringSplitter();
+	
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.ONE_STRING);
+	
+		assertEquals(0, splitStrings.size());
+	}
+
+	@Test
 	public void listIncludesOnlyRawStringIfRawStringIsNotEmpty() {
 		String rawString = "a";
 		StringSplitter splitter = new StringSplitter();
@@ -20,16 +30,6 @@ public class StringSplitterOneStringStyleTests {
 
 		assertEquals(1, splitStrings.size());
 		assertEquals(rawString, splitStrings.get(0));
-	}
-
-	@Test
-	public void noStringsIfRawStringIsEmpty() {
-		String rawString = "";
-		StringSplitter splitter = new StringSplitter();
-
-		List<String> splitStrings = splitter.split(rawString, SplitStyle.ONE_STRING);
-
-		assertEquals(0, splitStrings.size());
 	}
 
 	@Test

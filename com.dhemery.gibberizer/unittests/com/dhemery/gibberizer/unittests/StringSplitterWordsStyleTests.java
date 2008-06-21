@@ -12,54 +12,22 @@ import com.dhemery.gibberizer.core.StringSplitter;
 public class StringSplitterWordsStyleTests {
 
 	@Test
-	public void carriageReturnIsWhiteSpace() {
-		String carriageReturn = "\r";
-		String string1 = "abc";
-		String string2 = "def";
-		String rawString = string1 + carriageReturn + string2;
-
+	public void noStringsIfRawStringIsEmpty() {
+		String rawString = "";
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
-		assertEquals(2, splitStrings.size());
-		assertEquals(string1, splitStrings.get(0));
-		assertEquals(string2, splitStrings.get(1));
-	}
-
-	@Test
-	public void newLineIsWhiteSpace() {
-		String newLine = "\n";
-		String string1 = "abc";
-		String string2 = "def";
-		String rawString = string1 + newLine + string2;
-
-		StringSplitter splitter = new StringSplitter();
-
-		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
-		assertEquals(2, splitStrings.size());
-		assertEquals(string1, splitStrings.get(0));
-		assertEquals(string2, splitStrings.get(1));
+	
+		assertEquals(0, splitStrings.size());
 	}
 
 	@Test
 	public void noStringsIfRawStringIsAllWhiteSpace() {
 		String rawString = "  \n \r \t\t    ";
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
-		assertEquals(0, splitStrings.size());
-	}
-
-	@Test
-	public void noStringsIfRawStringIsEmpty() {
-		String rawString = "";
-		StringSplitter splitter = new StringSplitter();
-
-		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
+	
 		assertEquals(0, splitStrings.size());
 	}
 
@@ -67,11 +35,41 @@ public class StringSplitterWordsStyleTests {
 	public void oneStringIfRawStringIsAllNonWhiteSpace() {
 		String rawString = "abcdefg";
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
+	
 		assertEquals(1, splitStrings.size());
 		assertEquals(rawString, splitStrings.get(0));
+	}
+
+	@Test
+	public void splitsAtSingleWhiteSpace() {
+		String white = " ";
+		String string1 = "abc";
+		String string2 = "def";
+		String rawString = string1 + white + string2;
+		StringSplitter splitter = new StringSplitter();
+	
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
+	
+		assertEquals(2, splitStrings.size());
+		assertEquals(string1, splitStrings.get(0));
+		assertEquals(string2, splitStrings.get(1));
+	}
+
+	@Test
+	public void splitsAtWhiteSpaceSequence() {
+		String white = "  \n  \r  \n";
+		String string1 = "abc";
+		String string2 = "def";
+		String rawString = string1 + white + string2;
+		StringSplitter splitter = new StringSplitter();
+	
+		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
+	
+		assertEquals(2, splitStrings.size());
+		assertEquals(string1, splitStrings.get(0));
+		assertEquals(string2, splitStrings.get(1));
 	}
 
 	@Test
@@ -84,9 +82,9 @@ public class StringSplitterWordsStyleTests {
 		String rawString = string1 + white + string2 + white + string3 + white
 				+ string4;
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
+	
 		assertEquals(4, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
 		assertEquals(string2, splitStrings.get(1));
@@ -104,9 +102,9 @@ public class StringSplitterWordsStyleTests {
 		String rawString = string1 + white + string2 + white + string3 + white
 				+ string4;
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
+	
 		assertEquals(4, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
 		assertEquals(string2, splitStrings.get(1));
@@ -115,26 +113,28 @@ public class StringSplitterWordsStyleTests {
 	}
 
 	@Test
-	public void splitsAtSingleWhiteSpace() {
-		String white = " ";
+	public void newLineIsWhiteSpace() {
+		String newLine = "\n";
 		String string1 = "abc";
 		String string2 = "def";
-		String rawString = string1 + white + string2;
+		String rawString = string1 + newLine + string2;
+	
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
+	
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
 		assertEquals(string2, splitStrings.get(1));
 	}
 
 	@Test
-	public void splitsAtWhiteSpaceSequence() {
-		String white = "  \n  \r  \n";
+	public void carriageReturnIsWhiteSpace() {
+		String carriageReturn = "\r";
 		String string1 = "abc";
 		String string2 = "def";
-		String rawString = string1 + white + string2;
+		String rawString = string1 + carriageReturn + string2;
+
 		StringSplitter splitter = new StringSplitter();
 
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
@@ -150,11 +150,11 @@ public class StringSplitterWordsStyleTests {
 		String string1 = "abc";
 		String string2 = "def";
 		String rawString = string1 + newLine + string2;
-
+	
 		StringSplitter splitter = new StringSplitter();
-
+	
 		List<String> splitStrings = splitter.split(rawString, SplitStyle.WORDS);
-
+	
 		assertEquals(2, splitStrings.size());
 		assertEquals(string1, splitStrings.get(0));
 		assertEquals(string2, splitStrings.get(1));
