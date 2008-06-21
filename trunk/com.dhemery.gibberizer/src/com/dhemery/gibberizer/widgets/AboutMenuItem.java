@@ -3,7 +3,6 @@
  */
 package com.dhemery.gibberizer.widgets;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
