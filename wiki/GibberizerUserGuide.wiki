@@ -1,5 +1,5 @@
 #summary How to use Gibberizer.
-#labels Featured
+#labels Featured,Phase-Deploy
 
 =Gibberizer User Guide=
 
@@ -15,7 +15,7 @@ See also:
   * [SystemRequirements System Requirements]
   * [InstallingGibberizer Installing Gibberizer]
   * [RunningGibberizer Running Gibberizer]
-  * [UnderTheHood Under the Hood]
+  * [TheGibberizingProcess]
 
 ==Read input as:==
 
