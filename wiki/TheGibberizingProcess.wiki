@@ -1,0 +1,13 @@
+#summary How Gibberizer translates your text into gibberish.
+
+=The Gibberizing Process=
+
+Gibberizer translates your text into [Gib 'lexically-similar' gibs] in four steps:
+
+*Step 1:* [SlicingTextIntoStrings Slice the input text] into one or more strings.
+
+*Step 2:* [ParsingNgrams Parses each string] into a set of [NGram N-grams], and make a list of all N-grams from all strings.  Notes which N-grams [StartingAndEndingNgrams start and end] each string.
+
+*Step 3:* [CombiningNgramsIntoGibs Create gibs] from the list of N-grams.  Throw out any gibs that are [FilteringGibs disallowed by the filters].  Continues until all of the gibs you wanted have been delivered, or until [GivingUp too many failures occur].
+
+*Step 4:* Display the list of created gibs, separating them with spaces, new lines, or blank lines as you directed.
