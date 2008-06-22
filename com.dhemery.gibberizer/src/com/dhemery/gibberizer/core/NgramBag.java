@@ -17,7 +17,7 @@ public class NgramBag {
 		if(isEnder) enders.add(ngram);
 	}
 
-	public List<Ngram> getAll() {
+	public List<Ngram> getNgrams() {
 		return ngrams;
 	}
 

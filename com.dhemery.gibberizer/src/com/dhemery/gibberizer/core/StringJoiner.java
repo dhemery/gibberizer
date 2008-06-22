@@ -12,7 +12,7 @@ public class StringJoiner {
 		String combinedStrings = strings.get(0);
 
 		for (String string : strings.subList(1, strings.size())) {
-			combinedStrings += joinStyle.delimiter + string;
+			combinedStrings += joinStyle.getDelimiter() + string;
 		}
 		return combinedStrings;
 	}
