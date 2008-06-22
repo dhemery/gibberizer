@@ -1,4 +1,5 @@
 #summary System requirements for Gibberizer.
+#labels Featured,Phase-Deploy
 
 =System Requirements for Gibberizer=
 
