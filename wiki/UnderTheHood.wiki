@@ -2,7 +2,7 @@
 
 =Under the Hood=
 
-==The Overall Process==
+==The Gibberizing Process==
 
 Gibberizer translates your text into [Gib 'lexically-similar' gibs] using this process:
 
