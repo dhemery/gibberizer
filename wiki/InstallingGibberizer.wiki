@@ -1,4 +1,5 @@
 #summary How to install Gibberizer onto your computer.
+#labels Featured,Phase-Deploy
 
 =Installing Gibberizer=
 
