@@ -1,6 +1,6 @@
 #summary How to use Gibberizer.
 
-=User Guide=
+=Gibberizer User Guide=
 
 See also:
   * [SystemRequirements System Requirements]
