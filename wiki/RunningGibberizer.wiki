@@ -1,5 +1,6 @@
 #summary How to run Gibberizer.
+#labels Featured,Phase-Deploy
 
 = Running Gibberizer =
 
-  * To run Gibberizer, double-click on the Gibberizer.jar file.
+  * To run Gibberizer, double-click on the Gibberizer.jar file that you downloaded.
