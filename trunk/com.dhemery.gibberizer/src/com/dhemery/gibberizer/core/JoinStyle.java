@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.dhemery.gibberizer.core;
 
 public enum JoinStyle {
@@ -8,9 +5,13 @@ public enum JoinStyle {
 	NEW_LINE("\n"),
 	BLANK_LINE("\n\n");
 	
-	final String delimiter;
+	private final String delimiter;
 	
 	JoinStyle(String delimiter) {
 		this.delimiter = delimiter;
+	}
+
+	public String getDelimiter() {
+		return delimiter;
 	}
 }

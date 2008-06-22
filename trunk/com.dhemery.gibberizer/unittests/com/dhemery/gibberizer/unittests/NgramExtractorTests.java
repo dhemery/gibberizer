@@ -32,7 +32,7 @@ public class NgramExtractorTests {
 	
 		NgramBag ngrams = extractor.extract(strings, n);
 	
-		assertEquals(1, ngrams.getAll().size());
+		assertEquals(1, ngrams.getNgrams().size());
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class NgramExtractorTests {
 		strings.add(threeCharacterString);
 		int n = threeCharacterString.length() + 1;
 	
-		Ngram ngram = extractor.extract(strings, n).getAll().get(0);
+		Ngram ngram = extractor.extract(strings, n).getNgrams().get(0);
 	
 		assertEquals(threeCharacterString, ngram.toString());
 	}
@@ -54,7 +54,7 @@ public class NgramExtractorTests {
 	
 		NgramBag ngrams = extractor.extract(strings, n);
 	
-		assertEquals(1, ngrams.getAll().size());
+		assertEquals(1, ngrams.getNgrams().size());
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class NgramExtractorTests {
 		strings.add(tenCharacterString);
 		int n = tenCharacterString.length();
 	
-		Ngram ngram = extractor.extract(strings, n).getAll().get(0);
+		Ngram ngram = extractor.extract(strings, n).getNgrams().get(0);
 	
 		assertEquals(tenCharacterString, ngram.toString());
 	}
@@ -91,7 +91,7 @@ public class NgramExtractorTests {
 	
 		NgramBag ngrams = extractor.extract(strings, 4);
 	
-		assertEquals(7, ngrams.getAll().size());
+		assertEquals(7, ngrams.getNgrams().size());
 	}
 
 	@Test
@@ -139,13 +139,13 @@ public class NgramExtractorTests {
 
 	private int getInstanceCount(String target, NgramBag ngramBag) {
 		int instanceCount = 0;
-		for (Ngram ngram : ngramBag.getAll())
+		for (Ngram ngram : ngramBag.getNgrams())
 			if (ngram.toString().equals(target)) instanceCount++;
 		return instanceCount;
 	}
 
 	private Ngram getNgram(String target, NgramBag ngrams) {
-		for (Ngram ngram : ngrams.getAll())
+		for (Ngram ngram : ngrams.getNgrams())
 			if (ngram.toString().equals(target)) return ngram;
 		return null;
 	}

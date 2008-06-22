@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.dhemery.gibberizer.core;
 
 public enum SplitStyle {
@@ -9,9 +6,13 @@ public enum SplitStyle {
 	ONE_STRING("[^\\s\\S]+");	// Don't split (r.e. matches sequence of characters that
 								// are neither white space nor non-white space)
 
-	final String delimiterExpression;
+	private final String delimiterExpression;
 
 	SplitStyle(String delimiterExpression) {
 		this.delimiterExpression = delimiterExpression;
+	}
+
+	String getDelimiterExpression() {
+		return delimiterExpression;
 	}
 }
