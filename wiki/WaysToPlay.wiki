@@ -1,7 +1,9 @@
 #summary A few ways to play with Gibberizer
 #labels Featured
 
-= Creating Names =
+= Ways to Play with Gibberizer =
+
+== Creating Names ==
 
   * Enter 20 or more names into Gibberizer.  Try:
     * First names from baby names web sites.
@@ -15,7 +17,7 @@
   * Gibberize a whole bunch of times.
   * Fiddle with the knobs and Gibberize some more.
 
-= Hysterical Documents =
+== Hysterical Documents ==
 
   * Enter the text of a historical document into Gibberizer.  Try one of these (or any other that tickles your fancy):
     * The Gettysburg Address.
@@ -27,7 +29,7 @@
   * Gibberize a whole bunch of times.
   * Fiddle with the knobs and Gibberize some more.
 
-= Your Own Writing =
+== Your Own Writing ==
   * Enter a scene or section or chapter from your own writing.
   * Follow the directions for Hysterical Documents (above).
   * Gibberize a whole bunch of times.
