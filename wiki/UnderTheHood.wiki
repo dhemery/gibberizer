@@ -1,6 +1,8 @@
 #summary What's going on inside Gibberizer.
 
-= The Overall Process =
+=Under the Hood=
+
+==The Overall Process==
 
 Gibberizer translates your text into [Gib 'lexically-similar' gibs] using this process:
 
