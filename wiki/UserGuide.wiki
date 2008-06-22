@@ -2,28 +2,6 @@
 
 =User Guide=
 
-==Installation==
-
-  * To install Gibberizer, download it onto your computer.
-
-==System Requirements==
-
-Gibberizer requires:
-  * *Java Runtime Environment (JRE) Version 6* or later.  If you don't have this intalled on your machine, you can get one from the [http://www.java.com/en/download/manual.jsp Java Download Page] (Sun Microsystems).  If you have an earlier version of the JRE, Gibberizer might work.  Or it may destroy Western Civilization.  I haven't tested for that.
-  * *A modicum of goofiness* in the user.  I'm confident that you're goofy enough.  SRSLY KTHXBAI.
-
-==Running Gibberizer==
-
-  * To run Gibberizer, double-click on the jar file.
-
-==Help==
-
-  * For help when you're running Gibberizer, hover your mouse over any of the buttons or words in the Parameters area at the top of the Gibberizer window.
-  * Or poke around on the [http://code.google.com/p/gibberizer/w/list Wiki], which as of June 20 2008 is mostly just a big tease.
-  * Whatever you do, don't wake me up before noon.
-
-==Parameters==
-
 Gibberizer has four sets of knobs and buttons you can tweak:
   * *Read input as*:  These parameters tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
   * *Create*:  These parameters tell Gibberizer how many gibs to create, how similar to make them to your input text, and how long to keep trying if the muse isn't working.
