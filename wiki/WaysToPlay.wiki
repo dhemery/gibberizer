@@ -24,7 +24,9 @@
     * The Bill of Rights.
     * The Gibberizer User Guide.
   * Set Gibberizer to read the text as Lines or One String.
-  * Set familarity to 6 or higher.  A familiarity of 8 is often good.  (A familiarity of 6 or higher is good for fiddling with not just words but whole phrases.)
+  * Set familarity to 6 or higher.  A familiarity of 8 is often good.
+    * A familiarity of 6 or higher is good for fiddling with not just words but whole phrases.
+    * A familiarity of 8 or 10 makes The Gettysburg Address sound like Lincoln on smack.
   * You may want to set Gibberizer to insert a blank line between gibs.
   * Gibberize a whole bunch of times.
   * Fiddle with the knobs and Gibberize some more.
