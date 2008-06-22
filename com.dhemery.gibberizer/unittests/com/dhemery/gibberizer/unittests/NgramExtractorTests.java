@@ -16,181 +16,211 @@ import com.dhemery.gibberizer.core.NgramExtractor;
 
 public class NgramExtractorTests {
 	NgramExtractor extractor;
-	private List<String> strings;
+	private List<String> inputStrings;
 
 	@Before
 	public void setUp() {
 		extractor = new NgramExtractor();
-		strings = new ArrayList<String>();
+		inputStrings = new ArrayList<String>();
 	}
 
 	@Test
 	public void extractsOneNgramIfStringIsShorterThanN() {
 		String threeCharacterString = "abc";
-		strings.add(threeCharacterString);
+		inputStrings.add(threeCharacterString);
 		int n = threeCharacterString.length() + 1;
 	
-		NgramBag ngrams = extractor.extract(strings, n);
+		NgramBag bag = extractor.extract(inputStrings, n);
 	
-		assertEquals(1, ngrams.getNgrams().size());
+		assertEquals(1, bag.getNgrams().size());
 	}
 
 	@Test
 	public void extractedNgramMatchesStringIfStringShorterThanN() {
 		String threeCharacterString = "abc";
-		strings.add(threeCharacterString);
+		inputStrings.add(threeCharacterString);
 		int n = threeCharacterString.length() + 1;
 	
-		Ngram ngram = extractor.extract(strings, n).getNgrams().get(0);
-	
+		NgramBag bag = extractor.extract(inputStrings, n);
+
+		Ngram ngram = bag.getNgrams().get(0);
+
 		assertEquals(threeCharacterString, ngram.toString());
 	}
 
 	@Test
 	public void extractsOneNgramIfStringIsLengthN() {
 		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
+		inputStrings.add(tenCharacterString);
 		int n = tenCharacterString.length();
 	
-		NgramBag ngrams = extractor.extract(strings, n);
+		NgramBag bag = extractor.extract(inputStrings, n);
 	
-		assertEquals(1, ngrams.getNgrams().size());
+		assertEquals(1, bag.getNgrams().size());
 	}
 
 	@Test
 	public void extractedNgramMatchesStringIfStringIsLengthN() {
 		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
+		inputStrings.add(tenCharacterString);
 		int n = tenCharacterString.length();
 	
-		Ngram ngram = extractor.extract(strings, n).getNgrams().get(0);
-	
-		assertEquals(tenCharacterString, ngram.toString());
-	}
+		NgramBag bag = extractor.extract(inputStrings, n);
 
-	@Test
-	public void extractsAnNgramForEachNCharacterSubstringOfSingleString() {
-		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
-	
-		NgramBag ngrams = extractor.extract(strings, 4);
-	
-		assertEquals(1, getInstanceCount("abcd", ngrams));
-		assertEquals(1, getInstanceCount("bcde", ngrams));
-		assertEquals(1, getInstanceCount("cdef", ngrams));
-		assertEquals(1, getInstanceCount("defg", ngrams));
-		assertEquals(1, getInstanceCount("efgh", ngrams));
-		assertEquals(1, getInstanceCount("fghi", ngrams));
-		assertEquals(1, getInstanceCount("ghij", ngrams));
+		Ngram ngram = bag.getNgrams().get(0);
+		assertEquals(tenCharacterString, ngram.toString());
 	}
 
 	@Test
 	public void extractsSeven4gramsFromSingleTenCharacterString() {
 		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
+		inputStrings.add(tenCharacterString);
 	
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
 	
-		assertEquals(7, ngrams.getNgrams().size());
+		assertEquals(7, bag.getNgrams().size());
+	}
+
+	@Test
+	public void extractsAnNgramForEachNCharacterSubstringOfSingleString() {
+		String tenCharacterString = "abcdefghij";
+		inputStrings.add(tenCharacterString);
+	
+		NgramBag bag = extractor.extract(inputStrings, 4);
+	
+		assertTrue(containsMatchingNgram(bag, "abcd"));
+		assertTrue(containsMatchingNgram(bag, "bcde"));
+		assertTrue(containsMatchingNgram(bag, "cdef"));
+		assertTrue(containsMatchingNgram(bag, "defg"));
+		assertTrue(containsMatchingNgram(bag, "efgh"));
+		assertTrue(containsMatchingNgram(bag, "fghi"));
+		assertTrue(containsMatchingNgram(bag, "ghij"));
 	}
 
 	@Test
 	public void extractsNgramsFromEachStringInTheList() {
-		strings.add("abcde");
-		strings.add("fghij");
-		strings.add("klmno");
+		inputStrings.add("abcde");
+		inputStrings.add("fghij");
+		inputStrings.add("klmno");
 	
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
 	
-		assertEquals(1, getInstanceCount("abcd", ngrams));
-		assertEquals(1, getInstanceCount("bcde", ngrams));
-		assertEquals(1, getInstanceCount("fghi", ngrams));
-		assertEquals(1, getInstanceCount("ghij", ngrams));
-		assertEquals(1, getInstanceCount("klmn", ngrams));
-		assertEquals(1, getInstanceCount("lmno", ngrams));
+		assertTrue(containsMatchingNgram(bag, "abcd"));
+		assertTrue(containsMatchingNgram(bag, "bcde"));
+		assertTrue(containsMatchingNgram(bag, "fghi"));
+		assertTrue(containsMatchingNgram(bag, "ghij"));
+		assertTrue(containsMatchingNgram(bag, "klmn"));
+		assertTrue(containsMatchingNgram(bag, "lmno"));
 	}
 
 	@Test
 	public void extractsOneNgramForEachInstanceOfAnNCharacterSequence() {
-		strings.add("abcdef");
-		strings.add("bcdefg");
-		strings.add("cdefgh");
-		strings.add("zzzzzz");
+		inputStrings.add("abcdef");
+		inputStrings.add("bcdefg");
+		inputStrings.add("cdefgh");
+		inputStrings.add("zzzzzz");
 	
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
 	
-		assertEquals(2, getInstanceCount("bcde", ngrams));
-		assertEquals(3, getInstanceCount("cdef", ngrams));
-		assertEquals(2, getInstanceCount("defg", ngrams));
-		assertEquals(3, getInstanceCount("zzzz", ngrams));
+		assertEquals(2, getMatchingNgramCount(bag, "bcde"));
+		assertEquals(3, getMatchingNgramCount(bag, "cdef"));
+		assertEquals(2, getMatchingNgramCount(bag, "defg"));
+		assertEquals(3, getMatchingNgramCount(bag, "zzzz"));
 	}
 
 	@Test
 	public void doesNotExtractNgramsAcrossStrings() {
-		strings.add("abcde");
-		strings.add("fghij");
+		inputStrings.add("abcde");
+		inputStrings.add("fghij");
 
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
 
-		assertEquals(0, getInstanceCount("cdef", ngrams));
-		assertEquals(0, getInstanceCount("defg", ngrams));
-		assertEquals(0, getInstanceCount("efgh", ngrams));
-	}
-
-	private int getInstanceCount(String target, NgramBag ngramBag) {
-		int instanceCount = 0;
-		for (Ngram ngram : ngramBag.getNgrams())
-			if (ngram.toString().equals(target)) instanceCount++;
-		return instanceCount;
-	}
-
-	private Ngram getNgram(String target, NgramBag ngrams) {
-		for (Ngram ngram : ngrams.getNgrams())
-			if (ngram.toString().equals(target)) return ngram;
-		return null;
+		assertFalse(containsMatchingNgram(bag, "cdef"));
+		assertFalse(containsMatchingNgram(bag, "defg"));
+		assertFalse(containsMatchingNgram(bag, "efgh"));
 	}
 
 	@Test
 	public void marksFirstNgramAsStarter() {
 		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
+		inputStrings.add(tenCharacterString);
 
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
+		Ngram firstNgram = bag.getNgrams().get(0);
 
-		assertTrue(ngrams.getStarters().contains(getNgram("abcd", ngrams)));
-	}
-
-	@Test
-	public void marksLastNgramAsEnder() {
-		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
-
-		NgramBag ngrams = extractor.extract(strings, 4);
-
-		assertTrue(ngrams.isEnder(getNgram("ghij", ngrams)));
+		assertTrue(bag.getStarters().contains(firstNgram));
 	}
 
 	@Test
 	public void marksNonFirstNgramsAsNotStarters() {
 		String tenLetterString = "abcdefghij";
-		strings.add(tenLetterString);
+		inputStrings.add(tenLetterString);
 
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
 
-		assertFalse(ngrams.getStarters().contains(getNgram("bcde", ngrams)));
-		assertFalse(ngrams.getStarters().contains(getNgram("cdef", ngrams)));
-		assertFalse(ngrams.getStarters().contains(getNgram("ghij", ngrams)));
+		List<Ngram> ngrams = bag.getNgrams();
+		List<Ngram> starters = bag.getStarters();
+		Ngram secondNgram = ngrams.get(1);
+		Ngram thirdNgram = ngrams.get(2);
+		Ngram lastNgram = ngrams.get(ngrams.size()-1);
+
+		assertFalse(starters.contains(secondNgram));
+		assertFalse(starters.contains(thirdNgram));
+		assertFalse(starters.contains(lastNgram));
+	}
+
+	@Test
+	public void marksLastNgramAsEnder() {
+		String tenCharacterString = "abcdefghij";
+		inputStrings.add(tenCharacterString);
+	
+		NgramBag bag = extractor.extract(inputStrings, 4);
+
+		List<Ngram> ngrams = bag.getNgrams();
+		Ngram lastNgram = ngrams.get(ngrams.size()-1);
+		assertTrue(bag.isEnder(lastNgram));
 	}
 
 	@Test
 	public void marksNonLastNgramsAsNotEnders() {
 		String tenCharacterString = "abcdefghij";
-		strings.add(tenCharacterString);
+		inputStrings.add(tenCharacterString);
 
-		NgramBag ngrams = extractor.extract(strings, 4);
+		NgramBag bag = extractor.extract(inputStrings, 4);
 
-		assertFalse(ngrams.isEnder(getNgram("abcd", ngrams)));
-		assertFalse(ngrams.isEnder(getNgram("efgh", ngrams)));
-		assertFalse(ngrams.isEnder(getNgram("fghi", ngrams)));
+		List<Ngram> ngrams = bag.getNgrams();
+		Ngram firstNgram = ngrams.get(0);
+		Ngram lastNgramButTwo = ngrams.get(ngrams.size()-3);
+		Ngram lastNgramButOne = ngrams.get(ngrams.size()-2);
+
+		assertFalse(bag.isEnder(lastNgramButOne));
+		assertFalse(bag.isEnder(lastNgramButTwo));
+		assertFalse(bag.isEnder(firstNgram));
+	}
+
+	private Ngram getMatchingNgram(List<Ngram> ngrams, String target) {
+		for (Ngram ngram : ngrams)
+			if (ngram.toString().equals(target)) return ngram;
+		return null;
+	}
+
+	private Ngram getMatchingNgram(NgramBag bag, String target) {
+		return getMatchingNgram(bag.getNgrams(), target);
+	}
+
+	private List<Ngram> getMatchingNgrams(NgramBag bag, String target) {
+		List<Ngram> ngrams = new ArrayList<Ngram>();
+		for(Ngram ngram : bag.getNgrams()) {
+			if(ngram.toString().equals(target)) ngrams.add(ngram);
+		}
+		return ngrams;
+	}
+
+	private int getMatchingNgramCount(NgramBag ngrams, String target) {
+		return getMatchingNgrams(ngrams, target).size();
+	}
+
+	private boolean containsMatchingNgram(NgramBag bag, String target) {
+		return getMatchingNgram(bag, target) != null;
 	}
 }

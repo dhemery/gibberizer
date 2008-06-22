@@ -6,19 +6,19 @@ import java.util.Random;
 public class NgramJoiner {
 	private final Random random = new Random();
 
-	public String buildString(NgramBag ngramBag) {
+	public String createGib(NgramBag ngramBag) {
 		Ngram ngram = selectRandomStarter(ngramBag);
-		String generatedString = ngram.getPrefix();
+		String gib = ngram.getPrefix();
 		while (!ngramBag.isEnder(ngram)) {
-			generatedString += ngram.getLastCharacter();
+			gib += ngram.getLastCharacter();
 			ngram = selectRandomSuccessor(ngram, ngramBag);
 		}
-		return generatedString + ngram.getLastCharacter();
+		return gib + ngram.getLastCharacter();
 	}
 
 	public void createGibs(NgramBag ngramBag, StringBasket basket) {
 		while (!basket.isDone())
-			basket.deliver(buildString(ngramBag));
+			basket.deliver(createGib(ngramBag));
 	}
 
 	private List<Ngram> getPossibleSuccessors(Ngram ngram, NgramBag ngramBag) {

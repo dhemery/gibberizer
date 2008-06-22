@@ -19,13 +19,6 @@ public class Ngram {
 		initialize(prefix, suffix, lastCharacter);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		Ngram other = (Ngram) o;
-		return prefix.equalsIgnoreCase(other.prefix)
-				&& lastCharacter.equalsIgnoreCase(other.lastCharacter);
-	}
-
 	public String getLastCharacter() {
 		return lastCharacter;
 	}
