@@ -2,19 +2,19 @@
 
 =Gibberizer User Guide=
 
-See also:
-  * [SystemRequirements System Requirements]
-  * [InstallingGibberizer Installing Gibberizer]
-  * [RunningGibberizer Running Gibberizer]
-  * [UnderTheHood Under the Hood]
-
 Gibberizer has four sets of knobs and buttons you can tweak:
   * *Read input as*:  These parameters tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
   * *Create*:  These parameters tell Gibberizer how many gibs to create, how similar to make them to your input text, and how long to keep trying if the muse isn't working.
   * *Filters*:  These parameters tell Gibberizer what kinds of gibs it is allowed to deliver to you.
   * *Separate gibs by*:  These parameters tell Gibberizer how to format the gibs it creates.
 
-These options are described in more detail below.
+These options are described in more detail in the sections below.
+
+See also:
+  * [SystemRequirements System Requirements]
+  * [InstallingGibberizer Installing Gibberizer]
+  * [RunningGibberizer Running Gibberizer]
+  * [UnderTheHood Under the Hood]
 
 ==Read input as:==
 
