@@ -1,6 +1,6 @@
 #summary How to install Gibberizer onto your computer.
 
-  # To install Gibberizer, download it to a folder of your choice on your computer.
+  # To install Gibberizer, download it to a folder of your choice on your computer.  Or right onto your desktop.
   # There is no step 2.  Just download it.
   # Honest.
   # Well, okay, you may want to check out the [SystemRequirements system requirements].
