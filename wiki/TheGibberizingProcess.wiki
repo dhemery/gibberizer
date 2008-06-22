@@ -1,4 +1,5 @@
 #summary How Gibberizer translates your text into gibberish.
+#labels Featured,Phase-Deploy
 
 =The Gibberizing Process=
 
