@@ -6,6 +6,7 @@ See also:
   * [SystemRequirements System Requirements]
   * [InstallingGibberizer Installing Gibberizer]
   * [RunningGibberizer Running Gibberizer]
+  * [UnderTheHood Under the Hood]
 
 Gibberizer has four sets of knobs and buttons you can tweak:
   * *Read input as*:  These parameters tell Gibberizer how to read the text you enter:  As words, as lines, or as one big string of text.
