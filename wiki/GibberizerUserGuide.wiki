@@ -15,7 +15,7 @@ See also:
   * [SystemRequirements System Requirements]
   * [InstallingGibberizer Installing Gibberizer]
   * [RunningGibberizer Running Gibberizer]
-  * [TheGibberizingProcess]
+  * [TheGibberizingProcess The Gibberizing Process]
 
 ==Read input as:==
 
