@@ -5,5 +5,5 @@
 
 Gibberizer requires:
 
-    * Java Runtime Environment (JRE) Version 1.5 or later. If you don't have this intalled on your computer, you can get one from the Java Download Page (Sun Microsystems). If you have an earlier version of the JRE, Gibberizer might work. Or it may destroy Western Civilization. I haven't tested for that.
+    * Java Runtime Environment (JRE) 5.0 (ake JRE 1.5) or later.  If you don't have this intalled on your computer, you can [http://www.java.com/en/download/index.jsp download the latest JRE] from Sun Microsystems. If you have an earlier version of the JRE, Gibberizer might work. Or it may destroy Western Civilization. I haven't tested for that.
     * A modicum of goofiness in the user. I'm confident that you're goofy enough. SRSLY KTHXBAI.
