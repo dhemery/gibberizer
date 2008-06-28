@@ -1,11 +1,11 @@
 package com.dhemery.gibberizer.core;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 public class NgramBag {
-	private final LinkedHashMap<String, List<Ngram>> ngramsByPrefix = new LinkedHashMap<String, List<Ngram>>();
+	private final HashMap<String, List<Ngram>> ngramsByPrefix = new HashMap<String, List<Ngram>>();
 	private final List<Ngram> ngrams = new ArrayList<Ngram>();
 	private final List<Ngram> starters = new ArrayList<Ngram>();
 	private final List<Ngram> enders = new ArrayList<Ngram>();
@@ -17,6 +17,7 @@ public class NgramBag {
 		if(isEnder) enders.add(ngram);
 	}
 
+	// TODO: Kill this method.  It's used only by tests.
 	public List<Ngram> getNgrams() {
 		return ngrams;
 	}
