@@ -10,10 +10,11 @@
     * Last names from US Census Bureau listings.
     * The names of all of the US Presidents.
     * Names from Lord of the Rings.
-    * Names from your family and friends.
+    * Names from your family and friends.  I've created lots of good names for fantasy characters by Gibberizing 300 names from my genealogy.
   * Set Gibberizer to read your text as Words or Lines.
-  * Set familiarity to 3 or 4.  (A familiarity of 3 or 4 is good for playing with words or names.)
+  * Set familiarity to 3 or 4.  A familiarity of 3 or 4 is good for playing with words or names.
   * Set Gibberizer to insert a New Line after each gib.
+  * Maybe set Gibberizer to generate 1000 unique gibs.  This forces Gibberizer to work a little harder, which can cause it to create longer names.
   * Gibberize a whole bunch of times.
   * Fiddle with the knobs and Gibberize some more.
 
