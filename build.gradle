@@ -1,0 +1,84 @@
+import org.junit.platform.console.options.Details
+
+import static org.gradle.api.JavaVersion.*
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.1")
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+ext {
+    vendor = [name: 'Dale H. Emery', group: 'com.dhemery']
+    junitPlatformVersion = '1.0.2'
+    junitJupiterVersion  = '5.0.2'
+    assertJVersion = '3.8.0'
+}
+
+description = 'Gibberizer'
+group = vendor.group
+version = "1.0.0"
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+sourceCompatibility = VERSION_1_9
+targetCompatibility = sourceCompatibility
+mainClassName = 'Gibberizer'
+
+dependencies {
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
+    testCompile group: 'org.assertj', name: 'assertj-core', version: assertJVersion
+
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+    testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+}
+
+junitPlatform {
+    details Details.TREE
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+javadoc {
+    options.with {
+        links "https://docs.oracle.com/javase/9/docs/api/"
+    }
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.description,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor": vendor.name
+        )
+    }
+}
+
+artifacts {
+    archives sourcesJar, javadocJar
+}
