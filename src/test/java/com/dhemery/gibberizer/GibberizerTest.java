@@ -23,7 +23,7 @@ public class GibberizerTest {
     }
 
 
-    @Disabled("TBI")
+    @Disabled("WIP")
     @Test
     public void gibLengthRange() {
         String input = "aba";
