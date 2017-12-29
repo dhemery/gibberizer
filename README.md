@@ -1,3 +1,3 @@
-# Diagnosing Predicates
+# Gibberizer
 
-Exploring how to use Predicates in assertions.
+Automated gibberish.
