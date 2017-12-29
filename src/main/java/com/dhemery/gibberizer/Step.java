@@ -19,8 +19,8 @@ public class Step {
         return substring(position + 1, size);
     }
 
-    public int lastChar() {
-        return text.codePointAt(position + size);
+    public String lastChar() {
+        return substring(position + size, 1);
     }
 
     public boolean isStartStep() {

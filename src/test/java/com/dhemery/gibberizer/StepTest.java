@@ -27,7 +27,7 @@ public class StepTest {
         String text = "0123456789";
         Step step = new Step(text, 2, 3);
 
-        assertThat(step.lastChar()).isEqualTo('5');
+        assertThat(step.lastChar()).isEqualTo("5");
     }
 
     @Nested
