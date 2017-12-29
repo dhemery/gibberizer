@@ -8,14 +8,14 @@ public class GibberizerTest {
     @Test
     public void forced() {
         String text = "abcde";
-        Gibberish gibberish = new Gibberish(text, 2);
+        Gibberish gibberish = new Gibberish(text, 1);
         assertThat(gibberish.get()).isEqualTo("abcde");
     }
 
     @Test
     public void repetition() {
         String text = "abbc";
-        Gibberish gibberish = new Gibberish(text, 2);
+        Gibberish gibberish = new Gibberish(text, 1);
         assertThat(gibberish.get()).matches("ab+c");
     }
 
