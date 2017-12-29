@@ -1,33 +1,28 @@
 package com.dhemery.gibberizer;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GibberizerTest {
-    private final Gibberizer gibberizer = new Gibberizer();
-
     @Test
-    public void onlyOnePossibleGib() {
-        String input = "abcde";
-        String output = gibberizer.gibberize(input);
-        assertThat(output).isEqualTo(input);
+    public void forced() {
+        String text = "abcde";
+        Gibberish gibberish = new Gibberish(text, 2);
+        assertThat(gibberish.get()).isEqualTo("abcde");
     }
 
     @Test
-    public void fixedLengthGib() {
-        String input = "aba";
-        String output = gibberizer.gibberize(input, 3, 3);
-        assertThat(output).isEqualTo(input);
+    public void repetition() {
+        String text = "abbc";
+        Gibberish gibberish = new Gibberish(text, 2);
+        assertThat(gibberish.get()).matches("ab+c");
     }
 
-
-    @Disabled("WIP")
     @Test
-    public void gibLengthRange() {
-        String input = "aba";
-        String output = gibberizer.gibberize(input, 4, 6);
-        assertThat(output).isEqualTo("ababa");
+    public void alternation() {
+        String text = "abacadaeafagahai";
+        Gibberish gibberish = new Gibberish(text, 2);
+        assertThat(gibberish.get()).matches("(a[bcdefghi])+");
     }
 }
