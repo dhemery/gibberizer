@@ -12,10 +12,9 @@ public class Gibberish {
     private final List<NGram> startNGrams = new ArrayList<>();
     private final Map<String, List<NGram>> nGramsGroupedByStringValue;
 
-    public Gibberish(int size, String text) {
-        NGram startNGram = new NGram(text, 0, size);
-        startNGrams.add(startNGram);
-        nGramsGroupedByStringValue = NGramStream.of(size, text)
+    public Gibberish(int size, String... strings) {
+        nGramsGroupedByStringValue = NGramStream.of(size, strings)
+                .peek(n -> { if(n.isStartNGram()) startNGrams.add(n);})
                 .collect(groupingBy(NGram::toString));
     }
 
