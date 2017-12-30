@@ -1,44 +1,42 @@
 package com.dhemery.gibberizer;
 
 import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 
-public class Gibberish implements Supplier<String> {
+public class Gibberish {
     private static final int SIZE = 1000;
     private static final Random RANDOM = new Random();
-    private final List<Step> startSteps = new ArrayList<>();
-    private final Map<String, List<Step>> stepsByHead;
+    private final List<NGram> startNGrams = new ArrayList<>();
+    private final Map<String, List<NGram>> nGramsGroupedByStringValue;
 
     public Gibberish(int overlap, String text) {
-        stepsByHead = IntStream.rangeClosed(0, text.length() - overlap)
-                .mapToObj(p -> new Step(text, p, overlap))
-                .peek(s -> Optional.of(s).filter(Step::isStartStep).ifPresent(startSteps::add))
-                .collect(groupingBy(Step::head));
+        NGram startNGram = new NGram(text, 0, overlap + 1);
+        startNGrams.add(startNGram);
+        nGramsGroupedByStringValue = Stream.iterate(Optional.of(startNGram), n -> n.flatMap(NGram::nextNGram))
+                .takeWhile(Optional::isPresent)
+                .map(Optional::get)
+                .collect(groupingBy(NGram::toString));
     }
 
-    @Override
-    public String get() {
-        Step startStep = selectRandom(startSteps);
-        return stepStream(startStep)
+    public String generate() {
+        NGram startNGram = selectRandom(startNGrams);
+        return Stream.iterate(Optional.of(startNGram), n -> n.flatMap(this::randomNextNGram))
                 .limit(SIZE)
-                .map(Step::lastChar)
-                .collect(joining("", startStep.head(), ""));
+                .takeWhile(Optional::isPresent)
+                .map(Optional::get)
+                .map(NGram::lastCharacter)
+                .collect(joining("", startNGram.prefix(), ""));
     }
 
-    private Stream<Step> stepStream(Step startStep) {
-        return Stream.iterate(startStep, s -> !s.isEndStep(), this::randomNextStep);
+    private Optional<NGram> randomNextNGram(NGram nGram) {
+        List<NGram> candidates = nGramsGroupedByStringValue.get(nGram.toString());
+        return selectRandom(candidates).nextNGram();
     }
 
-    private Step randomNextStep(Step step) {
-        return selectRandom(stepsByHead.get(step.tail()));
-    }
-
-    private static Step selectRandom(List<Step> list) {
+    private static NGram selectRandom(List<NGram> list) {
         return list.get(RANDOM.nextInt(list.size()));
     }
 }
