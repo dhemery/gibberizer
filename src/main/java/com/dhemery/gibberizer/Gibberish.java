@@ -12,12 +12,10 @@ public class Gibberish {
     private final List<NGram> startNGrams = new ArrayList<>();
     private final Map<String, List<NGram>> nGramsGroupedByStringValue;
 
-    public Gibberish(int overlap, String text) {
-        NGram startNGram = new NGram(text, 0, overlap + 1);
+    public Gibberish(int size, String text) {
+        NGram startNGram = new NGram(text, 0, size);
         startNGrams.add(startNGram);
-        nGramsGroupedByStringValue = Stream.iterate(Optional.of(startNGram), n -> n.flatMap(NGram::nextNGram))
-                .takeWhile(Optional::isPresent)
-                .map(Optional::get)
+        nGramsGroupedByStringValue = NGramStream.of(size, text)
                 .collect(groupingBy(NGram::toString));
     }
 
