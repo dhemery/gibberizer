@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 
-class SelectNextNGram implements Function<NGram, Optional<NGram>> {
+class SelectNextNGram implements UnaryOperator<NGram> {
     private final Function<NGram, String> classifier;
     private final Map<String, List<NGram>> nGramsGroupedByString;
     private final Function<List<NGram>, NGram> selector;
@@ -23,11 +25,12 @@ class SelectNextNGram implements Function<NGram, Optional<NGram>> {
     }
 
     @Override
-    public Optional<NGram> apply(NGram nGram) {
-        return Optional.of(nGram)
-                .map(classifier)
-                .map(nGramsGroupedByString::get)
-                .map(selector)
-                .flatMap(NGram::nextNGram);
+    public NGram apply(NGram nGram) {
+        return classifier
+                .andThen(nGramsGroupedByString::get)
+                .andThen(selector)
+                .andThen(NGram::nextNGram)
+                .apply(nGram)
+                .orElse(null);
     }
 }

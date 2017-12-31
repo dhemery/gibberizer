@@ -1,6 +1,7 @@
 package com.dhemery.gibberizer;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -21,8 +22,7 @@ public class NGramStream {
     }
 
     public static Stream<NGram> startingWith(NGram startNGram) {
-        return Stream.iterate(Optional.of(startNGram), n -> n.flatMap(NGram::nextNGram))
-                .takeWhile(Optional::isPresent)
-                .map(Optional::get);
+        return Stream.iterate(startNGram, n -> n.nextNGram().orElse(null))
+                .takeWhile(Objects::nonNull);
     }
 }
