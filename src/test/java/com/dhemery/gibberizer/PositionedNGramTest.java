@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NGramTest {
+public class PositionedNGramTest {
     @Nested
     class Strings {
         String text = "0123456789";
-        NGram nGram = new NGram(text, 2, 3);
+        NGram nGram = new PositionedNGram(text, 2, 3);
 
         @Test
         public void toStringIsNCharactersAtPosition() {
@@ -30,7 +30,7 @@ public class NGramTest {
     @Nested
     class NGramAtStartOfText {
         private final String text = "0123456789";
-        private final NGram nGram = new NGram(text, 0, 3);
+        private final NGram nGram = new PositionedNGram(text, 0, 3);
 
         @Test
         public void isStartStep() {
@@ -43,7 +43,7 @@ public class NGramTest {
         private final String text = "0123456789";
         private final int size = 4;
         private final int position = text.length() - size;
-        private final NGram nGram = new NGram(text, position, size);
+        private final NGram nGram = new PositionedNGram(text, position, size);
 
         @Test
         public void hasNoNext() {
@@ -54,7 +54,7 @@ public class NGramTest {
     @Nested
     class NGramAtNeitherEndOfText {
         private final String text = "0123456789";
-        private final NGram nGram = new NGram(text, 2, 3);
+        private final NGram nGram = new PositionedNGram(text, 2, 3);
 
         @Test
         public void isNotStartStep() {
@@ -63,14 +63,14 @@ public class NGramTest {
 
         @Test
         public void hasNextOfSameLengthStartingAtNextPosition() {
-            assertThat(nGram.nextNGram()).contains(new NGram(text, 3, 3));
+            assertThat(nGram.nextNGram()).contains(new PositionedNGram(text, 3, 3));
         }
     }
 
     @Nested
     class NGramOfEntireText {
         private final String text = "0123";
-        private final NGram step = new NGram(text, 0, text.length());
+        private final NGram step = new PositionedNGram(text, 0, text.length());
 
         @Test
         public void isStartStep() {
@@ -87,32 +87,32 @@ public class NGramTest {
     @Nested
     class Equals {
         String text = "0123456789";
-        NGram nGram = new NGram(text, 2, 3);
+        NGram nGram = new PositionedNGram(text, 2, 3);
 
         @Test
         public void trueIfEqualTextPositionAndSize() {
-            NGram equalNGram = new NGram(text, 2, 3);
+            NGram equalNGram = new PositionedNGram(text, 2, 3);
 
             assertThat(nGram).isEqualTo(equalNGram);
         }
 
         @Test
         public void falseIfTextsDiffer() {
-            NGram nGramWithDifferentText = new NGram(text + "foo", 2, 3);
+            NGram nGramWithDifferentText = new PositionedNGram(text + "foo", 2, 3);
 
             assertThat(nGram).isNotEqualTo(nGramWithDifferentText);
         }
 
         @Test
         public void falseIfPositionsDiffer() {
-            NGram nGramWithDifferentPosition = new NGram(text, 3, 3);
+            NGram nGramWithDifferentPosition = new PositionedNGram(text, 3, 3);
 
             assertThat(nGram).isNotEqualTo(nGramWithDifferentPosition);
         }
 
         @Test
         public void falseIfSizesDiffer() {
-            NGram nGramWithDifferentSize = new NGram(text, 2, 2);
+            NGram nGramWithDifferentSize = new PositionedNGram(text, 2, 2);
 
             assertThat(nGram).isNotEqualTo(nGramWithDifferentSize);
         }

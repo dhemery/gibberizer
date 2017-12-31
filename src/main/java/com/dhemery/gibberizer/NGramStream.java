@@ -13,7 +13,7 @@ public class NGramStream {
 
     public Stream<NGram> of(String... strings) {
         return Arrays.stream(strings)
-                .flatMap(s -> startingWith(new NGram(s, 0, size)));
+                .flatMap(s -> startingWith(new PositionedNGram(s, 0, size)));
     }
 
     public static Stream<NGram> of(int size, String... strings) {
