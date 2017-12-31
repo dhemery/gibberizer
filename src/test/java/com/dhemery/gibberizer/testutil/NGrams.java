@@ -15,27 +15,9 @@ public class NGrams {
     }
 
     public static NGram nGramEndingWith(char lastCharacter) {
-        return new NGram() {
-            @Override
-            public boolean isStarter() {
-                return false;
-            }
-
-            @Override
-            public String prefix() {
-                return null;
-            }
-
-            @Override
-            public String suffix() {
-                return null;
-            }
-
-            @Override
-            public char lastCharacter() {
-                return lastCharacter;
-            }
-        };
+        MutableNGram nGram = new MutableNGram();
+        nGram.setLastCharacter(lastCharacter);
+        return nGram;
     }
 
     public static UnaryOperator<NGram> sequenceOf(List<NGram> nGrams) {
