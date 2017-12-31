@@ -18,7 +18,7 @@ public class PositionedNGramTest {
 
         @Test
         public void lastCharacterIsCharacterAtPositionPlusNMinusOne() {
-            assertThat(nGram.lastCharacter()).isEqualTo("4");
+            assertThat(nGram.lastCharacter()).isEqualTo('4');
         }
 
         @Test
@@ -28,59 +28,24 @@ public class PositionedNGramTest {
     }
 
     @Nested
-    class NGramAtStartOfText {
+    class AtPositionZero {
         private final String text = "0123456789";
         private final NGram nGram = new PositionedNGram(text, 0, 3);
 
         @Test
         public void isStartStep() {
-            assertThat(nGram.isStartNGram()).isTrue();
+            assertThat(nGram.isStarter()).isTrue();
         }
     }
 
     @Nested
-    class NGramAtEndOfText {
-        private final String text = "0123456789";
-        private final int size = 4;
-        private final int position = text.length() - size;
-        private final NGram nGram = new PositionedNGram(text, position, size);
-
-        @Test
-        public void hasNoNext() {
-            assertThat(nGram.nextNGram()).isNotPresent();
-        }
-    }
-
-    @Nested
-    class NGramAtNeitherEndOfText {
+    class NotAtPositionZero {
         private final String text = "0123456789";
         private final NGram nGram = new PositionedNGram(text, 2, 3);
 
         @Test
         public void isNotStartStep() {
-            assertThat(nGram.isStartNGram()).isFalse();
-        }
-
-        @Test
-        public void hasNextOfSameLengthStartingAtNextPosition() {
-            assertThat(nGram.nextNGram()).contains(new PositionedNGram(text, 3, 3));
-        }
-    }
-
-    @Nested
-    class NGramOfEntireText {
-        private final String text = "0123";
-        private final NGram step = new PositionedNGram(text, 0, text.length());
-
-        @Test
-        public void isStartStep() {
-            assertThat(step.isStartNGram()).isTrue();
-        }
-
-
-        @Test
-        public void hasNoNext() {
-            assertThat(step.nextNGram()).isNotPresent();
+            assertThat(nGram.isStarter()).isFalse();
         }
     }
 

@@ -2,9 +2,9 @@ package com.dhemery.gibberizer.testutil;
 
 import com.dhemery.gibberizer.NGram;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.UnaryOperator;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -14,10 +14,10 @@ public class NGrams {
         return Stream.of(lastCharacters).map(NGrams::nGramEndingWith).collect(toList());
     }
 
-    public static NGram nGramEndingWith(Character lastCharacter) {
+    public static NGram nGramEndingWith(char lastCharacter) {
         return new NGram() {
             @Override
-            public boolean isStartNGram() {
+            public boolean isStarter() {
                 return false;
             }
 
@@ -27,13 +27,13 @@ public class NGrams {
             }
 
             @Override
-            public String lastCharacter() {
-                return String.valueOf(lastCharacter);
+            public String suffix() {
+                return null;
             }
 
             @Override
-            public Optional<NGram> nextNGram() {
-                return Optional.empty();
+            public char lastCharacter() {
+                return lastCharacter;
             }
         };
     }

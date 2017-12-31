@@ -1,10 +1,11 @@
 package com.dhemery.gibberizer;
 
-import java.util.Optional;
-
 public interface NGram {
-    boolean isStartNGram();
+    boolean isStarter();
+
     String prefix();
-    String lastCharacter();
-    Optional<NGram> nextNGram();
+
+    String suffix();
+
+    char lastCharacter();
 }

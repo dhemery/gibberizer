@@ -15,24 +15,10 @@ public class NGramStreamTest {
         NGram nGram1 = new PositionedNGram(string, 1, size);
         NGram nGram2 = new PositionedNGram(string, 2, size);
 
-        Stream<NGram> nGrams = NGramStream.of(size, string);
+        Stream<NGram> nGrams = new NGramStream(size).of(string);
 
         assertThat(nGrams).containsOnly(nGram0, nGram1, nGram2);
     }
-
-    @Test
-    public void streamStartingFromNGram() {
-        String string = "abcde";
-        int size = 3;
-        NGram nGram0 = new PositionedNGram(string, 0, size);
-        NGram nGram1 = new PositionedNGram(string, 1, size);
-        NGram nGram2 = new PositionedNGram(string, 2, size);
-
-        Stream<NGram> nGrams = NGramStream.startingWith(nGram0);
-
-        assertThat(nGrams).containsOnly(nGram0, nGram1, nGram2);
-    }
-
 
     @Test
     public void streamFromSeveralStrings() {
@@ -46,7 +32,7 @@ public class NGramStreamTest {
         NGram nGram11 = new PositionedNGram(string1, 1, size);
         NGram nGram12 = new PositionedNGram(string1, 2, size);
 
-        Stream<NGram> nGrams = NGramStream.of(size, string0, string1);
+        Stream<NGram> nGrams = new NGramStream(size).of(string0, string1);
 
         assertThat(nGrams).containsOnly(nGram00, nGram01, nGram02, nGram10, nGram11, nGram12);
     }

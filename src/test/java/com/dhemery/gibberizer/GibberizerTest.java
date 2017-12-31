@@ -16,7 +16,7 @@ public class GibberizerTest {
     public void equalToStarterStringIfNextYieldsNull() {
         Gibberish gibberish = new Gibberish(() -> starter, n -> null);
 
-        assertThat(gibberish.generate()).isEqualTo(starter.toString());
+        assertThat(gibberish.get()).isEqualTo(starter.toString());
     }
 
     @Test
@@ -27,6 +27,6 @@ public class GibberizerTest {
 
         Gibberish gibberish = new Gibberish(() -> starter, sequenceOf(nGramsEndingWith(lastCharacters)));
 
-        assertThat(gibberish.generate()).isEqualTo(expected);
+        assertThat(gibberish.get()).isEqualTo(expected);
     }
 }

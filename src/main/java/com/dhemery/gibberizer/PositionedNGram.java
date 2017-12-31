@@ -1,7 +1,6 @@
 package com.dhemery.gibberizer;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class PositionedNGram implements NGram {
     private final String text;
@@ -15,13 +14,8 @@ public class PositionedNGram implements NGram {
     }
 
     @Override
-    public String toString() {
-        return substring(position, size);
-    }
-
-    @Override
-    public String lastCharacter() {
-        return substring(position + size - 1, 1);
+    public boolean isStarter() {
+        return position == 0;
     }
 
     @Override
@@ -30,14 +24,18 @@ public class PositionedNGram implements NGram {
     }
 
     @Override
-    public boolean isStartNGram() {
-        return position == 0;
+    public String suffix() {
+        return substring(position + 1, size - 1);
     }
 
     @Override
-    public Optional<NGram> nextNGram() {
-        if (position + size == text.length()) return Optional.empty();
-        return Optional.of(new PositionedNGram(text, position + 1, size));
+    public char lastCharacter() {
+        return text.charAt(position + size - 1);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, position, size);
     }
 
     @Override
@@ -51,8 +49,8 @@ public class PositionedNGram implements NGram {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(text, position, size);
+    public String toString() {
+        return substring(position, size);
     }
 
     private String substring(int index, int length) {
