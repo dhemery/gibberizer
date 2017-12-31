@@ -2,7 +2,6 @@ package com.dhemery.gibberizer;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class NGramStream {

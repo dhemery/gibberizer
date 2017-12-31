@@ -2,10 +2,8 @@ package com.dhemery.gibberizer;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -18,7 +16,7 @@ class SelectNextNGram implements UnaryOperator<NGram> {
         this(nGrams, Object::toString, selector);
     }
 
-    public SelectNextNGram(List<NGram> nGrams, Function<NGram,String> classifier, Function<List<NGram>, NGram> selector) {
+    public SelectNextNGram(List<NGram> nGrams, Function<NGram, String> classifier, Function<List<NGram>, NGram> selector) {
         this.selector = selector;
         this.classifier = classifier;
         nGramsGroupedByString = nGrams.stream().collect(groupingBy(classifier));

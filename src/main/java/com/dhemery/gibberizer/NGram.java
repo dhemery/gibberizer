@@ -32,7 +32,7 @@ public class NGram {
     }
 
     public Optional<NGram> nextNGram() {
-        if(position + size == text.length()) return Optional.empty();
+        if (position + size == text.length()) return Optional.empty();
         return Optional.of(new NGram(text, position + 1, size));
     }
 
