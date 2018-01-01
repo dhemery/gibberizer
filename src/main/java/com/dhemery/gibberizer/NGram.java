@@ -2,29 +2,31 @@ package com.dhemery.gibberizer;
 
 import java.util.Objects;
 
+/**
+ * Represents a contiguous sequence of characters extracted from a source string.
+ */
 public class NGram {
     private final String string;
     private final boolean isStarter;
     private final boolean isEnder;
 
-
     /**
-     * Creates an {@code NGram} from the given string,
+     * Creates an n-gram that represents the given string,
      * which is taken to represent neither the start nor the end
      * of the string from which it was parsed.
      *
-     * @param string the string from which to make an {@code NGram}
+     * @param string the string from which to make an n-gram
      */
     public NGram(String string) {
         this(string, false, false);
     }
 
     /**
-     * Creates an {@code NGram} from the given string.
+     * Creates an n-gram that represents the given string.
      *
-     * @param string    the string from which to make an {@code NGram}
-     * @param isStarter indicates whether this {@code NGram} represents the start of the string from which it was parsed
-     * @param isEnder   indicates whether this {@code NGram} represents the end of the string from which it was parsed
+     * @param string    the string from which to make an n-gram
+     * @param isStarter indicates whether this n-gram represents the start of the string from which it was parsed
+     * @param isEnder   indicates whether this n-gram represents the end of the string from which it was parsed
      */
     public NGram(String string, boolean isStarter, boolean isEnder) {
         this.string = string;
@@ -33,88 +35,94 @@ public class NGram {
     }
 
     /**
-     * Creates an {@code NGram} from a substring extracted from the given string.
-     * <p>
-     * If {@code position == 0}, the {@code NGram} represents the start of the string.
-     * If {@code position + size == string.length()}, the {@code NGram} represents the end of the string.
-     * </p>
+     * Returns whether or not this n-gram represents the start of the string from which it was parsed.
      *
-     * @param string   the string from which to extract an {@code NGram}
-     * @param position the position at which the {@code NGram} starts in the string
-     * @param size     the size of the {@code NGram}
-     * @return the {@code NGram}
-     */
-    public static NGram fromSubstring(String string, int position, int size) {
-        return new NGram(string.substring(position, position + size), position == 0, position + size == string.length());
-    }
-
-    /**
-     * Returns whether or not this {@code NGram} represents the start of the string from which it was parsed.
-     *
-     * @return {@code true} if, and only if, this {@code NGram} represents the start of the string from which it was parsed
+     * @return {@code true} if, and only if, this n-gram represents the start of the string from which it was parsed
      */
     public boolean isStarter() {
         return isStarter;
     }
 
     /**
-     * Returns whether or not this {@code NGram} represents the end of the string from which it was parsed.
+     * Returns whether or not this n-gram represents the end of the string from which it was parsed.
      *
-     * @return {@code true} if, and only if, this {@code NGram} represents the end of the string from which it was parsed
+     * @return {@code true} if, and only if, this n-gram represents the end of the string from which it was parsed
      */
     public boolean isEnder() {
         return isEnder;
     }
 
     /**
-     * Returns a substring that represents all characters of this {@code NGram} but the last.
+     * Returns the substring of this n-gram that excludes the last character.
      *
-     * @return a substring that represents all characters of this {@code NGram} but the last
+     * @return the substring of this n-gram that excludes the last character
      */
     public String prefix() {
         return string.substring(0, string.length() - 1);
     }
 
     /**
-     * Returns a substring that represents all characters of this {@code NGram} but the first.
+     * Returns the substring of this n-gram that excludes the first character.
      *
-     * @return a substring that represents all characters of this {@code NGram} but the first
+     * @return the substring of this n-gram that excludes the first character
      */
     public String suffix() {
         return string.substring(1);
     }
 
     /**
-     * Returns a codepoint that represents last character of this {@code NGram}.
+     * Returns a code point that represents last character of this n-gram.
      *
-     * @return a codepoint that represents last character of this {@code NGram}
+     * @return a code point that represents last character of this n-gram
      */
-    public char lastCharacter() {
-        return string.charAt(string.length() - 1);
+    public int lastCharacter() {
+        return string.codePointAt(string.length() - 1);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(string, isStarter, isEnder);
     }
 
     /**
-     * Returns the string that this {@code NGram} represents.
+     * Tests this n-gram for equality with the given object.
      *
-     * @return the string that this {@code NGram} represents
+     * @param other the object to which this n-gram is to be compared
+     * @return true if, and only if, the given object is an {@code NGram} that is identical to this NGram
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof NGram)) return false;
+        NGram otherNGram = (NGram) other;
+        return isStarter == otherNGram.isStarter &&
+                isEnder == otherNGram.isEnder &&
+                Objects.equals(string, otherNGram.string);
+    }
+
+    /**
+     * Returns the string that this n-gram represents.
+     *
+     * @return the string that this n-gram represents
      */
     @Override
     public String toString() {
         return string;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NGram)) return false;
-        NGram other = (NGram) o;
-        return isStarter == other.isStarter &&
-                isEnder == other.isEnder &&
-                Objects.equals(string, other.string);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(string, isStarter, isEnder);
+    /**
+     * Creates an n-gram that represents a substring extracted from the given string.
+     * <p>
+     * If {@code index == 0}, the n-gram represents the start of the string.
+     * If {@code index + length == string.length()}, the n-gram represents the end of the string.
+     * </p>
+     *
+     * @param string the string from which to extract the n-gram
+     * @param index  the index at which the n-gram starts in the string
+     * @param length the length of the n-gram
+     * @return the created {@code NGram}
+     */
+    public static NGram fromSubstring(String string, int index, int length) {
+        return new NGram(string.substring(index, index + length), index == 0, index + length == string.length());
     }
 }

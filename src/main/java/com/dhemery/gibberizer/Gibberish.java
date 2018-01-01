@@ -41,14 +41,12 @@ public class Gibberish implements Supplier<String> {
     }
 
     /**
-     * <p>
      * Generates a string of gibberish
      * that begins with the the full text
      * of the {@code NGram} supplied by the starter supplier,
      * and is followed by the last character
      * of each successor {@code NGram}
      * computed by the successor operator.
-     * </p>
      * <p>
      * The string of gibberish ends
      * when the successor operator returns {@code null},

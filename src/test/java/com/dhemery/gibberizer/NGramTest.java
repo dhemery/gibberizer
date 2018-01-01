@@ -120,52 +120,56 @@ public class NGramTest {
 
     @Nested
     class FromSubstring {
-        @Nested
-        class Strings {
-            String string = "0123456789";
-            NGram nGram = NGram.fromSubstring(string, 2, 3);
-
-            @Test
-            public void toStringIsNCharactersAtPosition() {
-                assertThat(nGram).hasToString("234");
-            }
-
-            @Test
-            public void lastCharacterIsCharacterAtPositionPlusNMinusOne() {
-                assertThat(nGram.lastCharacter()).isEqualTo('4');
-            }
-
-            @Test
-            public void prefixIsNMinusOneCharactersStartingAtPosition() {
-                assertThat(nGram.prefix()).isEqualTo("23");
-            }
-
-            @Test
-            public void suffixIsNMinusOneCharactersStartingAtPositionPlusOne() {
-                assertThat(nGram.suffix()).isEqualTo("34");
-            }
+        @Test
+        public void toStringIsSubstringAtIndexAndLengthSize() {
+            NGram nGram = NGram.fromSubstring("0123456789", 2, 3);
+            assertThat(nGram).hasToString("234");
         }
 
-        @Nested
-        class AtPositionZero {
-            private final String string = "0123456789";
-            private final NGram nGram = NGram.fromSubstring(string, 0, 3);
+        @Test
+        public void lastCharacterIsCharacterAtIndexPlusLengthMinusOne() {
+            NGram nGram = NGram.fromSubstring("0123456789", 2, 3);
 
-            @Test
-            public void isStartStep() {
-                assertThat(nGram.isStarter()).isTrue();
-            }
+            assertThat(nGram.lastCharacter()).isEqualTo('4');
         }
 
-        @Nested
-        class NotAtPositionZero {
-            private final String string = "0123456789";
-            private final NGram nGram = NGram.fromSubstring(string, 2, 3);
+        @Test
+        public void prefixIsLengthMinusOneCharactersStartingWithCharacterAtIndex() {
+            NGram nGram = NGram.fromSubstring("0123456789", 2, 3);
+            assertThat(nGram.prefix()).isEqualTo("23");
+        }
 
-            @Test
-            public void isNotStartStep() {
-                assertThat(nGram.isStarter()).isFalse();
-            }
+        @Test
+        public void suffixIsLengthMinusOneCharactersStartingWithCharacterAfterIndex() {
+            NGram nGram = NGram.fromSubstring("0123456789", 2, 3);
+            assertThat(nGram.suffix()).isEqualTo("34");
+        }
+
+        @Test
+        public void substringAtIndexZeroIsStarter() {
+            NGram nGram = NGram.fromSubstring("0123456789", 0, 3);
+            assertThat(nGram.isStarter()).isTrue();
+        }
+
+        @Test
+        public void substringNotAtIndexZeroIsNotStarter() {
+            NGram nGram = NGram.fromSubstring("0123456789", 1, 3);
+
+            assertThat(nGram.isStarter()).isFalse();
+        }
+
+        @Test
+        public void substringAtEndOfStringIsEnder() {
+            NGram nGram = NGram.fromSubstring("0123456789", 7, 3);
+
+            assertThat(nGram.isEnder()).isTrue();
+        }
+
+        @Test
+        public void substringNotAtEndOfStringIsNotEnder() {
+            NGram nGram = NGram.fromSubstring("0123456789", 6, 3);
+
+            assertThat(nGram.isEnder()).isFalse();
         }
     }
 }

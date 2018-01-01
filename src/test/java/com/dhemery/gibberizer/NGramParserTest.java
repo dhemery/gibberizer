@@ -2,7 +2,6 @@ package com.dhemery.gibberizer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NGramParserTest {
     @Test
     public void emptyIfNoStrings() {
-        assertThat(new NGramParser(3).parse("")).isEmpty();
+        assertThat(new NGramParser(3).parse()).isEmpty();
     }
 
     @Test

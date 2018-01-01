@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 public class NGrams {
     public static UnaryOperator<NGram> sequenceOf(NGram... nGrams) {
