@@ -1,17 +1,16 @@
 package com.dhemery.gibberizer.core;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class NGramParserTest {
     @Test
     public void emptyIfNoStrings() {
-        Assertions.assertThat(new NGramParser(3).parse()).isEmpty();
+        assertThat(new NGramParser(3).parse()).isEmpty();
     }
 
     @Test
@@ -27,7 +26,7 @@ public class NGramParserTest {
 
         List<NGram> actual = new NGramParser(size).parse(string);
 
-        assertThat(actual).hasSameElementsAs(expected);
+        assertThat(actual).containsExactlyElementsIn(expected);
     }
 
     @Test
@@ -47,7 +46,7 @@ public class NGramParserTest {
 
         List<NGram> actual = new NGramParser(size).parse(string0, string1);
 
-        assertThat(actual).hasSameElementsAs(expected);
+        assertThat(actual).containsExactlyElementsIn(expected);
     }
 
     @Test
@@ -66,6 +65,6 @@ public class NGramParserTest {
 
         List<NGram> actual = new NGramParser(size).parse(Set.of(string0, string1));
 
-        assertThat(actual).hasSameElementsAs(expected);
+        assertThat(actual).containsExactlyElementsIn(expected);
     }
 }

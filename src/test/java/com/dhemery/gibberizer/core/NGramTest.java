@@ -3,7 +3,7 @@ package com.dhemery.gibberizer.core;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class NGramTest {
     @Nested
@@ -12,7 +12,7 @@ public class NGramTest {
 
         @Test
         public void toStringIsGivenString() {
-            assertThat(nGram).hasToString("234");
+            assertThat(nGram.toString()).isEqualTo("234");
         }
 
         @Test
@@ -123,7 +123,7 @@ public class NGramTest {
         @Test
         public void toStringIsSubstringAtIndexAndLengthSize() {
             NGram nGram = NGram.fromSubstring("0123456789", 2, 3);
-            assertThat(nGram).hasToString("234");
+            assertThat(nGram.toString()).isEqualTo("234");
         }
 
         @Test

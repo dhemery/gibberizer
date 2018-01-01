@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.dhemery.gibberizer.testutil.NGrams.sequenceOf;
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.stream.Collectors.joining;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class GibberizerTest {
     private final NGram starter = new NGram("abc", true, false);
