@@ -1,4 +1,4 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

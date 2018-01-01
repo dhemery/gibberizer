@@ -1,5 +1,6 @@
-package com.dhemery.gibberizer;
+package com.dhemery.gibberizer.core;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NGramParserTest {
     @Test
     public void emptyIfNoStrings() {
-        assertThat(new NGramParser(3).parse()).isEmpty();
+        Assertions.assertThat(new NGramParser(3).parse()).isEmpty();
     }
 
     @Test

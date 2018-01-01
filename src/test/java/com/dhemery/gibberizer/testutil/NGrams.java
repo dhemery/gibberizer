@@ -1,6 +1,6 @@
 package com.dhemery.gibberizer.testutil;
 
-import com.dhemery.gibberizer.NGram;
+import com.dhemery.gibberizer.core.NGram;
 
 import java.util.Arrays;
 import java.util.Iterator;
