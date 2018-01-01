@@ -2,30 +2,40 @@ package com.dhemery.gibberizer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.Stream;
+import java.util.List;
 
-import static com.dhemery.gibberizer.testutil.NGrams.nGramsEndingWith;
 import static com.dhemery.gibberizer.testutil.NGrams.sequenceOf;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GibberizerTest {
-    private final NGram starter = new PositionedNGram("012345678", 0, 3);
+    private final NGram starter = new NGram("abc", true, false);
 
     @Test
-    public void equalToStarterStringIfNextYieldsNull() {
+    public void textOfStarterIfNoSuccessors() {
         Gibberish gibberish = new Gibberish(() -> starter, n -> null);
 
         assertThat(gibberish.get()).isEqualTo(starter.toString());
     }
 
     @Test
-    public void appendsLastCharacterFromEachNGramYieldedByNext() {
-        Character[] lastCharacters = {'u', 'v', 'w', 'x', 'y', 'z'};
-        String tail = Stream.of(lastCharacters).map(String::valueOf).collect(joining());
-        String expected = starter.toString() + tail;
+    public void textOfStarterFollowedByLastCharacterOfEachSuccessor() {
+        List<NGram> successors = List.of(
+                new NGram("--u"),
+                new NGram("--v"),
+                new NGram("--w"),
+                new NGram("--x"),
+                new NGram("--y"),
+                new NGram("--z"));
 
-        Gibberish gibberish = new Gibberish(() -> starter, sequenceOf(nGramsEndingWith(lastCharacters)));
+        String lastCharacterOfEachSuccessor = successors.stream()
+                .map(NGram::lastCharacter)
+                .map(String::valueOf)
+                .collect(joining());
+
+        String expected = starter.toString() + lastCharacterOfEachSuccessor;
+
+        Gibberish gibberish = new Gibberish(() -> starter, sequenceOf(successors));
 
         assertThat(gibberish.get()).isEqualTo(expected);
     }
