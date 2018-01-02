@@ -5,6 +5,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Gibberizer extends Application {
+    public static void main(String args[]) {
+        launch(Gibberizer.class, args);
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Gibberizer");

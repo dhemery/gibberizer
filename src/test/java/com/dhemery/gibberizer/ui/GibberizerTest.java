@@ -10,8 +10,8 @@ import static com.google.common.truth.Truth.assertThat;
 public class GibberizerTest extends ApplicationTest {
     Scene scene;
     @Override
-    public void start(Stage stage) throws Exception {
-        scene = new Scene(new GibberizerPane(), 800, 600);
+    public void start(Stage stage) {
+        scene = new Scene(new GibberizerPane());
         stage.setScene(scene);
         stage.show();
     }
