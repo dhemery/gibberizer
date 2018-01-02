@@ -3,7 +3,7 @@ package com.dhemery.gibberizer.ui;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
 
 public class FilterOptionsPane extends TitledPane {
     public FilterOptionsPane() {

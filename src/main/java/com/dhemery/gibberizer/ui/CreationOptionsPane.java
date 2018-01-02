@@ -4,7 +4,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class CreationOptionsPane extends TitledPane {
     public CreationOptionsPane() {

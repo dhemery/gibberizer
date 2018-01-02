@@ -18,7 +18,6 @@ public class OutputOptionsPane extends TitledPane {
         RadioButton separateBySpace = new RadioButton("Space");
         RadioButton separateByNewLine = new RadioButton("New line");
         RadioButton separateByBlankLine = new RadioButton("Blank line");
-        separateBySpace.setDisable(true);
 
         ToggleGroup outputToggleGroup = new ToggleGroup();
 

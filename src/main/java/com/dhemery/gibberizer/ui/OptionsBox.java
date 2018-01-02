@@ -1,7 +1,7 @@
 package com.dhemery.gibberizer.ui;
 
 import javafx.scene.Node;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
 
 public class OptionsBox extends HBox {
     public OptionsBox() {

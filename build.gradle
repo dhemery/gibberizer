@@ -34,7 +34,7 @@ apply plugin: 'org.junit.platform.gradle.plugin'
 
 sourceCompatibility = VERSION_1_9
 targetCompatibility = sourceCompatibility
-mainClassName = 'Gibberizer'
+mainClassName = 'com.dhemery.gibberizer.ui.Gibberizer'
 
 dependencies {
     testCompileOnly group: 'org.apiguardian', name: 'apiguardian-api', version: '1.0.0'

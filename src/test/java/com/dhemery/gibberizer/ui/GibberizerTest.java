@@ -11,7 +11,7 @@ public class GibberizerTest extends ApplicationTest {
     Scene scene;
     @Override
     public void start(Stage stage) {
-        scene = new Scene(new OptionsBox());
+        scene = new Scene(new GibberizerPane());
         stage.setScene(scene);
         stage.show();
     }

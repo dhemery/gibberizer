@@ -1,11 +1,15 @@
 package com.dhemery.gibberizer.ui;
 
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 public class GibberizerPane extends VBox {
     public GibberizerPane() {
-        OptionsBox optionsBox = new OptionsBox();
+        Node optionsBox = new OptionsBox();
+        Node gibberizeButton = new Button("Gibberize");
+        Node inputOutputPane = new InputOutputPane();
 
-        getChildren().addAll(optionsBox);
+        getChildren().addAll(optionsBox, gibberizeButton, inputOutputPane);
     }
 }
