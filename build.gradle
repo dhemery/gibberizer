@@ -20,6 +20,7 @@ ext {
     junitPlatformVersion = '1.0.2'
     junitJupiterVersion  = '5.0.2'
     truthVersion = '0.37'
+    testFXVersion = '4.0.10-alpha'
 }
 
 description = 'Gibberizer'
@@ -40,6 +41,7 @@ dependencies {
 
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitJupiterVersion
     testCompile group: 'com.google.truth', name: 'truth', version: truthVersion
+    testCompile group: 'org.testfx', name: 'testfx-junit5', version: testFXVersion
 
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
     testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
