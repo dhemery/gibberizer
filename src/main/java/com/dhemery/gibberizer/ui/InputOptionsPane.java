@@ -8,14 +8,14 @@ import javafx.scene.layout.VBox;
 
 import java.util.stream.Stream;
 
-public class SplitParametersBox extends TitledPane {
-    public SplitParametersBox() {
-        super("Read Input As", content());
+public class InputOptionsPane extends TitledPane {
+    public InputOptionsPane() {
+        super("Read Input As", inputOptionsBox());
         setCollapsible(false);
 
     }
 
-    private static Node content() {
+    private static Node inputOptionsBox() {
         RadioButton splitIntoWords = new RadioButton("Words");
         RadioButton splitIntoLines = new RadioButton("Lines");
         RadioButton doNotSplit = new RadioButton("One String");

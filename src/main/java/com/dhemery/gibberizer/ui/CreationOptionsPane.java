@@ -6,20 +6,20 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.*;
 
-public class CreationParametersBox extends TitledPane {
-    public CreationParametersBox() {
-        super("Create", content());
+public class CreationOptionsPane extends TitledPane {
+    public CreationOptionsPane() {
+        super("Create", creationOptionsBox());
         setCollapsible(false);
     }
 
-    private static Node content() {
-        Node batchSizeBox = spinnerBox("Count", 1, 20, 10);
+    private static Node creationOptionsBox() {
+        Node countBox = spinnerBox("Count", 1, 20, 10);
         Node similarityBox = spinnerBox("Similarity", 2, 10, 3);
         Node persistenceBox = spinnerBox("Persistence", 1, 10, 5);
 
         VBox box = new VBox();
 
-        box.getChildren().addAll(batchSizeBox, similarityBox, persistenceBox);
+        box.getChildren().addAll(countBox, similarityBox, persistenceBox);
 
         return box;
     }

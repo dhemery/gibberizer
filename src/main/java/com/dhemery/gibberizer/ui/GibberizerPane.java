@@ -1,15 +1,11 @@
 package com.dhemery.gibberizer.ui;
 
-import javafx.scene.Node;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 
-public class GibberizerPane extends HBox {
+public class GibberizerPane extends VBox {
     public GibberizerPane() {
-        Node splitParametersBox = new SplitParametersBox();
-        Node generationParametersBox = new CreationParametersBox();
-        Node filterParametersBox = new FilterParametersBox();
-        Node outputParametersBox = new OutputParametersBox();
-        getChildren().addAll(splitParametersBox, generationParametersBox, filterParametersBox, outputParametersBox);
+        OptionsBox optionsBox = new OptionsBox();
+
+        getChildren().addAll(optionsBox);
     }
 }

@@ -8,27 +8,27 @@ import javafx.scene.layout.VBox;
 
 import java.util.stream.Stream;
 
-public class OutputParametersBox extends TitledPane {
-    public OutputParametersBox() {
-        super("Separate By", content());
+public class OutputOptionsPane extends TitledPane {
+    public OutputOptionsPane() {
+        super("Separate By", outputOptionsBox());
         setCollapsible(false);
     }
 
-    private static Node content() {
+    private static Node outputOptionsBox() {
         RadioButton separateBySpace = new RadioButton("Space");
         RadioButton separateByNewLine = new RadioButton("New line");
         RadioButton separateByBlankLine = new RadioButton("Blank line");
         separateBySpace.setDisable(true);
 
-        ToggleGroup separationToggleGroup = new ToggleGroup();
+        ToggleGroup outputToggleGroup = new ToggleGroup();
 
         VBox box = new VBox();
 
         Stream.of(separateBySpace, separateByNewLine, separateByBlankLine)
-                .peek(b -> b.setToggleGroup(separationToggleGroup))
+                .peek(b -> b.setToggleGroup(outputToggleGroup))
                 .forEach(box.getChildren()::add);
 
-        separationToggleGroup.selectToggle(separateByNewLine);
+        outputToggleGroup.selectToggle(separateByNewLine);
 
         return box;
     }
