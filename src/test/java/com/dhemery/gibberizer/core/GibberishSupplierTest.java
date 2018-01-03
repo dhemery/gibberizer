@@ -8,12 +8,12 @@ import static com.dhemery.gibberizer.testutil.NGrams.sequenceOf;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.stream.Collectors.joining;
 
-public class GibberizerTest {
+public class GibberishSupplierTest {
     private final NGram starter = new NGram("abc", true, false);
 
     @Test
     public void textOfStarterIfNoSuccessors() {
-        Gibberish gibberish = new Gibberish(() -> starter, n -> null);
+        GibberishSupplier gibberish = new GibberishSupplier(() -> starter, n -> null);
 
         assertThat(gibberish.get()).isEqualTo(starter.toString());
     }
@@ -35,7 +35,7 @@ public class GibberizerTest {
 
         String expected = starter.toString() + lastCharacterOfEachSuccessor;
 
-        Gibberish gibberish = new Gibberish(() -> starter, sequenceOf(successors));
+        GibberishSupplier gibberish = new GibberishSupplier(() -> starter, sequenceOf(successors));
 
         assertThat(gibberish.get()).isEqualTo(expected);
     }

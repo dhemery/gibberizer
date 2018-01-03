@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-public class Gibberish implements Supplier<String> {
+public class GibberishSupplier implements Supplier<String> {
     private static final int DEFAULT_LIMIT = 1000;
     private final Supplier<NGram> starterSupplier;
     private final UnaryOperator<NGram> successorOperator;
@@ -20,7 +20,7 @@ public class Gibberish implements Supplier<String> {
      * @param starterSupplier   supplies an {@code NGram} to start the gibberish
      * @param successorOperator computes a successor {@code NGram} to provide the next character of gibberish
      */
-    public Gibberish(Supplier<NGram> starterSupplier, UnaryOperator<NGram> successorOperator) {
+    public GibberishSupplier(Supplier<NGram> starterSupplier, UnaryOperator<NGram> successorOperator) {
         this(starterSupplier, successorOperator, DEFAULT_LIMIT);
     }
 
@@ -34,7 +34,7 @@ public class Gibberish implements Supplier<String> {
      * @param successorOperator computes a successor {@code NGram} to provide the next character of gibberish
      * @param limit             the maximum number of {@code NGrams} to include in the gibberish
      */
-    public Gibberish(Supplier<NGram> starterSupplier, UnaryOperator<NGram> successorOperator, int limit) {
+    public GibberishSupplier(Supplier<NGram> starterSupplier, UnaryOperator<NGram> successorOperator, int limit) {
         this.starterSupplier = starterSupplier;
         this.successorOperator = successorOperator;
         this.limit = limit;
