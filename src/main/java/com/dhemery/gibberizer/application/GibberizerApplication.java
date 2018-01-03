@@ -1,7 +1,9 @@
 package com.dhemery.gibberizer.application;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -13,58 +15,68 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class GibberizerApplication extends Application {
+    private static final double LEFT_COLUMN_WIDTH = 120;
+
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage)  {
         stage.setTitle("Gibberizer");
 
-        CheckBox splitCheckBox = new CheckBox("Split Into");
-        RadioButton splitIntoWordsButton = new RadioButton("Words");
-        RadioButton splitIntoLinesButton = new RadioButton("Lines");
+        CheckBox splitInputCheckBox = new CheckBox("Split Text");
+        RadioButton splitIntoWordsButton = new RadioButton("into Words");
+        RadioButton splitIntoLinesButton = new RadioButton("into Lines");
         ToggleGroup splitterToggleGroup = new ToggleGroup();
         List.of(splitIntoWordsButton, splitIntoLinesButton)
                 .forEach(b -> b.setToggleGroup(splitterToggleGroup));
 
+        splitIntoWordsButton.disableProperty().bind(splitInputCheckBox.selectedProperty().not());
+        splitIntoLinesButton.disableProperty().bind(splitInputCheckBox.selectedProperty().not());
+
         splitterToggleGroup.selectToggle(splitIntoWordsButton);
-        VBox inputOptionsBox = new VBox(splitCheckBox, splitIntoWordsButton, splitIntoLinesButton);
+
+        VBox inputOptionsBox = new VBox(splitInputCheckBox, splitIntoWordsButton, splitIntoLinesButton);
+        inputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
 
         TextArea inputTextArea = new TextArea();
+        HBox inputBox = new HBox(inputOptionsBox, inputTextArea);
+        TitledPane inputPane = new TitledPane("Input", inputBox);
+        inputPane.setCollapsible(false);
 
-        Spinner<Integer> batchSizeSpinner = spinner(1, 1000, 1000);
+        Spinner<Integer> batchSizeSpinner = spinner(1, 99, 10);
         Spinner<Integer> similaritySpinner = spinner(2, 10, 3);
         Spinner<Integer> persistenceSpinner = spinner(1, 10, 5);
-        Label batchSizeLabel = new Label("Batch Size");
-        Label similarityLabel = new Label("Similarity");
-        Label persistenceLabel = new Label("Persistence");
-        CheckBox allowInputEchoCheckBox = new CheckBox("Allow Inputs");
+        HBox batchSizeBox = new HBox(batchSizeSpinner,  new Label("Batch Size"));
+        HBox similarityBox = new HBox(similaritySpinner, new Label("Similarity"));
+        HBox persistenceBox = new HBox(persistenceSpinner, new Label("Persistence"));
+        CheckBox allowInputEchoCheckBox = new CheckBox("Allow Inputs in Output");
+        VBox generateOptionsBox = new VBox(batchSizeBox, similarityBox, persistenceBox, allowInputEchoCheckBox);
 
-        Button gibberizeButton = new Button("Generate");
+        Button generateButton = new Button("Generate");
+        VBox generateButtonBox = new VBox(generateButton);
+        generateButtonBox.setMinWidth(LEFT_COLUMN_WIDTH);
+        generateButtonBox.setAlignment(Pos.CENTER_LEFT);
 
-        RadioButton separateBySpaceButton = new RadioButton("Spaces");
-        RadioButton separateByLinefeedButton = new RadioButton("New Lines");
-        RadioButton separateByBlankLineButton = new RadioButton("Blank Lines");
+        HBox generateBox = new HBox(generateButtonBox, generateOptionsBox);
+        TitledPane generatePane = new TitledPane("Generator", generateBox);
+        generatePane.setCollapsible(false);
+
+        RadioButton separateBySpaceButton = new RadioButton("Space");
+        RadioButton separateByLinefeedButton = new RadioButton("New Line");
+        RadioButton separateByBlankLineButton = new RadioButton("Blank Line");
+
         ToggleGroup outputToggleGroup = new ToggleGroup();
         List.of(separateBySpaceButton, separateByLinefeedButton, separateByBlankLineButton)
                 .forEach(b -> b.setToggleGroup(outputToggleGroup));
-        Label separateByLabel = new Label("Separate By");
+        Label separateByLabel = new Label("Separator");
         VBox outputOptionsBox = new VBox(separateByLabel, separateBySpaceButton, separateByLinefeedButton, separateByBlankLineButton);
+        outputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
 
         ScrollPane outputTextPane = new ScrollPane();
         HBox outputBox = new HBox(outputOptionsBox, outputTextPane);
+        TitledPane outputPane = new TitledPane("Gibberish", outputBox);
+        outputPane.setCollapsible(false);
 
-        GridPane gridPane = new GridPane();
-        int row = 0;
-        gridPane.add(new Label("Input"), 0, row++, 2, 1);
-        gridPane.addRow(row++, inputOptionsBox, inputTextArea);
-        GridPane.setColumnSpan(inputTextArea, GridPane.REMAINING);
-        gridPane.add(new Label("Gibberish"), 0, row++, 2, 1);
-        gridPane.addRow(row++, gibberizeButton, batchSizeSpinner, batchSizeLabel);
-        gridPane.addRow(row++, new Label(""), similaritySpinner, similarityLabel);
-        gridPane.addRow(row++, new Label(""), persistenceSpinner, persistenceLabel);
-        gridPane.addRow(row++, new Label(""), allowInputEchoCheckBox);
-        gridPane.add(new Label("Output"), 0, row++, 2, 1);
-        gridPane.addRow(row,outputOptionsBox, outputBox);
-        GridPane.setColumnSpan(outputBox, GridPane.REMAINING);
-        stage.setScene(new Scene(gridPane));
+        VBox root = new VBox(inputPane, generatePane, outputPane);
+        stage.setScene(new Scene(root));
         stage.show();
     }
 
@@ -75,8 +87,8 @@ public class GibberizerApplication extends Application {
     private static Spinner<Integer> spinner(int min, int max, int initialValue) {
         Spinner<Integer> spinner = new Spinner<>(min, max, initialValue);
         spinner.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL);
-        spinner.setMaxWidth(100);
-        spinner.setEditable(true);
+        spinner.setMaxWidth(80);
+//        spinner.setEditable(true);
         return spinner;
     }
 }
