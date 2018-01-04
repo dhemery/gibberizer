@@ -1,14 +1,27 @@
 package com.dhemery.gibberizer.application;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class GibberizerApplication extends Application {
     private static final double LEFT_COLUMN_WIDTH = 120;
@@ -21,7 +34,6 @@ public class GibberizerApplication extends Application {
         Spinner<Integer> spinner = new Spinner<>(min, max, initialValue);
         spinner.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL);
         spinner.setMaxWidth(80);
-//        spinner.setEditable(true);
         return spinner;
     }
 
@@ -67,21 +79,44 @@ public class GibberizerApplication extends Application {
         TitledPane generatorPane = new TitledPane("Generator", generatorBox);
         generatorPane.setCollapsible(false);
 
-        RadioButton separateBySpaceButton = new RadioButton("Words");
-        RadioButton separateByLinefeedButton = new RadioButton("Lines");
-        RadioButton separateByBlankLineButton = new RadioButton("Paragraphs");
+        RadioButton formatAsWordsButton = new RadioButton("Words");
+        formatAsWordsButton.setUserData(" ");
+        RadioButton formatAsLinesButton = new RadioButton("Lines");
+        formatAsLinesButton.setUserData("\n");
+        RadioButton formatAsParagraphsButton = new RadioButton("Paragraphs");
+        formatAsParagraphsButton.setUserData("\n\n");
 
-        ToggleGroup outputToggleGroup = new ToggleGroup();
-        List.of(separateBySpaceButton, separateByLinefeedButton, separateByBlankLineButton)
-                .forEach(b -> b.setToggleGroup(outputToggleGroup));
-        Label separateByLabel = new Label("Display As");
-        VBox outputOptionsBox = new VBox(separateByLabel, separateBySpaceButton, separateByLinefeedButton, separateByBlankLineButton);
+        ToggleGroup outputFormatToggleGroup = new ToggleGroup();
+        List.of(formatAsWordsButton, formatAsLinesButton, formatAsParagraphsButton)
+                .forEach(b -> b.setToggleGroup(outputFormatToggleGroup));
+        outputFormatToggleGroup.selectToggle(formatAsWordsButton);
+        Label formatBoxLabel = new Label("Display As");
+        VBox outputOptionsBox = new VBox(formatBoxLabel, formatAsWordsButton, formatAsLinesButton, formatAsParagraphsButton);
         outputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
 
-        ScrollPane outputTextPane = new ScrollPane();
+        Text outputText = new Text();
+        ScrollPane outputTextPane = new ScrollPane(outputText);
+        outputTextPane.setFitToWidth(true);
+        outputTextPane.setFitToHeight(true);
+        outputTextPane.setMinSize(500, 200);
         HBox outputBox = new HBox(outputOptionsBox, outputTextPane);
         TitledPane outputPane = new TitledPane("Gibberish", outputBox);
         outputPane.setCollapsible(false);
+
+        //TODO: Move this to the controller
+        List<String> rawGibberishList = IntStream.range(0, 40)
+                .mapToObj(i -> "String " + i)
+                .collect(toList());
+        ObservableList<String> observableGibberishList = FXCollections.observableList(rawGibberishList);
+        ListProperty<String> gibberishListProperty = new SimpleListProperty<>(observableGibberishList);
+
+        StringBinding concatenatedGibberishBinding = Bindings.createStringBinding(
+                () -> gibberishListProperty.stream().collect(joining((outputFormatToggleGroup.selectedToggleProperty().get().getUserData().toString()))),
+                gibberishListProperty, outputFormatToggleGroup.selectedToggleProperty());
+
+        StringProperty gibberishProperty = new SimpleStringProperty();
+        gibberishProperty.bind(concatenatedGibberishBinding);
+        outputText.textProperty().bind(gibberishProperty);
 
         VBox root = new VBox(inputPane, generatorPane, outputPane);
         stage.setScene(new Scene(root));
