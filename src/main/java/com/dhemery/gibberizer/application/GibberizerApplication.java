@@ -1,6 +1,10 @@
 package com.dhemery.gibberizer.application;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -91,7 +95,10 @@ public class GibberizerApplication extends Application {
         TitledPane outputPane = new TitledPane("Gibberish", outputBox);
         outputPane.setCollapsible(false);
 
-        GibberizerController controller = new GibberizerController(outputFormatToggleGroup.selectedToggleProperty());
+        ReadOnlyObjectProperty<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
+
+        StringBinding outputFormat = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
+        GibberizerController controller = new GibberizerController(outputFormat);
 
         outputText.textProperty().bind(controller.gibberishProperty());
 
