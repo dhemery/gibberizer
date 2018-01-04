@@ -35,6 +35,22 @@ public class NGram {
     }
 
     /**
+     * Creates an n-gram that represents a substring extracted from the given string.
+     * <p>
+     * If {@code index == 0}, the n-gram represents the start of the string.
+     * If {@code index + length == string.length()}, the n-gram represents the end of the string.
+     * </p>
+     *
+     * @param string the string from which to extract the n-gram
+     * @param index  the index at which the n-gram starts in the string
+     * @param length the length of the n-gram
+     * @return the created {@code NGram}
+     */
+    public static NGram fromSubstring(String string, int index, int length) {
+        return new NGram(string.substring(index, index + length), index == 0, index + length == string.length());
+    }
+
+    /**
      * Returns whether or not this n-gram represents the start of the string from which it was parsed.
      *
      * @return {@code true} if, and only if, this n-gram represents the start of the string from which it was parsed
@@ -108,21 +124,5 @@ public class NGram {
     @Override
     public String toString() {
         return string;
-    }
-
-    /**
-     * Creates an n-gram that represents a substring extracted from the given string.
-     * <p>
-     * If {@code index == 0}, the n-gram represents the start of the string.
-     * If {@code index + length == string.length()}, the n-gram represents the end of the string.
-     * </p>
-     *
-     * @param string the string from which to extract the n-gram
-     * @param index  the index at which the n-gram starts in the string
-     * @param length the length of the n-gram
-     * @return the created {@code NGram}
-     */
-    public static NGram fromSubstring(String string, int index, int length) {
-        return new NGram(string.substring(index, index + length), index == 0, index + length == string.length());
     }
 }
