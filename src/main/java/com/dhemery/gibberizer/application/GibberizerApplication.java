@@ -85,6 +85,9 @@ public class GibberizerApplication extends Application {
         VBox outputOptionsBox = new VBox(formatBoxLabel, formatAsWordsButton, formatAsLinesButton, formatAsParagraphsButton);
         outputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
 
+        ReadOnlyObjectProperty<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
+        StringBinding outputFormat = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
+
         Text outputText = new Text();
         ScrollPane outputTextPane = new ScrollPane(outputText);
         outputTextPane.setFitToWidth(true);
@@ -94,9 +97,6 @@ public class GibberizerApplication extends Application {
         TitledPane outputPane = new TitledPane("Gibberish", outputBox);
         outputPane.setCollapsible(false);
 
-        ReadOnlyObjectProperty<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
-
-        StringBinding outputFormat = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
         GibberizerController controller = new GibberizerController(outputFormat);
 
         outputText.textProperty().bind(controller.gibberish());
