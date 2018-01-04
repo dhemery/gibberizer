@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -100,7 +99,7 @@ public class GibberizerApplication extends Application {
         StringBinding outputFormat = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
         GibberizerController controller = new GibberizerController(outputFormat);
 
-        outputText.textProperty().bind(controller.gibberishProperty());
+        outputText.textProperty().bind(controller.gibberish());
 
         VBox root = new VBox(inputPane, generatorPane, outputPane);
         stage.setScene(new Scene(root));

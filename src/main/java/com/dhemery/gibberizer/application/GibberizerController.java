@@ -1,10 +1,10 @@
 package com.dhemery.gibberizer.application;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.*;
+import javafx.beans.binding.StringExpression;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -16,20 +16,18 @@ public class GibberizerController {
     private static final List<String> DEMO_GIBBERISH_LIST = IntStream.range(0, 40)
             .mapToObj(i -> "String " + i)
             .collect(toList());
-    private final StringProperty gibberish = new SimpleStringProperty();
-    private final ListProperty<String> gibberishList;
+    private final StringExpression gibberish;
+    private final ObservableList<String> gibberishList;
 
     public GibberizerController(ObservableStringValue outputSeparator) {
-        gibberishList = new SimpleListProperty<>(FXCollections.observableList(DEMO_GIBBERISH_LIST));
+        gibberishList = FXCollections.observableList(DEMO_GIBBERISH_LIST);
 
-        StringBinding concatenatedGibberishBinding = Bindings.createStringBinding(
+        gibberish = Bindings.createStringBinding(
                 () -> gibberishList.stream().collect(joining((outputSeparator.get()))),
                 gibberishList, outputSeparator);
-
-        gibberish.bind(concatenatedGibberishBinding);
     }
 
-    public StringProperty gibberishProperty() {
+    public StringExpression gibberish() {
         return gibberish;
     }
 }
