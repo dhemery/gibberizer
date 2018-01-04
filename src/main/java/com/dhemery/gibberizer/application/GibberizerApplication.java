@@ -1,14 +1,6 @@
 package com.dhemery.gibberizer.application;
 
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,10 +10,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.List;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 public class GibberizerApplication extends Application {
     private static final double LEFT_COLUMN_WIDTH = 120;
@@ -103,20 +91,9 @@ public class GibberizerApplication extends Application {
         TitledPane outputPane = new TitledPane("Gibberish", outputBox);
         outputPane.setCollapsible(false);
 
-        //TODO: Move this to the controller
-        List<String> rawGibberishList = IntStream.range(0, 40)
-                .mapToObj(i -> "String " + i)
-                .collect(toList());
-        ObservableList<String> observableGibberishList = FXCollections.observableList(rawGibberishList);
-        ListProperty<String> gibberishListProperty = new SimpleListProperty<>(observableGibberishList);
+        GibberizerController controller = new GibberizerController(outputFormatToggleGroup.selectedToggleProperty());
 
-        StringBinding concatenatedGibberishBinding = Bindings.createStringBinding(
-                () -> gibberishListProperty.stream().collect(joining((outputFormatToggleGroup.selectedToggleProperty().get().getUserData().toString()))),
-                gibberishListProperty, outputFormatToggleGroup.selectedToggleProperty());
-
-        StringProperty gibberishProperty = new SimpleStringProperty();
-        gibberishProperty.bind(concatenatedGibberishBinding);
-        outputText.textProperty().bind(gibberishProperty);
+        outputText.textProperty().bind(controller.gibberishProperty());
 
         VBox root = new VBox(inputPane, generatorPane, outputPane);
         stage.setScene(new Scene(root));
