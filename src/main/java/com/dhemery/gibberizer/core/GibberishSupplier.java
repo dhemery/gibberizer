@@ -65,6 +65,7 @@ public class GibberishSupplier implements Supplier<String> {
                 .limit(limit - 1)
                 .takeWhile(Objects::nonNull)
                 .map(NGram::lastCharacter)
+                .map(Character::toChars)
                 .forEach(gibberish::append);
         return gibberish.toString();
     }

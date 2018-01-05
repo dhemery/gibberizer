@@ -30,6 +30,7 @@ public class GibberishSupplierTest {
 
         String lastCharacterOfEachSuccessor = successors.stream()
                 .map(NGram::lastCharacter)
+                .map(Character::toChars)
                 .map(String::valueOf)
                 .collect(joining());
 
