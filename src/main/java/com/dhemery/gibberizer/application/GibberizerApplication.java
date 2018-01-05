@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -85,7 +86,7 @@ public class GibberizerApplication extends Application {
         VBox outputOptionsBox = new VBox(formatBoxLabel, formatAsWordsButton, formatAsLinesButton, formatAsParagraphsButton);
         outputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
 
-        ReadOnlyObjectProperty<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
+        ObservableObjectValue<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
         StringBinding outputFormat = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
 
         Text outputText = new Text();
@@ -97,9 +98,11 @@ public class GibberizerApplication extends Application {
         TitledPane outputPane = new TitledPane("Gibberish", outputBox);
         outputPane.setCollapsible(false);
 
-        GibberizerController controller = new GibberizerController(outputFormat);
+        GibberizerController controller = new GibberizerController(inputTextArea.textProperty(), outputFormat);
 
         outputText.textProperty().bind(controller.gibberish());
+
+        generateButton.setOnAction( e -> controller.generate());
 
         VBox root = new VBox(inputPane, generatorPane, outputPane);
         stage.setScene(new Scene(root));
