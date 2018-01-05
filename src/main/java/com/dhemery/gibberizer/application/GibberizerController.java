@@ -1,30 +1,27 @@
 package com.dhemery.gibberizer.application;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
 
 public class GibberizerController {
+    private final ObservableStringValue inputText;
+    private final ObservableObjectValue<Function<String, List<String>>> inputSplitter;
     private final StringExpression gibberish;
     private final ListProperty<String> gibberishList = new SimpleListProperty<>();
-    private final StringProperty inputSeparator;
-    private final ObservableStringValue inputText;
 
-    public GibberizerController(ObservableStringValue inputText, ObservableStringValue outputSeparator) {
+    public GibberizerController(ObservableStringValue inputText, ObservableObjectValue<Function<String, List<String>>> inputSplitter, ObservableStringValue outputSeparator) {
         this.inputText = inputText;
-        inputSeparator = new SimpleStringProperty("\\W+");
+        this.inputSplitter = inputSplitter;
 
         gibberish = Bindings.createStringBinding(
                 () -> gibberishList.stream().collect(joining((outputSeparator.get()))),
@@ -36,7 +33,7 @@ public class GibberizerController {
     }
 
     public void generate() {
-        List<String> inputStrings = Arrays.asList(inputText.getValue().split(inputSeparator.getValue()));
+        List<String> inputStrings = inputSplitter.get().apply(inputText.getValue());
         gibberishList.set(FXCollections.observableList(inputStrings));
     }
 }

@@ -3,7 +3,6 @@ package com.dhemery.gibberizer.application;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,7 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public class GibberizerApplication extends Application {
     private static final double LEFT_COLUMN_WIDTH = 120;
@@ -35,15 +36,17 @@ public class GibberizerApplication extends Application {
 
         CheckBox splitInputCheckBox = new CheckBox("Split Text");
         RadioButton splitIntoWordsButton = new RadioButton("into Words");
+        splitIntoWordsButton.setUserData("\\s+");
         RadioButton splitIntoLinesButton = new RadioButton("into Lines");
-        ToggleGroup splitterToggleGroup = new ToggleGroup();
+        splitIntoLinesButton.setUserData("\\s*\\n\\s*");
+        ToggleGroup inputSplitterToggleGroup = new ToggleGroup();
         List.of(splitIntoWordsButton, splitIntoLinesButton)
-                .forEach(b -> b.setToggleGroup(splitterToggleGroup));
+                .forEach(b -> b.setToggleGroup(inputSplitterToggleGroup));
 
         splitIntoWordsButton.disableProperty().bind(splitInputCheckBox.selectedProperty().not());
         splitIntoLinesButton.disableProperty().bind(splitInputCheckBox.selectedProperty().not());
 
-        splitterToggleGroup.selectToggle(splitIntoWordsButton);
+        inputSplitterToggleGroup.selectToggle(splitIntoWordsButton);
 
         VBox inputOptionsBox = new VBox(splitInputCheckBox, splitIntoWordsButton, splitIntoLinesButton);
         inputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
@@ -86,9 +89,6 @@ public class GibberizerApplication extends Application {
         VBox outputOptionsBox = new VBox(formatBoxLabel, formatAsWordsButton, formatAsLinesButton, formatAsParagraphsButton);
         outputOptionsBox.setMinWidth(LEFT_COLUMN_WIDTH);
 
-        ObservableObjectValue<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
-        StringBinding outputFormat = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
-
         Text outputText = new Text();
         ScrollPane outputTextPane = new ScrollPane(outputText);
         outputTextPane.setFitToWidth(true);
@@ -98,11 +98,20 @@ public class GibberizerApplication extends Application {
         TitledPane outputPane = new TitledPane("Gibberish", outputBox);
         outputPane.setCollapsible(false);
 
-        GibberizerController controller = new GibberizerController(inputTextArea.textProperty(), outputFormat);
+        ObservableObjectValue<Toggle> selectedOutputFormatToggle = outputFormatToggleGroup.selectedToggleProperty();
+        StringBinding outputDelimiter = Bindings.createStringBinding(() -> selectedOutputFormatToggle.get().getUserData().toString(), selectedOutputFormatToggle);
 
+        ObservableObjectValue<Toggle> selectedInputSplitterToggle = inputSplitterToggleGroup.selectedToggleProperty();
+        StringBinding selectedInputSplitterPattern = Bindings.createStringBinding(() -> selectedInputSplitterToggle.get().getUserData().toString(), selectedInputSplitterToggle);
+
+        ObservableObjectValue<Function<String, List<String>>> inputSplitter = Bindings
+                .when(splitInputCheckBox.selectedProperty())
+                .then((Function<String,List<String>>) s -> Arrays.asList(s.split(selectedInputSplitterPattern.getValue())))
+                .otherwise(List::of);
+
+        GibberizerController controller = new GibberizerController(inputTextArea.textProperty(), inputSplitter, outputDelimiter);
         outputText.textProperty().bind(controller.gibberish());
-
-        generateButton.setOnAction( e -> controller.generate());
+        generateButton.setOnAction(e -> controller.generate());
 
         VBox root = new VBox(inputPane, generatorPane, outputPane);
         stage.setScene(new Scene(root));
