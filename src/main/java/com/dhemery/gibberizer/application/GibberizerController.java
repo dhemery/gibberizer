@@ -3,15 +3,15 @@ package com.dhemery.gibberizer.application;
 import com.dhemery.gibberizer.core.GibberishSupplier;
 import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableStringValue;
+import javafx.beans.binding.ListBinding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.text.Text;
 
 import java.util.*;
 import java.util.function.Function;
@@ -19,70 +19,117 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class GibberizerController {
-    private final IntegerProperty similarity = new SimpleIntegerProperty(4);
-    private final IntegerProperty persistence = new SimpleIntegerProperty(20);
-    private final IntegerProperty batchSize = new SimpleIntegerProperty(20);
+    private static final Function<String, List<String>> PARSE_INPUT_AS_WORDS = s -> Arrays.asList(s.split("\\s+"));
+    private static final Function<String, List<String>> PARSE_INPUT_AS_LINES = s -> Arrays.asList(s.split("\\s*\\n\\s*"));
+    private static final Function<String, List<String>> PARSE_INPUT_AS_STRING = Arrays::asList;
+    private static final Random RANDOM = new Random();
+    private final ListProperty<String> gibberishList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<Function<String, List<String>>> inputSplitter = new SimpleObjectProperty<>();
 
-    private final ObservableStringValue inputText;
-    private final ObservableObjectValue<Function<String, List<String>>> inputSplitter;
-    private final StringExpression gibberish;
-    private final ListProperty<String> gibberishList = new SimpleListProperty<>();
+    @FXML
+    private ToggleGroup inputSplitterToggles;
+    @FXML
+    private CheckBox splitInput;
+    @FXML
+    private Toggle splitIntoWords;
+    @FXML
+    private Toggle splitIntoLines;
+    @FXML
+    private TextArea inputText;
+    @FXML
+    private Spinner<Integer> batchSize;
+    @FXML
+    private Spinner<Integer> similarity;
+    @FXML
+    private Spinner<Integer> persistence;
+    @FXML
+    private CheckBox allowInputs;
+    @FXML
+    private ToggleGroup outputFormatToggles;
+    @FXML
+    private Text outputText;
 
-    public GibberizerController(ObservableStringValue inputText, ObservableObjectValue<Function<String, List<String>>> inputSplitter, ObservableStringValue outputSeparator) {
-        this.inputText = inputText;
-        this.inputSplitter = inputSplitter;
-        // TODO: save batchSize parameter
-        // TODO: save persistence parameter
-        // TODO: take similarity parameter
+    public void initialize() {
+        Map<Toggle, Function<String, List<String>>> splittersByToggle = new HashMap<>();
+        splittersByToggle.put(splitIntoWords, PARSE_INPUT_AS_WORDS);
+        splittersByToggle.put(splitIntoLines, PARSE_INPUT_AS_LINES);
 
-        gibberish = Bindings.createStringBinding(
-                () -> gibberishList.stream().collect(joining((outputSeparator.get()))),
-                gibberishList, outputSeparator);
-
-        // TODO: inputStrings property: (inputText, inputSplitter) -> List<String>
-        // TODO: distinctInputStrings property: (inputStrings) -> Set<String>
-        // TODO: nGrams property: (inputStrings, similarity) -> List<NGram>
-        // TODO: starterSupplier property: (nGramList) -> Supplier<NGram>
-        // TODO: successorOperator property: (nGramList) -> UnaryOperator<NGram>
-        // TODO: gibberizer property: (starterSupplier, successorOperator) -> Supplier<String>
-    }
-
-    public StringExpression gibberish() {
-        return gibberish;
+        inputSplitter.bind(inputSplitterBinding(splitInput.selectedProperty(), inputSplitterToggles.selectedToggleProperty(), splittersByToggle));
+        outputText.textProperty().bind(outputTextBinding(gibberishList, outputFormatToggles.selectedToggleProperty()));
     }
 
     public void generate() {
-        NGramParser parser = new NGramParser(similarity.get());
-        List<String> inputStrings = inputSplitter.get().apply(inputText.getValue());
+        List<String> inputStrings = inputSplitter.get().apply(inputText.textProperty().get());
+        Set<String> distinctInputStrings = new HashSet<>(inputStrings);
+        NGramParser parser = new NGramParser(similarity.getValue());
         List<NGram> nGrams = parser.parse(inputStrings);
         List<NGram> starters = nGrams.stream().filter(NGram::isStarter).collect(toList());
-        Set<String> distinctInputStrings = new HashSet<>(inputStrings);
-        Supplier<NGram> randomStarter = () -> starters.get(new Random().nextInt(starters.size()));
+        Supplier<NGram> starterSupplier = () -> selectRandom(starters);
+        Map<String,List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
+        Function<NGram,String> suffix = NGram::suffix;
 
-        Function<List<NGram>, NGram> selectRandom = l -> l.get(new Random().nextInt(l.size()));
+        UnaryOperator<NGram> randomSuccessor = n -> n.isEnder() ? null : suffix.andThen(nGramsByPrefix::get).andThen(GibberizerController::selectRandom).apply(n);
 
-        Map<String, List<NGram>> nGramsByPrefix = nGrams.stream()
-                .collect(groupingBy(NGram::prefix));
+        Supplier<String> gibberishSupplier = new GibberishSupplier(starterSupplier, randomSuccessor);
 
-        Function<NGram, String> suffix = NGram::suffix;
-
-        Function<NGram, NGram> randomSuccessor = suffix
-                .andThen(nGramsByPrefix::get)
-                .andThen(selectRandom);
-
-        UnaryOperator<NGram> successorOperator = n -> n.isEnder() ? null : randomSuccessor.apply(n);
-
-        GibberishSupplier gibberizer = new GibberishSupplier(randomStarter, successorOperator);
-        List<String> gibberishStrings = Stream.generate(gibberizer)
-                .limit(persistence.get() * batchSize.get())
-                .filter(s -> !distinctInputStrings.contains(s))
+        List<String> gibberishStrings = Stream.generate(gibberishSupplier)
+                .limit(persistence.getValue() * batchSize.getValue())
+                .filter( s -> allowInputs.isSelected() || !distinctInputStrings.contains(s))
                 .distinct()
-                .limit(batchSize.get())
+                .limit(batchSize.getValue())
                 .collect(toList());
 
-        gibberishList.set(FXCollections.observableList(gibberishStrings));
+        gibberishList.setAll(gibberishStrings);
+    }
+
+    private static <T> T selectRandom(List<? extends T> list) {
+        return list.get(RANDOM.nextInt(list.size()));
+    }
+
+    private static ListBinding<String> inputStringsBinding(StringProperty text, ObjectProperty<Function<String, List<String>>> inputSplitter) {
+        return new ListBinding<>() {
+            {
+                super.bind(text, inputSplitter);
+            }
+
+            @Override
+            protected ObservableList<String> computeValue() {
+                return FXCollections.observableList(inputSplitter.get().apply(text.get()));
+            }
+        };
+    }
+
+    private static ObjectBinding<? extends Function<String, List<String>>> inputSplitterBinding(BooleanProperty shouldSplit, ReadOnlyObjectProperty<Toggle> selectedSplitterToggle, Map<Toggle, Function<String, List<String>>> splittersByToggle) {
+        return new ObjectBinding<>() {
+            {
+                super.bind(shouldSplit, selectedSplitterToggle);
+            }
+
+            @Override
+            protected Function<String, List<String>> computeValue() {
+                if (shouldSplit.get()) {
+                    return splittersByToggle.get(selectedSplitterToggle.get());
+                }
+                return PARSE_INPUT_AS_STRING;
+            }
+        };
+    }
+
+    private static StringBinding outputTextBinding(ObservableList<String> gibberishList, ReadOnlyObjectProperty<Toggle> selectedOutputFormatToggle) {
+        return new StringBinding() {
+            {
+                super.bind(gibberishList, selectedOutputFormatToggle);
+            }
+
+            @Override
+            protected String computeValue() {
+                return gibberishList.stream().collect(joining((selectedOutputFormatToggle.get().getUserData().toString())));
+            }
+        };
     }
 }
