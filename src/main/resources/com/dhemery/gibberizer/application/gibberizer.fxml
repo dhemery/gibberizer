@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.lang.Integer?>
+<?import java.lang.String?>
 <VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dhemery.gibberizer.application.GibberizerController">
     <fx:define>
@@ -19,31 +20,43 @@
     <TitledPane collapsible="false" text="Input">
         <HBox>
             <VBox minWidth="$leftColumnWidth">
-                <CheckBox fx:id="splitInput" text="Split into" selected="true"/>
-                <RadioButton fx:id="splitIntoWords" text="Words" toggleGroup="$inputSplitterToggles" selected="true"
+                <CheckBox fx:id="splitInput" text="Split Input" selected="true"/>
+                <RadioButton fx:id="splitIntoWords" text="Into Words" toggleGroup="$inputSplitterToggles" selected="true"
                              disable="${!splitInput.selected}"/>
-                <RadioButton fx:id="splitIntoLines" text = "Lines" toggleGroup="$inputSplitterToggles"
+                <RadioButton fx:id="splitIntoLines" text="Into Lines" toggleGroup="$inputSplitterToggles"
                              disable="${!splitInput.selected}"/>
             </VBox>
-            <TextArea fx:id="inputText"/>
+            <TextArea fx:id="inputText" wrapText="true"/>
         </HBox>
     </TitledPane>
     <TitledPane collapsible="false" text="Generator">
         <HBox>
             <VBox minWidth="$leftColumnWidth">
-                <Button text="Generate" onAction="#generate"/>
+                <Button fx:id="generateButton" text="Generate" onAction="#generate" />
             </VBox>
-            <VBox>
+            <VBox spacing="10">
                 <HBox>
-                    <Spinner fx:id="batchSize" min="1" max="100" initialValue="10"/>
+                    <Spinner fx:id="batchSize" min="1" max="100" initialValue="10">
+                        <styleClass>
+                            <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
+                        </styleClass>
+                    </Spinner>
                     <Label text="Batch Size"/>
                 </HBox>
                 <HBox>
-                    <Spinner fx:id="similarity" min="2" max="10" initialValue="2"/>
+                    <Spinner fx:id="similarity" min="2" max="10" initialValue="2">
+                        <styleClass>
+                            <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
+                        </styleClass>
+                    </Spinner>
                     <Label text="Similarity"/>
                 </HBox>
                 <HBox>
-                    <Spinner fx:id="persistence" min="1" max="10" initialValue="5"/>
+                    <Spinner fx:id="persistence" min="1" max="10" initialValue="5">
+                        <styleClass>
+                            <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
+                        </styleClass>
+                    </Spinner>
                     <Label text="Persistence"/>
                 </HBox>
                 <CheckBox fx:id="allowInputs" text="Allow Inputs in Output"/>

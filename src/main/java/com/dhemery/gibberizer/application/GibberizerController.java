@@ -19,9 +19,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 public class GibberizerController {
     private static final Function<String, List<String>> PARSE_INPUT_AS_WORDS = s -> Arrays.asList(s.split("\\s+"));
@@ -41,6 +39,8 @@ public class GibberizerController {
     private Toggle splitIntoLines;
     @FXML
     private TextArea inputText;
+    @FXML
+    private Button generateButton;
     @FXML
     private Spinner<Integer> batchSize;
     @FXML
@@ -64,14 +64,28 @@ public class GibberizerController {
     }
 
     public void generate() {
-        List<String> inputStrings = inputSplitter.get().apply(inputText.textProperty().get());
+        List<String> errorLines = new ArrayList<>();
+        List<String> inputStrings = new ArrayList<>(inputSplitter.get().apply(inputText.textProperty().get()));
+        if (inputStrings.removeIf(s -> s.length() < similarity.getValue())) ;
+        if (inputStrings.isEmpty()) {
+            errorLines.add("Gibberizer could not generate gibberish from such short strings.");
+            errorLines.add("Try:");
+            if (similarity.getValue() > 2) errorLines.add("- decreasing the similarity");
+            errorLines.add("- writing more text");
+            if (splitInput.isSelected()) {
+                if (splitIntoWords.isSelected()) errorLines.add("- splitting the text into lines instead of words");
+                errorLines.add("- not splitting the text");
+            }
+            gibberishList.setAll(errorLines.stream().collect(joining("\n")));
+            return;
+        }
         Set<String> distinctInputStrings = new HashSet<>(inputStrings);
         NGramParser parser = new NGramParser(similarity.getValue());
         List<NGram> nGrams = parser.parse(inputStrings);
         List<NGram> starters = nGrams.stream().filter(NGram::isStarter).collect(toList());
         Supplier<NGram> starterSupplier = () -> selectRandom(starters);
-        Map<String,List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
-        Function<NGram,String> suffix = NGram::suffix;
+        Map<String, List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
+        Function<NGram, String> suffix = NGram::suffix;
 
         UnaryOperator<NGram> randomSuccessor = n -> n.isEnder() ? null : suffix.andThen(nGramsByPrefix::get).andThen(GibberizerController::selectRandom).apply(n);
 
@@ -79,15 +93,24 @@ public class GibberizerController {
 
         List<String> gibberishStrings = Stream.generate(gibberishSupplier)
                 .limit(persistence.getValue() * batchSize.getValue())
-                .filter( s -> allowInputs.isSelected() || !distinctInputStrings.contains(s))
+                .filter(s -> allowInputs.isSelected() || !distinctInputStrings.contains(s))
                 .distinct()
                 .limit(batchSize.getValue())
                 .collect(toList());
 
+        if (gibberishStrings.isEmpty()) {
+            gibberishList.setAll("Could not generate gibberish from the given text and settings.");
+            return;
+        }
+
         gibberishList.setAll(gibberishStrings);
     }
 
+    private void warn(String s) {
+    }
+
     private static <T> T selectRandom(List<? extends T> list) {
+        if (list.isEmpty()) return null;
         return list.get(RANDOM.nextInt(list.size()));
     }
 

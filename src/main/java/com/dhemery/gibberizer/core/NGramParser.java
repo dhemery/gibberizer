@@ -21,6 +21,7 @@ public class NGramParser {
 
     public List<NGram> parse(Collection<String> strings) {
         return strings.stream()
+                .filter(s -> s.length() >= size)
                 .flatMap(this::parse)
                 .collect(toList());
     }
