@@ -78,7 +78,8 @@ tasks.jar {
         attributes(
                 "Implementation-Title": project.description,
                 "Implementation-Version": project.version,
-                "Implementation-Vendor": vendor.name
+                "Implementation-Vendor": vendor.name,
+                "Main-Class": mainClassName
         )
     }
 }
