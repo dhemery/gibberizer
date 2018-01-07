@@ -6,3 +6,11 @@
     -fx-color: darkgray;
     -fx-font-weight: bold;
 }
+
+.section {
+    -fx-padding: 5;
+}
+
+.button-group .check-box, .button-group .radio-button {
+    -fx-padding: 3;
+}

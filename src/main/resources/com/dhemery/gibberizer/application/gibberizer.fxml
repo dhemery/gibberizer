@@ -5,21 +5,23 @@
 <?import javafx.scene.text.Text?>
 <?import java.lang.Double?>
 <?import java.net.URL?>
-<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+<?import java.lang.String?>
+<VBox fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dhemery.gibberizer.application.GibberizerController">
     <stylesheets>
-        <URL value="@gibberizer.css" />
+        <URL value="@gibberizer.css"/>
     </stylesheets>
 
     <fx:define>
         <ToggleGroup fx:id="inputSplitterToggles"/>
         <ToggleGroup fx:id="outputFormatToggles"/>
         <Double fx:id="leftColumnWidth" fx:value="120"/>
+        <String fx:id="spinnerStyle" fx:value="split-arrows-horizontal"/>
     </fx:define>
 
-    <Label text="Input" prefWidth="${root.width}" styleClass="section-label" />
-    <HBox VBox.vgrow="ALWAYS">
-        <VBox minWidth="$leftColumnWidth">
+    <Label text="Input" prefWidth="${root.width}" styleClass="section-label"/>
+    <HBox VBox.vgrow="ALWAYS" styleClass="section">
+        <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <CheckBox fx:id="splitInput" text="Split Input" selected="true"/>
             <RadioButton fx:id="splitIntoWords" text="Into Words" toggleGroup="$inputSplitterToggles"
                          selected="true"
@@ -30,43 +32,31 @@
         <TextArea fx:id="inputText" wrapText="true" HBox.hgrow="ALWAYS"/>
     </HBox>
 
-    <Label text="Generator" prefWidth="${root.width}" styleClass="section-label" />
-    <HBox>
+    <Label text="Generator" prefWidth="${root.width}" styleClass="section-label"/>
+    <HBox VBox.vgrow="ALWAYS" styleClass="section">
         <VBox minWidth="$leftColumnWidth">
             <Button fx:id="generateButton" text="Generate" onAction="#generate"/>
         </VBox>
-        <VBox spacing="10">
+        <VBox spacing="10" styleClass="button-group">
             <HBox>
-                <Spinner fx:id="batchSize" min="1" max="100" initialValue="10">
-                    <styleClass>
-                        <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
-                    </styleClass>
-                </Spinner>
+                <Spinner fx:id="batchSize" min="1" max="100" initialValue="10" styleClass="$spinnerStyle"/>
                 <Label text="Batch Size"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="similarity" min="2" max="10" initialValue="2">
-                    <styleClass>
-                        <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
-                    </styleClass>
-                </Spinner>
+                <Spinner fx:id="similarity" min="2" max="10" initialValue="2" styleClass="$spinnerStyle"/>
                 <Label text="Similarity"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="persistence" min="1" max="10" initialValue="5">
-                    <styleClass>
-                        <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
-                    </styleClass>
-                </Spinner>
+                <Spinner fx:id="persistence" min="1" max="10" initialValue="5" styleClass="$spinnerStyle"/>
                 <Label text="Persistence"/>
             </HBox>
             <CheckBox fx:id="allowInputs" text="Allow Inputs in Output"/>
         </VBox>
     </HBox>
 
-    <Label text="Gibberish" prefWidth="${root.width}" styleClass="section-label" />
-    <HBox VBox.vgrow="ALWAYS">
-        <VBox minWidth="$leftColumnWidth">
+    <Label text="Gibberish" prefWidth="${root.width}" styleClass="section-label"/>
+    <HBox VBox.vgrow="ALWAYS" styleClass="section">
+        <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <Label text="Display As"/>
             <RadioButton text="Words" toggleGroup="$outputFormatToggles" userData=" " selected="true"/>
             <RadioButton text="Lines" toggleGroup="$outputFormatToggles" userData="&#10;"/>
