@@ -19,17 +19,14 @@
         <String fx:id="spinnerStyle" fx:value="split-arrows-horizontal"/>
     </fx:define>
 
-    <Label text="Input" prefWidth="${root.width}" styleClass="section-label"/>
+    <Label text="Input&#009;(strings 0, runts 0, 2-Grams 0, distinct 0)" prefWidth="${root.width}" styleClass="section-label"/>
     <HBox VBox.vgrow="ALWAYS" styleClass="section">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
-            <CheckBox fx:id="splitInput" text="Split Input" selected="true"/>
-            <RadioButton fx:id="splitIntoWords" text="Into Words" toggleGroup="$inputSplitterToggles"
-                         selected="true" disable="${!splitInput.selected}"
-                         userData="\\s+"/>
-            <RadioButton fx:id="splitIntoLines" text="Into Lines" toggleGroup="$inputSplitterToggles"
-                         disable="${!splitInput.selected}" userData="\\s*\\n\\s*"/>
+            <CheckBox fx:id="splitInputCheckBox" text="Split Input" selected="true"/>
+            <RadioButton text="Into Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}" userData="\\s+" selected="true" />
+            <RadioButton text="Into Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}" userData="\\s*\\n\\s*"/>
         </VBox>
-        <TextArea fx:id="inputText" wrapText="true" HBox.hgrow="ALWAYS"/>
+        <TextArea fx:id="inputTextArea" wrapText="true" HBox.hgrow="ALWAYS"/>
     </HBox>
 
     <Label text="Generator" prefWidth="${root.width}" styleClass="section-label"/>
@@ -39,22 +36,22 @@
         </VBox>
         <VBox spacing="10" styleClass="button-group">
             <HBox>
-                <Spinner fx:id="batchSize" min="1" max="100" initialValue="10" styleClass="$spinnerStyle"/>
+                <Spinner fx:id="batchSizeSpinner" min="1" max="100" initialValue="10" styleClass="$spinnerStyle"/>
                 <Label text="Batch Size"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="similarity" min="2" max="10" initialValue="2" styleClass="$spinnerStyle"/>
+                <Spinner fx:id="similaritySpinner" min="2" max="10" initialValue="2" styleClass="$spinnerStyle"/>
                 <Label text="Similarity"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="persistence" min="1" max="10" initialValue="5" styleClass="$spinnerStyle"/>
+                <Spinner fx:id="persistenceSpinner" min="1" max="10" initialValue="5" styleClass="$spinnerStyle"/>
                 <Label text="Persistence"/>
             </HBox>
-            <CheckBox fx:id="allowInputs" text="Allow Inputs in Output"/>
+            <CheckBox fx:id="allowInputsCheckBox" text="Allow Inputs in Output"/>
         </VBox>
     </HBox>
 
-    <Label text="Gibberish" prefWidth="${root.width}" styleClass="section-label"/>
+    <Label text="Gibberish&#09;(generated: 0, acceptable: 0, distinct: 0)" prefWidth="${root.width}" styleClass="section-label"/>
     <HBox VBox.vgrow="ALWAYS" styleClass="section">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <Label text="Display As"/>

@@ -8,7 +8,6 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -21,25 +20,37 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
+// TODO: Display count of strings
+// TODO: Display count of runt strings
+// TODO: Display count of nGrams
+// TODO: Disable count of distinct nGrams
+// TODO: Disable Generate button if no nGrams
+// TODO: Display count of strings generated
+// TODO: Display count of acceptable strings generated
+// TODO: Display count of distinct acceptable strings generated
+// TODO: Format split inputs in alternating format
 public class GibberizerController {
     private static final Random RANDOM = new Random();
     private final ListProperty<String> gibberishList = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final ObjectProperty<Function<String, List<String>>> inputSplitter = new SimpleObjectProperty<>();
+    private final ObjectProperty<List<String>> inputStrings = new SimpleObjectProperty<>();
+    private final ObjectProperty<Set<String>> distinctInputStrings = new SimpleObjectProperty<>();
+    private final ObjectProperty<Integer> similarity = new SimpleObjectProperty<>();
 
     @FXML
     private ToggleGroup inputSplitterToggles;
     @FXML
-    private CheckBox splitInput;
+    private CheckBox splitInputCheckBox;
     @FXML
-    private TextArea inputText;
+    private TextArea inputTextArea;
     @FXML
-    private Spinner<Integer> batchSize;
+    private Spinner<Integer> batchSizeSpinner;
     @FXML
-    private Spinner<Integer> similarity;
+    private Spinner<Integer> similaritySpinner;
     @FXML
-    private Spinner<Integer> persistence;
+    private Spinner<Integer> persistenceSpinner;
     @FXML
-    private CheckBox allowInputs;
+    private CheckBox allowInputsCheckBox;
     @FXML
     private ToggleGroup outputFormatToggles;
     @FXML
@@ -52,10 +63,27 @@ public class GibberizerController {
                 selectedInputSplitterPattern
         );
 
-        inputSplitter.bind(
-                Bindings.when(splitInput.selectedProperty())
+        inputSplitter.bind(Bindings
+                .when(splitInputCheckBox.selectedProperty())
                 .then(selectedInputSplitter)
-                .otherwise(new SimpleObjectProperty<>(List::of)));
+                .otherwise(new SimpleObjectProperty<>(List::of)
+                ));
+
+        StringProperty inputText = inputTextArea.textProperty();
+        similarity.bind(similaritySpinner.valueProperty());
+
+        ObjectBinding<List<String>> rawInputStrings = Bindings.createObjectBinding(
+                () -> inputSplitter.get().apply(inputText.get()),
+                inputSplitter, inputText
+        );
+        inputStrings.bind(Bindings.createObjectBinding(
+                () -> rawInputStrings.get().stream().filter(s -> s.length() >= similarity.get()).collect(toList()),
+                rawInputStrings, similarity
+        ));
+        distinctInputStrings.bind(Bindings.createObjectBinding(
+                () -> new HashSet<>(inputStrings.get()),
+                inputStrings
+        ));
 
         StringBinding selectedOutputDelimiter = userDataOf(outputFormatToggles.selectedToggleProperty());
         outputText.textProperty().bind(Bindings.createStringBinding(
@@ -65,15 +93,13 @@ public class GibberizerController {
     }
 
     public void generate() {
-        List<String> inputStrings = new ArrayList<>(inputSplitter.get().apply(inputText.textProperty().get()));
-        if (inputStrings.removeIf(s -> s.length() < similarity.getValue())) ;
-        if (inputStrings.isEmpty()) {
+        if (inputStrings.get().isEmpty()) {
             gibberishList.clear();
             return;
         }
-        Set<String> distinctInputStrings = new HashSet<>(inputStrings);
-        NGramParser parser = new NGramParser(similarity.getValue());
-        List<NGram> nGrams = parser.parse(inputStrings);
+
+        NGramParser parser = new NGramParser(similarity.get());
+        List<NGram> nGrams = parser.parse(inputStrings.get());
         List<NGram> starters = nGrams.stream().filter(NGram::isStarter).collect(toList());
         Supplier<NGram> starterSupplier = () -> selectRandom(starters);
         Map<String, List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
@@ -84,12 +110,11 @@ public class GibberizerController {
         Supplier<String> gibberishSupplier = new GibberishSupplier(starterSupplier, randomSuccessor);
 
         List<String> gibberishStrings = Stream.generate(gibberishSupplier)
-                .limit(persistence.getValue() * batchSize.getValue())
-                .filter(s -> allowInputs.isSelected() || !distinctInputStrings.contains(s))
+                .limit(persistenceSpinner.getValue() * batchSizeSpinner.getValue())
+                .filter(s -> allowInputsCheckBox.isSelected() || !distinctInputStrings.get().contains(s))
                 .distinct()
-                .limit(batchSize.getValue())
+                .limit(batchSizeSpinner.getValue())
                 .collect(toList());
-
         gibberishList.setAll(gibberishStrings);
     }
 
