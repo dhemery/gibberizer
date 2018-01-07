@@ -3,77 +3,77 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import java.lang.Integer?>
-<?import java.lang.String?>
-<VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+<?import java.lang.Double?>
+<?import java.net.URL?>
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dhemery.gibberizer.application.GibberizerController">
+    <stylesheets>
+        <URL value="@gibberizer.css" />
+    </stylesheets>
+
     <fx:define>
         <ToggleGroup fx:id="inputSplitterToggles"/>
-    </fx:define>
-    <fx:define>
         <ToggleGroup fx:id="outputFormatToggles"/>
-    </fx:define>
-    <fx:define>
-        <Integer fx:id="leftColumnWidth" fx:value="120"/>
+        <Double fx:id="leftColumnWidth" fx:value="120"/>
     </fx:define>
 
-    <TitledPane collapsible="false" text="Input">
-        <HBox>
-            <VBox minWidth="$leftColumnWidth">
-                <CheckBox fx:id="splitInput" text="Split Input" selected="true"/>
-                <RadioButton fx:id="splitIntoWords" text="Into Words" toggleGroup="$inputSplitterToggles" selected="true"
-                             disable="${!splitInput.selected}"/>
-                <RadioButton fx:id="splitIntoLines" text="Into Lines" toggleGroup="$inputSplitterToggles"
-                             disable="${!splitInput.selected}"/>
-            </VBox>
-            <TextArea fx:id="inputText" wrapText="true"/>
-        </HBox>
-    </TitledPane>
-    <TitledPane collapsible="false" text="Generator">
-        <HBox>
-            <VBox minWidth="$leftColumnWidth">
-                <Button fx:id="generateButton" text="Generate" onAction="#generate" />
-            </VBox>
-            <VBox spacing="10">
-                <HBox>
-                    <Spinner fx:id="batchSize" min="1" max="100" initialValue="10">
-                        <styleClass>
-                            <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
-                        </styleClass>
-                    </Spinner>
-                    <Label text="Batch Size"/>
-                </HBox>
-                <HBox>
-                    <Spinner fx:id="similarity" min="2" max="10" initialValue="2">
-                        <styleClass>
-                            <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
-                        </styleClass>
-                    </Spinner>
-                    <Label text="Similarity"/>
-                </HBox>
-                <HBox>
-                    <Spinner fx:id="persistence" min="1" max="10" initialValue="5">
-                        <styleClass>
-                            <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
-                        </styleClass>
-                    </Spinner>
-                    <Label text="Persistence"/>
-                </HBox>
-                <CheckBox fx:id="allowInputs" text="Allow Inputs in Output"/>
-            </VBox>
-        </HBox>
-    </TitledPane>
-    <TitledPane collapsible="false" text="Gibberish">
-        <HBox>
-            <VBox minWidth="$leftColumnWidth">
-                <Label text="Display As"/>
-                <RadioButton text="Words" toggleGroup="$outputFormatToggles" userData=" " selected="true"/>
-                <RadioButton text="Lines" toggleGroup="$outputFormatToggles" userData="&#10;"/>
-                <RadioButton text="Paragraphs" toggleGroup="$outputFormatToggles" userData="&#10;&#10;"/>
-            </VBox>
-            <ScrollPane minWidth="500" minHeight="200">
-                <Text fx:id="outputText"/>
-            </ScrollPane>
-        </HBox>
-    </TitledPane>
+    <Label text="Input" prefWidth="${root.width}" styleClass="section-label" />
+    <HBox VBox.vgrow="ALWAYS">
+        <VBox minWidth="$leftColumnWidth">
+            <CheckBox fx:id="splitInput" text="Split Input" selected="true"/>
+            <RadioButton fx:id="splitIntoWords" text="Into Words" toggleGroup="$inputSplitterToggles"
+                         selected="true"
+                         disable="${!splitInput.selected}"/>
+            <RadioButton fx:id="splitIntoLines" text="Into Lines" toggleGroup="$inputSplitterToggles"
+                         disable="${!splitInput.selected}"/>
+        </VBox>
+        <TextArea fx:id="inputText" wrapText="true" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <Label text="Generator" prefWidth="${root.width}" styleClass="section-label" />
+    <HBox>
+        <VBox minWidth="$leftColumnWidth">
+            <Button fx:id="generateButton" text="Generate" onAction="#generate"/>
+        </VBox>
+        <VBox spacing="10">
+            <HBox>
+                <Spinner fx:id="batchSize" min="1" max="100" initialValue="10">
+                    <styleClass>
+                        <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
+                    </styleClass>
+                </Spinner>
+                <Label text="Batch Size"/>
+            </HBox>
+            <HBox>
+                <Spinner fx:id="similarity" min="2" max="10" initialValue="2">
+                    <styleClass>
+                        <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
+                    </styleClass>
+                </Spinner>
+                <Label text="Similarity"/>
+            </HBox>
+            <HBox>
+                <Spinner fx:id="persistence" min="1" max="10" initialValue="5">
+                    <styleClass>
+                        <Spinner fx:constant="STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL"/>
+                    </styleClass>
+                </Spinner>
+                <Label text="Persistence"/>
+            </HBox>
+            <CheckBox fx:id="allowInputs" text="Allow Inputs in Output"/>
+        </VBox>
+    </HBox>
+
+    <Label text="Gibberish" prefWidth="${root.width}" styleClass="section-label" />
+    <HBox VBox.vgrow="ALWAYS">
+        <VBox minWidth="$leftColumnWidth">
+            <Label text="Display As"/>
+            <RadioButton text="Words" toggleGroup="$outputFormatToggles" userData=" " selected="true"/>
+            <RadioButton text="Lines" toggleGroup="$outputFormatToggles" userData="&#10;"/>
+            <RadioButton text="Paragraphs" toggleGroup="$outputFormatToggles" userData="&#10;&#10;"/>
+        </VBox>
+        <ScrollPane HBox.hgrow="ALWAYS">
+            <Text fx:id="outputText"/>
+        </ScrollPane>
+    </HBox>
 </VBox>
