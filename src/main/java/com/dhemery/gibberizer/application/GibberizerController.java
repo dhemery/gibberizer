@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
+// TODO: CheckBox to trim input strings
 // TODO: Display count of strings
 // TODO: Display count of runt strings
 // TODO: Display count of nGrams
@@ -31,11 +32,17 @@ import static java.util.stream.Collectors.*;
 // TODO: Format split inputs in alternating format
 public class GibberizerController {
     private static final Random RANDOM = new Random();
-    private final ListProperty<String> gibberishList = new SimpleListProperty<>(FXCollections.observableArrayList());
+
     private final ObjectProperty<Function<String, List<String>>> inputSplitter = new SimpleObjectProperty<>();
     private final ObjectProperty<List<String>> inputStrings = new SimpleObjectProperty<>();
     private final ObjectProperty<Set<String>> distinctInputStrings = new SimpleObjectProperty<>();
+
+    private final ObjectProperty<Integer> batchSize = new SimpleObjectProperty<>();
+    private final ObjectProperty<Integer> persistence = new SimpleObjectProperty<>();
     private final ObjectProperty<Integer> similarity = new SimpleObjectProperty<>();
+    private final BooleanProperty allowInputs = new SimpleBooleanProperty();
+
+    private final ListProperty<String> gibberishStrings = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     @FXML
     private ToggleGroup inputSplitterToggles;
@@ -57,6 +64,11 @@ public class GibberizerController {
     private Text outputText;
 
     public void initialize() {
+        batchSize.bind(batchSizeSpinner.valueProperty());
+        persistence.bind(persistenceSpinner.valueProperty());
+        similarity.bind(similaritySpinner.valueProperty());
+        allowInputs.bind(allowInputsCheckBox.selectedProperty());
+
         StringBinding selectedInputSplitterPattern = userDataOf(inputSplitterToggles.selectedToggleProperty());
         ObjectBinding<Function<String, List<String>>> selectedInputSplitter = Bindings.createObjectBinding(
                 () -> t -> List.of(t.split(selectedInputSplitterPattern.get())),
@@ -70,8 +82,6 @@ public class GibberizerController {
                 ));
 
         StringProperty inputText = inputTextArea.textProperty();
-        similarity.bind(similaritySpinner.valueProperty());
-
         ObjectBinding<List<String>> rawInputStrings = Bindings.createObjectBinding(
                 () -> inputSplitter.get().apply(inputText.get()),
                 inputSplitter, inputText
@@ -87,14 +97,14 @@ public class GibberizerController {
 
         StringBinding selectedOutputDelimiter = userDataOf(outputFormatToggles.selectedToggleProperty());
         outputText.textProperty().bind(Bindings.createStringBinding(
-                () -> gibberishList.stream().collect(joining((selectedOutputDelimiter.get()))),
-                gibberishList, selectedOutputDelimiter
+                () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
+                gibberishStrings, selectedOutputDelimiter
         ));
     }
 
     public void generate() {
         if (inputStrings.get().isEmpty()) {
-            gibberishList.clear();
+            gibberishStrings.clear();
             return;
         }
 
@@ -110,12 +120,12 @@ public class GibberizerController {
         Supplier<String> gibberishSupplier = new GibberishSupplier(starterSupplier, randomSuccessor);
 
         List<String> gibberishStrings = Stream.generate(gibberishSupplier)
-                .limit(persistenceSpinner.getValue() * batchSizeSpinner.getValue())
-                .filter(s -> allowInputsCheckBox.isSelected() || !distinctInputStrings.get().contains(s))
+                .limit(persistence.get() * batchSize.get())
+                .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
                 .distinct()
-                .limit(batchSizeSpinner.getValue())
+                .limit(batchSize.get())
                 .collect(toList());
-        gibberishList.setAll(gibberishStrings);
+        this.gibberishStrings.setAll(gibberishStrings);
     }
 
     private static <T> T selectRandom(List<? extends T> list) {
