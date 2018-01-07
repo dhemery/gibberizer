@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.lang.Double?>
-<?import java.net.URL?>
 <?import java.lang.String?>
+<?import java.net.URL?>
 <VBox fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dhemery.gibberizer.application.GibberizerController">
     <stylesheets>
@@ -24,10 +24,10 @@
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <CheckBox fx:id="splitInput" text="Split Input" selected="true"/>
             <RadioButton fx:id="splitIntoWords" text="Into Words" toggleGroup="$inputSplitterToggles"
-                         selected="true"
-                         disable="${!splitInput.selected}"/>
+                         selected="true" disable="${!splitInput.selected}"
+                         userData="\\s+"/>
             <RadioButton fx:id="splitIntoLines" text="Into Lines" toggleGroup="$inputSplitterToggles"
-                         disable="${!splitInput.selected}"/>
+                         disable="${!splitInput.selected}" userData="\\s*\\n\\s*"/>
         </VBox>
         <TextArea fx:id="inputText" wrapText="true" HBox.hgrow="ALWAYS"/>
     </HBox>
