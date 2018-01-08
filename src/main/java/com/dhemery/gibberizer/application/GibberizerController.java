@@ -23,10 +23,6 @@ import static javafx.beans.binding.Bindings.createObjectBinding;
 import static javafx.beans.binding.Bindings.createStringBinding;
 
 // TODO: CheckBox to trim input strings
-// TODO: Display count of strings
-// TODO: Display count of runt strings
-// TODO: Display count of nGrams
-// TODO: Disable count of distinct inputStrings
 // TODO: Disable Generate button if no nGrams
 // TODO: Display count of strings generated
 // TODO: Display count of acceptable strings generated
@@ -34,6 +30,7 @@ import static javafx.beans.binding.Bindings.createStringBinding;
 // TODO: Format split inputs in alternating format
 public class GibberizerController {
     private static final Random RANDOM = new Random();
+    private static final Function<NGram, String> SUFFIX_OF = NGram::suffix;
 
     private final ObjectProperty<List<String>> inputStrings = new SimpleObjectProperty<>();
     private final ObjectProperty<Set<String>> distinctInputStrings = new SimpleObjectProperty<>();
@@ -44,7 +41,11 @@ public class GibberizerController {
     private final BooleanProperty allowInputs = new SimpleBooleanProperty();
 
     private final ObjectProperty<Supplier<String>> gibberishSupplier = new SimpleObjectProperty<>();
+
     private final ListProperty<String> gibberishStrings = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final IntegerProperty generatedStringCount = new SimpleIntegerProperty();
+
+
     @FXML
     private Label rawStringCountLabel;
     @FXML
@@ -69,7 +70,8 @@ public class GibberizerController {
     private ToggleGroup outputFormatToggles;
     @FXML
     private Text outputText;
-    private Function<NGram, String> SUFFIX_OF = NGram::suffix;
+    @FXML
+    private Label generatedStringCountLabel;
 
     public void initialize() {
         batchSize.bind(batchSizeSpinner.valueProperty());
@@ -162,6 +164,11 @@ public class GibberizerController {
                 similarity, nGramCount
         ));
 
+        generatedStringCountLabel.textProperty().bind(createStringBinding(
+                () -> "Generated: " + generatedStringCount.get(),
+                generatedStringCount
+        ));
+
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
@@ -179,7 +186,9 @@ public class GibberizerController {
         gibberishStrings.clear();
         if (inputStrings.get().isEmpty()) return;
 
+        generatedStringCount.set(0);
         List<String> gibberishStrings = Stream.generate(gibberishSupplier.get())
+                .peek(s -> generatedStringCount.set(generatedStringCount.get()+1))
                 .limit(persistence.get() * batchSize.get())
                 .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
                 .distinct()

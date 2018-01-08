@@ -63,6 +63,8 @@
 
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Gibberish"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="generatedStringCountLabel" styleClass="right"/>
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
