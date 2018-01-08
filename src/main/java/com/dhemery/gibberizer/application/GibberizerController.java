@@ -109,16 +109,10 @@ public class GibberizerController {
                 rawInputStrings, similarity
         ));
 
-        distinctInputStrings.bind(new SetBinding<>() {
-            {
-                super.bind(rawInputStrings);
-            }
-
-            @Override
-            protected ObservableSet<String> computeValue() {
-                return FXCollections.observableSet(new HashSet<>(rawInputStrings.get()));
-            }
-        });
+        distinctInputStrings.bind(createSetBinding(
+                () -> FXCollections.observableSet(new HashSet<>(rawInputStrings.get())),
+                rawInputStrings
+        ));
 
         ObjectExpression<NGramParser> parser = createObjectBinding(
                 () -> new NGramParser(similarity.get()),
@@ -215,6 +209,19 @@ public class GibberizerController {
 
             @Override
             protected ObservableList<V> computeValue() {
+                return supplier.get();
+            }
+        };
+    }
+
+    private <V, T extends ObservableSet<V>> SetBinding<V> createSetBinding(Supplier<T> supplier, Observable... observables) {
+        return new SetBinding<>() {
+            {
+                super.bind(observables);
+            }
+
+            @Override
+            protected ObservableSet<V> computeValue() {
                 return supplier.get();
             }
         };
