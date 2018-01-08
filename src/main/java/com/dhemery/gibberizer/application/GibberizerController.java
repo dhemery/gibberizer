@@ -163,7 +163,7 @@ public class GibberizerController {
 
     private StringBinding countLabel(String unitName, ObservableNumberValue magnitude) {
         return createStringBinding(
-                () -> format("%d %s", magnitude.intValue(), unitName + (magnitude.intValue() == 1 ? "" : "s")),
+                () -> format("%s: %d", unitName + (magnitude.intValue() == 1 ? "" : "s"), magnitude.intValue()),
                 magnitude
         );
     }
