@@ -3,6 +3,7 @@ package com.dhemery.gibberizer.application;
 import com.dhemery.gibberizer.core.GibberishSupplier;
 import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
+import javafx.beans.Observable;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableNumberValue;
@@ -97,27 +98,16 @@ public class GibberizerController {
                 .then(selectedInputSplitter)
                 .otherwise(new SimpleObjectProperty<>(t -> t.trim().isEmpty() ? Collections.emptyList() : List.of(t.trim())));
         StringExpression inputText = inputTextArea.textProperty();
-        ListExpression<String> rawInputStrings = new ListBinding<>() {
-            {
-                super.bind(inputSplitter, inputText);
-            }
 
-            @Override
-            protected ObservableList<String> computeValue() {
-                return FXCollections.observableList(inputSplitter.get().apply(inputText.get()));
-            }
-        };
+        ListExpression<String> rawInputStrings = createListBinding(
+                () -> FXCollections.observableList(inputSplitter.get().apply(inputText.get())),
+                inputText, inputSplitter
+        );
 
-        inputStrings.bind(new ListBinding<>() {
-            {
-                super.bind(rawInputStrings, similarity);
-            }
-
-            @Override
-            protected ObservableList<String> computeValue() {
-                return rawInputStrings.filtered(s -> s.length() >= similarity.get());
-            }
-        });
+        inputStrings.bind(createListBinding(
+                () -> rawInputStrings.filtered(s -> s.length() >= similarity.get()),
+                rawInputStrings, similarity
+        ));
 
         distinctInputStrings.bind(new SetBinding<>() {
             {
@@ -134,16 +124,11 @@ public class GibberizerController {
                 () -> new NGramParser(similarity.get()),
                 similarity
         );
-        ListExpression<NGram> nGrams = new ListBinding<>() {
-            {
-                super.bind(inputStrings, parser);
-            }
 
-            @Override
-            protected ObservableList<NGram> computeValue() {
-                return FXCollections.observableList(parser.get().parse(inputStrings.get()));
-            }
-        };
+        ListExpression<NGram> nGrams = createListBinding(
+                () -> FXCollections.observableList(parser.get().parse(inputStrings.get())),
+                inputStrings, parser
+        );
 
         ObjectExpression<Map<String, List<NGram>>> nGramsByPrefix = createObjectBinding(
                 () -> nGrams.get().stream().collect(groupingBy(NGram::prefix)),
@@ -220,6 +205,19 @@ public class GibberizerController {
                 .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
                 .limit(batchSize.get())
                 .forEach(gibberishStrings::add);
+    }
+
+    private <V, T extends ObservableList<V>> ListBinding<V> createListBinding(Supplier<T> supplier, Observable... observables) {
+        return new ListBinding<>() {
+            {
+                super.bind(observables);
+            }
+
+            @Override
+            protected ObservableList<V> computeValue() {
+                return supplier.get();
+            }
+        };
     }
 
     private static <T> T selectRandom(List<? extends T> list) {
