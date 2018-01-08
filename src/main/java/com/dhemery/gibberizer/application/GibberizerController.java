@@ -6,6 +6,7 @@ import com.dhemery.gibberizer.core.NGramParser;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableNumberValue;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -22,9 +23,10 @@ import static java.util.stream.Collectors.*;
 import static javafx.beans.binding.Bindings.createObjectBinding;
 import static javafx.beans.binding.Bindings.createStringBinding;
 
-// TODO: CheckBox to trim input strings
-// TODO: Disable Generate button if no nGrams
-// TODO: Format split inputs in alternating format
+// TODO: Input parameter: CheckBox to trim input strings
+// TODO: Input text area: Color adjacent strings to indicate where splitting occurs
+// TODO: Allow editing spinner values
+// TODO: Validate spinner value edits
 public class GibberizerController {
     private static final Random RANDOM = new Random();
     private static final Function<NGram, String> SUFFIX_OF = NGram::suffix;
@@ -88,12 +90,10 @@ public class GibberizerController {
                 () -> t -> List.of(t.split(selectedInputSplitterPattern.get())).stream().map(String::trim).filter(s -> !s.isEmpty()).collect(toList()),
                 selectedInputSplitterPattern
         );
-
         ObjectBinding<Function<String, List<String>>> inputSplitter = Bindings
                 .when(splitInputCheckBox.selectedProperty())
                 .then(selectedInputSplitter)
                 .otherwise(new SimpleObjectProperty<>(t -> t.trim().isEmpty() ? Collections.emptyList() : List.of(t.trim())));
-
         StringProperty inputText = inputTextArea.textProperty();
         ObjectBinding<List<String>> rawInputStrings = createObjectBinding(
                 () -> inputSplitter.get().apply(inputText.get()),
@@ -116,14 +116,6 @@ public class GibberizerController {
                 () -> parser.get().parse(inputStrings.get()),
                 parser, inputStrings
         );
-        ObjectBinding<List<NGram>> starters = createObjectBinding(
-                () -> nGrams.get().stream().filter(NGram::isStarter).collect(toList()),
-                nGrams
-        );
-        ObjectBinding<Supplier<NGram>> starterSupplier = createObjectBinding(
-                () -> () -> selectRandom(starters.get()),
-                starters
-        );
         ObjectBinding<Map<String, List<NGram>>> nGramsByPrefix = createObjectBinding(
                 () -> nGrams.get().stream().collect(groupingBy(NGram::prefix)),
                 nGrams
@@ -132,67 +124,63 @@ public class GibberizerController {
                 () -> n -> n.isEnder() ? null : SUFFIX_OF.andThen(nGramsByPrefix.get()::get).andThen(GibberizerController::selectRandom).apply(n),
                 nGramsByPrefix
         );
+        ObjectBinding<List<NGram>> starters = createObjectBinding(
+                () -> nGrams.get().stream().filter(NGram::isStarter).collect(toList()),
+                nGrams
+        );
+        ObjectBinding<Supplier<NGram>> starterSupplier = createObjectBinding(
+                () -> () -> selectRandom(starters.get()),
+                starters
+        );
         gibberishSupplier.bind(createObjectBinding(
                 () -> new GibberishSupplier(starterSupplier.get(), successorOperator.get()),
                 starterSupplier, successorOperator
         ));
 
-        StringBinding selectedOutputDelimiter = userDataOf(outputFormatToggles.selectedToggleProperty());
+        IntegerBinding rawInputStringCount = Bindings.createIntegerBinding(
+                () -> rawInputStrings.get().size(),
+                rawInputStrings
+        );
+        StringBinding selectedInputSplitterName = createStringBinding(
+                () -> ((RadioButton) selectedInputSplitterToggle.get()).textProperty().get(),
+                selectedInputSplitterToggle);
+        StringBinding inputSplitterName = Bindings
+                .when(splitInputCheckBox.selectedProperty())
+                .then(selectedInputSplitterName)
+                .otherwise("Strings");
+
 
         IntegerBinding inputStringCount = Bindings.createIntegerBinding(
                 () -> inputStrings.get().size(),
                 inputStrings
         );
+        ObservableNumberValue runtStringCount = rawInputStringCount.subtract(inputStringCount);
 
         IntegerBinding nGramCount = Bindings.createIntegerBinding(
                 () -> nGrams.get().size(),
                 nGrams
         );
 
-        IntegerBinding rawInputStringCount = Bindings.createIntegerBinding(
-                () -> rawInputStrings.get().size(),
-                rawInputStrings
+        StringBinding nGramTypeName = createStringBinding(
+                () -> format("%d-Grams", similarity.get()),
+                similarity
         );
-
-        StringBinding selectedInputSplitterText = createStringBinding(
-                () -> ((RadioButton) selectedInputSplitterToggle.get()).textProperty().get(),
-                selectedInputSplitterToggle);
-        StringBinding rawStringTypeLabel = Bindings
-                .when(splitInputCheckBox.selectedProperty())
-                .then(selectedInputSplitterText)
-                .otherwise("Strings");
-        rawStringCountLabel.textProperty().bind(createStringBinding(
-                () -> rawStringTypeLabel.get() + ": " + rawInputStringCount.intValue(),
-                rawStringTypeLabel, rawInputStringCount
-        ));
-        ObservableNumberValue runtStringCount = rawInputStringCount.subtract(inputStringCount);
-        runtStringCountLabel.textProperty().bind(createStringBinding(
-                () -> "Runts: " + runtStringCount.intValue(),
-                runtStringCount
-        ));
-        nGramCountLabel.textProperty().bind(createStringBinding(
-                () -> format("%d-Grams: %d", similarity.get(), nGramCount.intValue()),
-                similarity, nGramCount
-        ));
+        showCounter(rawStringCountLabel, inputSplitterName, rawInputStringCount);
+        showCounter(runtStringCountLabel, "Runts", runtStringCount);
+        showCounter(nGramCountLabel, nGramTypeName, nGramCount);
 
         generateButton.disableProperty().bind(nGramCount.lessThan(1));
 
-        generatedGibberishCountLabel.textProperty().bind(createStringBinding(
-                () -> "Generated: " + generatedGibberishCount.get(),
-                generatedGibberishCount
-        ));
-        distinctGibberishCountLabel.textProperty().bind(createStringBinding(
-                () -> "Distinct: " + distinctGibberishCount.get(),
-                distinctGibberishCount
-        ));
         IntegerBinding acceptedGibberishCount = Bindings.createIntegerBinding(
                 () -> gibberishStrings.get().size(),
                 gibberishStrings
         );
-        acceptedGibberishCountLabel.textProperty().bind(createStringBinding(
-                () -> "Accepted: " + acceptedGibberishCount.get(),
-                acceptedGibberishCount
-        ));
+
+        showCounter(generatedGibberishCountLabel, "Generated", generatedGibberishCount);
+        showCounter(distinctGibberishCountLabel, "Distinct", distinctGibberishCount);
+        showCounter(acceptedGibberishCountLabel, "Accepted", acceptedGibberishCount);
+
+        StringBinding selectedOutputDelimiter = userDataOf(outputFormatToggles.selectedToggleProperty());
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
@@ -217,6 +205,17 @@ public class GibberizerController {
 
     private static <T> T selectRandom(List<? extends T> list) {
         return list.isEmpty() ? null : list.get(RANDOM.nextInt(list.size()));
+    }
+
+    private static void showCounter(Label label, ObservableValue<String> name, ObservableValue<Number> counter) {
+        label.textProperty().bind(createStringBinding(
+                () -> format("%s: %d", name.getValue(), counter.getValue().intValue()),
+                name, counter
+        ));
+    }
+
+    private static void showCounter(Label label, String name, ObservableValue<Number> counter) {
+        showCounter(label, new SimpleStringProperty(name), counter);
     }
 
     private static StringBinding userDataOf(ReadOnlyObjectProperty<Toggle> toggle) {
