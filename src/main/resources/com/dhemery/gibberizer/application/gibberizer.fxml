@@ -21,11 +21,12 @@
 
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Input"/>
-        <Label fx:id="rawStringCountLabel"/>
-        <Label fx:id="runtStringCountLabel" />
-        <Label fx:id="nGramCountLabel" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="rawStringCountLabel" styleClass="right"/>
+        <Label fx:id="runtStringCountLabel" styleClass="right" />
+        <Label fx:id="nGramCountLabel" styleClass="right" />
     </HBox>
-    <HBox VBox.vgrow="ALWAYS" styleClass="section">
+    <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <CheckBox fx:id="splitInputCheckBox" text="Split Input" selected="true"/>
             <RadioButton text="Into Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
@@ -39,18 +40,18 @@
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Generator"/>
     </HBox>
-    <HBox VBox.vgrow="ALWAYS" styleClass="section">
+    <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth">
             <Button fx:id="generateButton" text="Generate" onAction="#generate"/>
         </VBox>
         <VBox spacing="10" styleClass="button-group">
             <HBox>
-                <Spinner fx:id="batchSizeSpinner" min="1" max="100" initialValue="10" styleClass="$spinnerStyle"/>
-                <Label text="Batch Size"/>
-            </HBox>
-            <HBox>
                 <Spinner fx:id="similaritySpinner" min="2" max="10" initialValue="2" styleClass="$spinnerStyle"/>
                 <Label text="Similarity"/>
+            </HBox>
+            <HBox>
+                <Spinner fx:id="batchSizeSpinner" min="1" max="100" initialValue="10" styleClass="$spinnerStyle"/>
+                <Label text="Batch Size"/>
             </HBox>
             <HBox>
                 <Spinner fx:id="persistenceSpinner" min="1" max="10" initialValue="5" styleClass="$spinnerStyle"/>
@@ -63,7 +64,7 @@
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Gibberish"/>
     </HBox>
-    <HBox VBox.vgrow="ALWAYS" styleClass="section">
+    <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <Label text="Display As"/>
             <RadioButton text="Words" toggleGroup="$outputFormatToggles" userData=" " selected="true"/>

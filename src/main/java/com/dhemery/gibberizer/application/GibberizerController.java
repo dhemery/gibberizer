@@ -5,8 +5,6 @@ import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableIntegerValue;
-import javafx.beans.value.ObservableListValue;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -151,9 +149,18 @@ public class GibberizerController {
         );
 
         ObservableNumberValue runtStringCount = rawInputStringCount.subtract(inputStringCount);
-        rawStringCountLabel.textProperty().bind(countLabel("String", rawInputStringCount));
-        runtStringCountLabel.textProperty().bind(countLabel("Runt", runtStringCount));
-        nGramCountLabel.textProperty().bind(countLabel("NGram", nGramCount));
+        rawStringCountLabel.textProperty().bind(createStringBinding(
+                () -> "Strings: " + rawInputStringCount.intValue(),
+                (ObservableNumberValue) rawInputStringCount
+        ));
+        runtStringCountLabel.textProperty().bind(createStringBinding(
+                () -> "Runts: " + runtStringCount.intValue(),
+                runtStringCount
+        ));
+        nGramCountLabel.textProperty().bind(createStringBinding(
+                () -> format("%d-Grams: %d", similarity.get(), nGramCount.intValue()),
+                similarity, nGramCount
+        ));
 
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
@@ -163,7 +170,7 @@ public class GibberizerController {
 
     private StringBinding countLabel(String unitName, ObservableNumberValue magnitude) {
         return createStringBinding(
-                () -> format("%s: %d", unitName + (magnitude.intValue() == 1 ? "" : "s"), magnitude.intValue()),
+                () -> format("%s: %d", unitName, magnitude.intValue()),
                 magnitude
         );
     }
