@@ -24,9 +24,6 @@ import static javafx.beans.binding.Bindings.createStringBinding;
 
 // TODO: CheckBox to trim input strings
 // TODO: Disable Generate button if no nGrams
-// TODO: Display count of strings generated
-// TODO: Display count of acceptable strings generated
-// TODO: Display count of distinct acceptable strings generated
 // TODO: Format split inputs in alternating format
 public class GibberizerController {
     private static final Random RANDOM = new Random();
@@ -66,6 +63,8 @@ public class GibberizerController {
     private Spinner<Integer> persistenceSpinner;
     @FXML
     private CheckBox acceptInputsCheckBox;
+    @FXML
+    private Button generateButton;
     @FXML
     private ToggleGroup outputFormatToggles;
     @FXML
@@ -175,6 +174,8 @@ public class GibberizerController {
                 () -> format("%d-Grams: %d", similarity.get(), nGramCount.intValue()),
                 similarity, nGramCount
         ));
+
+        generateButton.disableProperty().bind(nGramCount.lessThan(1));
 
         generatedGibberishCountLabel.textProperty().bind(createStringBinding(
                 () -> "Generated: " + generatedGibberishCount.get(),
