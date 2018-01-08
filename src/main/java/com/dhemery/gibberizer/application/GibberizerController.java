@@ -33,8 +33,8 @@ public class GibberizerController {
     private static final Random RANDOM = new Random();
     private static final Function<NGram, String> SUFFIX_OF = NGram::suffix;
 
-    private final ListProperty<String> inputStrings = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>()));
-    private final SetProperty<String> distinctInputStrings = new SimpleSetProperty<>(FXCollections.observableSet(new HashSet<>()));
+    private final ListProperty<String> inputStrings = new SimpleListProperty<>();
+    private final SetProperty<String> distinctInputStrings = new SimpleSetProperty<>();
 
     private final IntegerProperty batchSize = new SimpleIntegerProperty();
     private final IntegerProperty persistence = new SimpleIntegerProperty();
@@ -115,7 +115,7 @@ public class GibberizerController {
 
             @Override
             protected ObservableList<String> computeValue() {
-                return FXCollections.observableList(rawInputStrings.get().stream().filter(s -> s.length() >= similarity.get()).collect(toList()));
+                return rawInputStrings.filtered(s -> s.length() >= similarity.get());
             }
         });
 
