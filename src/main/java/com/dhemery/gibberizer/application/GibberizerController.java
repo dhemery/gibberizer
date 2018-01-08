@@ -11,6 +11,7 @@ import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -124,10 +125,11 @@ public class GibberizerController {
                 inputStrings, parser
         );
 
-        ObjectExpression<Map<String, List<NGram>>> nGramsByPrefix = createObjectBinding(
-                () -> nGrams.get().stream().collect(groupingBy(NGram::prefix)),
+        MapExpression<String, List<NGram>> nGramsByPrefix = createMapBinding(
+                () -> FXCollections.observableMap(nGrams.get().stream().collect(groupingBy(NGram::prefix))),
                 nGrams
         );
+
         ObjectExpression<UnaryOperator<NGram>> successorOperator = createObjectBinding(
                 () -> n -> n.isEnder() ? null : SUFFIX_OF.andThen(nGramsByPrefix.get()::get).andThen(GibberizerController::selectRandom).apply(n),
                 nGramsByPrefix
@@ -155,8 +157,6 @@ public class GibberizerController {
                 .otherwise("Strings");
 
 
-        NumberExpression runtStringCount = rawInputStringCount.subtract(inputStrings.sizeProperty());
-
         IntegerExpression nGramCount = nGrams.sizeProperty();
 
         StringExpression nGramTypeName = createStringBinding(
@@ -164,7 +164,7 @@ public class GibberizerController {
                 similarity
         );
         showCounter(rawStringCountLabel, inputSplitterName, rawInputStringCount);
-        showCounter(runtStringCountLabel, "Runts", runtStringCount);
+        showCounter(runtStringCountLabel, "Runts", rawInputStringCount.subtract(inputStrings.sizeProperty()));
         showCounter(nGramCountLabel, nGramTypeName, nGramCount);
 
         generateButton.disableProperty().bind(nGramCount.lessThan(1));
@@ -201,10 +201,10 @@ public class GibberizerController {
                 .forEach(gibberishStrings::add);
     }
 
-    private <V, T extends ObservableList<V>> ListBinding<V> createListBinding(Supplier<T> supplier, Observable... observables) {
+    private <V, T extends ObservableList<V>> ListBinding<V> createListBinding(Supplier<T> supplier, Observable... dependencies) {
         return new ListBinding<>() {
             {
-                super.bind(observables);
+                super.bind(dependencies);
             }
 
             @Override
@@ -214,14 +214,27 @@ public class GibberizerController {
         };
     }
 
-    private <V, T extends ObservableSet<V>> SetBinding<V> createSetBinding(Supplier<T> supplier, Observable... observables) {
+    private <V, T extends ObservableSet<V>> SetBinding<V> createSetBinding(Supplier<T> supplier, Observable... dependencies) {
         return new SetBinding<>() {
             {
-                super.bind(observables);
+                super.bind(dependencies);
             }
 
             @Override
             protected ObservableSet<V> computeValue() {
+                return supplier.get();
+            }
+        };
+    }
+
+    private <K, V, T extends ObservableMap<K, V>> MapBinding<K, V> createMapBinding(Supplier<T> supplier, Observable... dependencies) {
+        return new MapBinding<>() {
+            {
+                super.bind(dependencies);
+            }
+
+            @Override
+            protected ObservableMap<K, V> computeValue() {
                 return supplier.get();
             }
         };
