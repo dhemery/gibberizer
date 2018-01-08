@@ -44,6 +44,7 @@ public class GibberizerController {
 
     private final ListProperty<String> gibberishStrings = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final IntegerProperty generatedStringCount = new SimpleIntegerProperty();
+    private final IntegerProperty acceptableStringCount = new SimpleIntegerProperty();
 
 
     @FXML
@@ -72,6 +73,8 @@ public class GibberizerController {
     private Text outputText;
     @FXML
     private Label generatedStringCountLabel;
+    @FXML
+    private Label acceptableStringCountLabel;
 
     public void initialize() {
         batchSize.bind(batchSizeSpinner.valueProperty());
@@ -169,17 +172,15 @@ public class GibberizerController {
                 generatedStringCount
         ));
 
+        acceptableStringCountLabel.textProperty().bind(createStringBinding(
+                () -> "Acceptable: " + acceptableStringCount.get(),
+                acceptableStringCount
+        ));
+
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
         ));
-    }
-
-    private StringBinding countLabel(String unitName, ObservableNumberValue magnitude) {
-        return createStringBinding(
-                () -> format("%s: %d", unitName, magnitude.intValue()),
-                magnitude
-        );
     }
 
     public void generate() {
@@ -187,10 +188,13 @@ public class GibberizerController {
         if (inputStrings.get().isEmpty()) return;
 
         generatedStringCount.set(0);
+        acceptableStringCount.set(0);
+
         List<String> gibberishStrings = Stream.generate(gibberishSupplier.get())
                 .peek(s -> generatedStringCount.set(generatedStringCount.get()+1))
                 .limit(persistence.get() * batchSize.get())
                 .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
+                .peek(s -> acceptableStringCount.set(acceptableStringCount.get()+1))
                 .distinct()
                 .limit(batchSize.get())
                 .collect(toList());
