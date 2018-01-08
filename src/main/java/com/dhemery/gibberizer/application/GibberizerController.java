@@ -43,9 +43,9 @@ public class GibberizerController {
     private final ObjectProperty<Supplier<String>> gibberishSupplier = new SimpleObjectProperty<>();
 
     private final ListProperty<String> gibberishStrings = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private final IntegerProperty generatedStringCount = new SimpleIntegerProperty();
-    private final IntegerProperty acceptableStringCount = new SimpleIntegerProperty();
-
+    private final IntegerProperty generatedGibberishCount = new SimpleIntegerProperty();
+    private final IntegerProperty acceptedGibberishCount = new SimpleIntegerProperty();
+    private final IntegerProperty distinctGibberishCount = new SimpleIntegerProperty();
 
     @FXML
     private Label rawStringCountLabel;
@@ -72,9 +72,11 @@ public class GibberizerController {
     @FXML
     private Text outputText;
     @FXML
-    private Label generatedStringCountLabel;
+    private Label generatedGibberishCountLabel;
     @FXML
-    private Label acceptableStringCountLabel;
+    private Label distinctGibberishCountLabel;
+    @FXML
+    private Label acceptedGibberishCountLabel;
 
     public void initialize() {
         batchSize.bind(batchSizeSpinner.valueProperty());
@@ -167,16 +169,18 @@ public class GibberizerController {
                 similarity, nGramCount
         ));
 
-        generatedStringCountLabel.textProperty().bind(createStringBinding(
-                () -> "Generated: " + generatedStringCount.get(),
-                generatedStringCount
+        generatedGibberishCountLabel.textProperty().bind(createStringBinding(
+                () -> "Generated: " + generatedGibberishCount.get(),
+                generatedGibberishCount
         ));
-
-        acceptableStringCountLabel.textProperty().bind(createStringBinding(
-                () -> "Acceptable: " + acceptableStringCount.get(),
-                acceptableStringCount
+        distinctGibberishCountLabel.textProperty().bind(createStringBinding(
+                () -> "Distinct: " + distinctGibberishCount.get(),
+                distinctGibberishCount
         ));
-
+        acceptedGibberishCountLabel.textProperty().bind(createStringBinding(
+                () -> "Accepted: " + acceptedGibberishCount.get(),
+                acceptedGibberishCount
+        ));
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
@@ -187,15 +191,17 @@ public class GibberizerController {
         gibberishStrings.clear();
         if (inputStrings.get().isEmpty()) return;
 
-        generatedStringCount.set(0);
-        acceptableStringCount.set(0);
+        generatedGibberishCount.set(0);
+        distinctGibberishCount.set(0);
+        acceptedGibberishCount.set(0);
 
         List<String> gibberishStrings = Stream.generate(gibberishSupplier.get())
-                .peek(s -> generatedStringCount.set(generatedStringCount.get()+1))
+                .peek(s -> generatedGibberishCount.set(generatedGibberishCount.get()+1))
                 .limit(persistence.get() * batchSize.get())
-                .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
-                .peek(s -> acceptableStringCount.set(acceptableStringCount.get()+1))
                 .distinct()
+                .peek(s -> distinctGibberishCount.set(distinctGibberishCount.get()+1))
+                .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
+                .peek(s -> acceptedGibberishCount.set(acceptedGibberishCount.get()+1))
                 .limit(batchSize.get())
                 .collect(toList());
         this.gibberishStrings.setAll(gibberishStrings);
