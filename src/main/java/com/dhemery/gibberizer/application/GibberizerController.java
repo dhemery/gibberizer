@@ -3,16 +3,12 @@ package com.dhemery.gibberizer.application;
 import com.dhemery.gibberizer.core.GibberishSupplier;
 import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
-import javafx.beans.Observable;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -23,6 +19,9 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static com.dhemery.gibberizer.application.Binders.createListBinding;
+import static com.dhemery.gibberizer.application.Binders.createMapBinding;
+import static com.dhemery.gibberizer.application.Binders.createSetBinding;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.*;
 import static javafx.beans.binding.Bindings.*;
@@ -130,12 +129,14 @@ public class GibberizerController {
                 nGrams
         );
 
+        // TODO: Make the callable prettier
         ObjectExpression<UnaryOperator<NGram>> successorOperator = createObjectBinding(
                 () -> n -> n.isEnder() ? null : SUFFIX_OF.andThen(nGramsByPrefix.get()::get).andThen(GibberizerController::selectRandom).apply(n),
                 nGramsByPrefix
         );
-        ObjectExpression<List<NGram>> starters = createObjectBinding(
-                () -> nGrams.get().stream().filter(NGram::isStarter).collect(toList()),
+
+        ListExpression<NGram> starters = Binders.createListBinding(
+                () -> FXCollections.observableList(nGrams.get().stream().filter(NGram::isStarter).collect(toList())),
                 nGrams
         );
         ObjectExpression<Supplier<NGram>> starterSupplier = createObjectBinding(
@@ -156,7 +157,6 @@ public class GibberizerController {
                 .then(selectedInputSplitterName)
                 .otherwise("Strings");
 
-
         IntegerExpression nGramCount = nGrams.sizeProperty();
 
         StringExpression nGramTypeName = createStringBinding(
@@ -169,10 +169,7 @@ public class GibberizerController {
 
         generateButton.disableProperty().bind(nGramCount.lessThan(1));
 
-        IntegerExpression acceptedGibberishCount = createIntegerBinding(
-                () -> gibberishStrings.get().size(),
-                gibberishStrings
-        );
+        IntegerExpression acceptedGibberishCount = gibberishStrings.sizeProperty();
 
         showCounter(generatedGibberishCountLabel, "Generated", generatedGibberishCount);
         showCounter(distinctGibberishCountLabel, "Distinct", distinctGibberishCount);
@@ -201,51 +198,12 @@ public class GibberizerController {
                 .forEach(gibberishStrings::add);
     }
 
-    private <V, T extends ObservableList<V>> ListBinding<V> createListBinding(Supplier<T> supplier, Observable... dependencies) {
-        return new ListBinding<>() {
-            {
-                super.bind(dependencies);
-            }
-
-            @Override
-            protected ObservableList<V> computeValue() {
-                return supplier.get();
-            }
-        };
-    }
-
-    private <V, T extends ObservableSet<V>> SetBinding<V> createSetBinding(Supplier<T> supplier, Observable... dependencies) {
-        return new SetBinding<>() {
-            {
-                super.bind(dependencies);
-            }
-
-            @Override
-            protected ObservableSet<V> computeValue() {
-                return supplier.get();
-            }
-        };
-    }
-
-    private <K, V, T extends ObservableMap<K, V>> MapBinding<K, V> createMapBinding(Supplier<T> supplier, Observable... dependencies) {
-        return new MapBinding<>() {
-            {
-                super.bind(dependencies);
-            }
-
-            @Override
-            protected ObservableMap<K, V> computeValue() {
-                return supplier.get();
-            }
-        };
-    }
-
     private static <T> T selectRandom(List<? extends T> list) {
         return list.isEmpty() ? null : list.get(RANDOM.nextInt(list.size()));
     }
 
     private static void showCounter(Label label, String name, ObservableNumberValue counter) {
-        showCounter(label, new SimpleStringProperty(name), counter);
+        showCounter(label, createStringBinding(() -> name), counter);
     }
 
     private static void showCounter(Label label, ObservableStringValue name, ObservableNumberValue counter) {
