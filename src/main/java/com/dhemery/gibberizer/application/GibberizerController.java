@@ -5,7 +5,9 @@ import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
 import javafx.beans.binding.*;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -82,7 +84,7 @@ public class GibberizerController {
         similarity.bind(similaritySpinner.valueProperty());
         allowInputs.bind(acceptInputsCheckBox.selectedProperty());
 
-        ReadOnlyObjectProperty<Toggle> selectedInputSplitterToggle = inputSplitterToggles.selectedToggleProperty();
+        ObjectExpression<Toggle> selectedInputSplitterToggle = inputSplitterToggles.selectedToggleProperty();
         StringExpression selectedInputSplitterPattern = userDataOf(selectedInputSplitterToggle);
         ObjectExpression<Function<String, List<String>>> selectedInputSplitter = createObjectBinding(
                 () -> t -> List.of(t.split(selectedInputSplitterPattern.get())).stream().map(String::trim).filter(s -> !s.isEmpty()).collect(toList()),
@@ -145,8 +147,7 @@ public class GibberizerController {
                 .otherwise("Strings");
 
 
-        IntegerExpression inputStringCount = countOf(inputStrings);
-        NumberExpression runtStringCount = rawInputStringCount.subtract(inputStringCount);
+        NumberExpression runtStringCount = rawInputStringCount.subtract(countOf(inputStrings));
 
         IntegerExpression nGramCount = countOf(nGrams);
 
@@ -200,13 +201,13 @@ public class GibberizerController {
         return list.isEmpty() ? null : list.get(RANDOM.nextInt(list.size()));
     }
 
-    private static void showCounter(Label label, String name, NumberExpression counter) {
+    private static void showCounter(Label label, String name, ObservableNumberValue counter) {
         showCounter(label, new SimpleStringProperty(name), counter);
     }
 
-    private static void showCounter(Label label, StringExpression name, NumberExpression counter) {
+    private static void showCounter(Label label, ObservableStringValue name, ObservableNumberValue counter) {
         label.textProperty().bind(createStringBinding(
-                () -> format("%s: %d", name.getValue(), counter.getValue().intValue()),
+                () -> format("%s: %d", name.get(), counter.intValue()),
                 name, counter
         ));
     }
