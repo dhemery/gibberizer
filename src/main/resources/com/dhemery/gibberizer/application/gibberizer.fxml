@@ -19,17 +19,26 @@
         <String fx:id="spinnerStyle" fx:value="split-arrows-horizontal"/>
     </fx:define>
 
-    <Label text="Input&#009;(strings 0, runts 0, 2-Grams 0, distinct 0)" prefWidth="${root.width}" styleClass="section-label"/>
+    <HBox styleClass="header" prefWidth="${root.width}">
+        <Label text="Input"/>
+        <Label fx:id="rawStringCountLabel"/>
+        <Label fx:id="runtStringCountLabel" />
+        <Label fx:id="nGramCountLabel" />
+    </HBox>
     <HBox VBox.vgrow="ALWAYS" styleClass="section">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <CheckBox fx:id="splitInputCheckBox" text="Split Input" selected="true"/>
-            <RadioButton text="Into Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}" userData="\\s+" selected="true" />
-            <RadioButton text="Into Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}" userData="\\s*\\n\\s*"/>
+            <RadioButton text="Into Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
+                         userData="\\s+" selected="true"/>
+            <RadioButton text="Into Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
+                         userData="\\n"/>
         </VBox>
         <TextArea fx:id="inputTextArea" wrapText="true" HBox.hgrow="ALWAYS"/>
     </HBox>
 
-    <Label text="Generator" prefWidth="${root.width}" styleClass="section-label"/>
+    <HBox styleClass="header" prefWidth="${root.width}">
+        <Label text="Generator"/>
+    </HBox>
     <HBox VBox.vgrow="ALWAYS" styleClass="section">
         <VBox minWidth="$leftColumnWidth">
             <Button fx:id="generateButton" text="Generate" onAction="#generate"/>
@@ -51,7 +60,9 @@
         </VBox>
     </HBox>
 
-    <Label text="Gibberish&#09;(generated: 0, acceptable: 0, distinct: 0)" prefWidth="${root.width}" styleClass="section-label"/>
+    <HBox styleClass="header" prefWidth="${root.width}">
+        <Label text="Gibberish"/>
+    </HBox>
     <HBox VBox.vgrow="ALWAYS" styleClass="section">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <Label text="Display As"/>

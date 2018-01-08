@@ -1,12 +1,15 @@
-.section-label {
+.header {
     -fx-background-color: lightgray;
-    -fx-padding: 5;
     -fx-border-width: 1;
     -fx-border-color: darkgray;
     -fx-color: darkgray;
     -fx-font-weight: bold;
+    -fx-padding: 5;
 }
 
+.header .label {
+    -fx-padding: 0 20 0 0;
+}
 .section {
     -fx-padding: 5;
 }

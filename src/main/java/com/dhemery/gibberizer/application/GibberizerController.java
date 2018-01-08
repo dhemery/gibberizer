@@ -3,11 +3,11 @@ package com.dhemery.gibberizer.application;
 import com.dhemery.gibberizer.core.GibberishSupplier;
 import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.binding.StringBinding;
+import javafx.beans.binding.*;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableListValue;
+import javafx.beans.value.ObservableNumberValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.*;
 import static javafx.beans.binding.Bindings.createObjectBinding;
 import static javafx.beans.binding.Bindings.createStringBinding;
@@ -27,7 +28,7 @@ import static javafx.beans.binding.Bindings.createStringBinding;
 // TODO: Display count of strings
 // TODO: Display count of runt strings
 // TODO: Display count of nGrams
-// TODO: Disable count of distinct nGrams
+// TODO: Disable count of distinct inputStrings
 // TODO: Disable Generate button if no nGrams
 // TODO: Display count of strings generated
 // TODO: Display count of acceptable strings generated
@@ -46,7 +47,12 @@ public class GibberizerController {
 
     private final ObjectProperty<Supplier<String>> gibberishSupplier = new SimpleObjectProperty<>();
     private final ListProperty<String> gibberishStrings = new SimpleListProperty<>(FXCollections.observableArrayList());
-
+    @FXML
+    private Label rawStringCountLabel;
+    @FXML
+    private Label runtStringCountLabel;
+    @FXML
+    private Label nGramCountLabel;
     @FXML
     private ToggleGroup inputSplitterToggles;
     @FXML
@@ -75,14 +81,14 @@ public class GibberizerController {
 
         StringBinding selectedInputSplitterPattern = userDataOf(inputSplitterToggles.selectedToggleProperty());
         ObjectBinding<Function<String, List<String>>> selectedInputSplitter = createObjectBinding(
-                () -> t -> List.of(t.split(selectedInputSplitterPattern.get())),
+                () -> t -> List.of(t.split(selectedInputSplitterPattern.get())).stream().map(String::trim).filter(s -> !s.isEmpty()).collect(toList()),
                 selectedInputSplitterPattern
         );
 
         ObjectBinding<Function<String, List<String>>> inputSplitter = Bindings
                 .when(splitInputCheckBox.selectedProperty())
                 .then(selectedInputSplitter)
-                .otherwise(new SimpleObjectProperty<>(List::of));
+                .otherwise(new SimpleObjectProperty<>(t -> t.trim().isEmpty() ? Collections.emptyList() : List.of(t.trim())));
 
         StringProperty inputText = inputTextArea.textProperty();
         ObjectBinding<List<String>> rawInputStrings = createObjectBinding(
@@ -128,10 +134,38 @@ public class GibberizerController {
         ));
 
         StringBinding selectedOutputDelimiter = userDataOf(outputFormatToggles.selectedToggleProperty());
+
+        IntegerBinding inputStringCount = Bindings.createIntegerBinding(
+                () -> inputStrings.get().size(),
+                inputStrings
+        );
+
+        IntegerBinding nGramCount = Bindings.createIntegerBinding(
+                () -> nGrams.get().size(),
+                nGrams
+        );
+
+        IntegerBinding rawInputStringCount = Bindings.createIntegerBinding(
+                () -> rawInputStrings.get().size(),
+                rawInputStrings
+        );
+
+        ObservableNumberValue runtStringCount = rawInputStringCount.subtract(inputStringCount);
+        rawStringCountLabel.textProperty().bind(countLabel("String", rawInputStringCount));
+        runtStringCountLabel.textProperty().bind(countLabel("Runt", runtStringCount));
+        nGramCountLabel.textProperty().bind(countLabel("NGram", nGramCount));
+
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
         ));
+    }
+
+    private StringBinding countLabel(String unitName, ObservableNumberValue magnitude) {
+        return createStringBinding(
+                () -> format("%d %s", magnitude.intValue(), unitName + (magnitude.intValue() == 1 ? "" : "s")),
+                magnitude
+        );
     }
 
     public void generate() {
