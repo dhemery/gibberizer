@@ -6,6 +6,7 @@
 <?import java.lang.Double?>
 <?import java.lang.String?>
 <?import java.net.URL?>
+<?import java.lang.Integer?>
 <VBox fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dhemery.gibberizer.application.GibberizerController">
     <stylesheets>
@@ -17,6 +18,7 @@
         <ToggleGroup fx:id="outputFormatToggles"/>
         <Double fx:id="leftColumnWidth" fx:value="120"/>
         <String fx:id="spinnerStyle" fx:value="split-arrows-horizontal"/>
+        <Integer fx:id="spinnerWidth" fx:value="85"/>
     </fx:define>
 
     <HBox styleClass="header" prefWidth="${root.width}">
@@ -28,10 +30,10 @@
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
-            <CheckBox fx:id="splitInputCheckBox" text="Split Input" selected="true"/>
-            <RadioButton text="Into Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
+            <CheckBox fx:id="splitInputCheckBox" text="Split Into" selected="true"/>
+            <RadioButton text="Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
                          userData="\\s+" selected="true"/>
-            <RadioButton text="Into Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
+            <RadioButton text="Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
                          userData="\\n"/>
         </VBox>
         <TextArea fx:id="inputTextArea" wrapText="true" HBox.hgrow="ALWAYS"/>
@@ -46,18 +48,22 @@
         </VBox>
         <VBox spacing="10" styleClass="button-group">
             <HBox>
-                <Spinner fx:id="similaritySpinner" min="2" max="10" initialValue="2" styleClass="$spinnerStyle"/>
+                <Spinner fx:id="similaritySpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
+                         min="2" max="20" initialValue="2"/>
                 <Label text="Similarity"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="batchSizeSpinner" min="1" max="100" initialValue="10" styleClass="$spinnerStyle"/>
+                <Spinner fx:id="batchSizeSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
+                         min="1" max="100" initialValue="10"
+                         />
                 <Label text="Batch Size"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="persistenceSpinner" min="1" max="10" initialValue="5" styleClass="$spinnerStyle"/>
+                <Spinner fx:id="persistenceSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
+                         min="1" max="100" initialValue="5"/>
                 <Label text="Persistence"/>
             </HBox>
-            <CheckBox fx:id="allowInputsCheckBox" text="Allow Inputs in Output"/>
+            <CheckBox fx:id="acceptInputsCheckBox" text="Accept Inputs in Output"/>
         </VBox>
     </HBox>
 

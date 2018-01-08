@@ -44,7 +44,6 @@ public class GibberizerController {
 
     private final ListProperty<String> gibberishStrings = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final IntegerProperty generatedGibberishCount = new SimpleIntegerProperty();
-    private final IntegerProperty acceptedGibberishCount = new SimpleIntegerProperty();
     private final IntegerProperty distinctGibberishCount = new SimpleIntegerProperty();
 
     @FXML
@@ -66,7 +65,7 @@ public class GibberizerController {
     @FXML
     private Spinner<Integer> persistenceSpinner;
     @FXML
-    private CheckBox allowInputsCheckBox;
+    private CheckBox acceptInputsCheckBox;
     @FXML
     private ToggleGroup outputFormatToggles;
     @FXML
@@ -82,9 +81,10 @@ public class GibberizerController {
         batchSize.bind(batchSizeSpinner.valueProperty());
         persistence.bind(persistenceSpinner.valueProperty());
         similarity.bind(similaritySpinner.valueProperty());
-        allowInputs.bind(allowInputsCheckBox.selectedProperty());
+        allowInputs.bind(acceptInputsCheckBox.selectedProperty());
 
-        StringBinding selectedInputSplitterPattern = userDataOf(inputSplitterToggles.selectedToggleProperty());
+        ReadOnlyObjectProperty<Toggle> selectedInputSplitterToggle = inputSplitterToggles.selectedToggleProperty();
+        StringBinding selectedInputSplitterPattern = userDataOf(selectedInputSplitterToggle);
         ObjectBinding<Function<String, List<String>>> selectedInputSplitter = createObjectBinding(
                 () -> t -> List.of(t.split(selectedInputSplitterPattern.get())).stream().map(String::trim).filter(s -> !s.isEmpty()).collect(toList()),
                 selectedInputSplitterPattern
@@ -155,11 +155,18 @@ public class GibberizerController {
                 rawInputStrings
         );
 
-        ObservableNumberValue runtStringCount = rawInputStringCount.subtract(inputStringCount);
+        StringBinding selectedInputSplitterText = createStringBinding(
+                () -> ((RadioButton) selectedInputSplitterToggle.get()).textProperty().get(),
+                selectedInputSplitterToggle);
+        StringBinding rawStringTypeLabel = Bindings
+                .when(splitInputCheckBox.selectedProperty())
+                .then(selectedInputSplitterText)
+                .otherwise("Strings");
         rawStringCountLabel.textProperty().bind(createStringBinding(
-                () -> "Strings: " + rawInputStringCount.intValue(),
-                (ObservableNumberValue) rawInputStringCount
+                () -> rawStringTypeLabel.get() + ": " + rawInputStringCount.intValue(),
+                rawStringTypeLabel, rawInputStringCount
         ));
+        ObservableNumberValue runtStringCount = rawInputStringCount.subtract(inputStringCount);
         runtStringCountLabel.textProperty().bind(createStringBinding(
                 () -> "Runts: " + runtStringCount.intValue(),
                 runtStringCount
@@ -177,6 +184,10 @@ public class GibberizerController {
                 () -> "Distinct: " + distinctGibberishCount.get(),
                 distinctGibberishCount
         ));
+        IntegerBinding acceptedGibberishCount = Bindings.createIntegerBinding(
+                () -> gibberishStrings.get().size(),
+                gibberishStrings
+        );
         acceptedGibberishCountLabel.textProperty().bind(createStringBinding(
                 () -> "Accepted: " + acceptedGibberishCount.get(),
                 acceptedGibberishCount
@@ -189,22 +200,18 @@ public class GibberizerController {
 
     public void generate() {
         gibberishStrings.clear();
-        if (inputStrings.get().isEmpty()) return;
-
         generatedGibberishCount.set(0);
         distinctGibberishCount.set(0);
-        acceptedGibberishCount.set(0);
+        if (inputStrings.get().isEmpty()) return;
 
-        List<String> gibberishStrings = Stream.generate(gibberishSupplier.get())
+        Stream.generate(gibberishSupplier.get())
                 .peek(s -> generatedGibberishCount.set(generatedGibberishCount.get()+1))
                 .limit(persistence.get() * batchSize.get())
                 .distinct()
                 .peek(s -> distinctGibberishCount.set(distinctGibberishCount.get()+1))
                 .filter(s -> allowInputs.get() || !distinctInputStrings.get().contains(s))
-                .peek(s -> acceptedGibberishCount.set(acceptedGibberishCount.get()+1))
                 .limit(batchSize.get())
-                .collect(toList());
-        this.gibberishStrings.setAll(gibberishStrings);
+                .forEach(gibberishStrings::add);
     }
 
     private static <T> T selectRandom(List<? extends T> list) {
