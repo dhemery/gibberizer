@@ -14,15 +14,18 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.dhemery.gibberizer.application.Binders.createListBinding;
-import static com.dhemery.gibberizer.application.Binders.createMapBinding;
 import static com.dhemery.gibberizer.application.Binders.createSetBinding;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.*;
-import static javafx.beans.binding.Bindings.*;
+import static javafx.beans.binding.Bindings.createObjectBinding;
+import static javafx.beans.binding.Bindings.createStringBinding;
 
 // TODO: Input parameter: CheckBox to trim input strings
 // TODO: Input text area: Color adjacent strings to indicate where splitting occurs
@@ -123,24 +126,6 @@ public class GibberizerController {
                 inputStrings, parser
         );
 
-        ObjectExpression<UnaryOperator<NGram>> successorOperator = createObjectBinding(
-                () -> successorOperatorFor(nGrams),
-                nGrams
-        );
-
-        ListExpression<NGram> starters = Binders.createListBinding(
-                () -> FXCollections.observableList(nGrams.get().stream().filter(NGram::isStarter).collect(toList())),
-                nGrams
-        );
-        ObjectExpression<Supplier<NGram>> starterSupplier = createObjectBinding(
-                () -> () -> selectRandom(starters.get()),
-                starters
-        );
-        gibberishSupplier.bind(createObjectBinding(
-                () -> new GibberishSupplier(starterSupplier.get(), successorOperator.get()),
-                starterSupplier, successorOperator
-        ));
-
         IntegerExpression rawInputStringCount = rawInputStrings.sizeProperty();
         StringExpression selectedInputSplitterName = createStringBinding(
                 () -> ((RadioButton) selectedInputSplitterToggle.get()).textProperty().get(),
@@ -162,6 +147,8 @@ public class GibberizerController {
 
         generateButton.disableProperty().bind(nGramCount.lessThan(1));
 
+        gibberishSupplier.bind(createObjectBinding(() -> gibberishSupplierFor(nGrams), nGrams));
+
         IntegerExpression acceptedGibberishCount = gibberishStrings.sizeProperty();
 
         showCounter(generatedGibberishCountLabel, "Generated", generatedGibberishCount);
@@ -173,6 +160,12 @@ public class GibberizerController {
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
         ));
+    }
+
+    private Supplier<String> gibberishSupplierFor(List<NGram> nGrams) {
+        List<NGram> starters = nGrams.stream().filter(NGram::isStarter).collect(toList());
+        Supplier<NGram> starterSupplier = () -> selectRandom(starters);
+        return new GibberishSupplier(starterSupplier, successorOperatorFor(nGrams));
     }
 
     public void generate() {
