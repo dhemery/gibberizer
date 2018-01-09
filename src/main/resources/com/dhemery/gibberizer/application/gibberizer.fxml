@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.lang.Double?>
+<?import java.lang.Integer?>
 <?import java.lang.String?>
 <?import java.net.URL?>
-<?import java.lang.Integer?>
 <VBox fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.dhemery.gibberizer.application.GibberizerController">
     <stylesheets>
@@ -23,18 +23,23 @@
 
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Input"/>
-        <Region HBox.hgrow="ALWAYS" />
+        <Region HBox.hgrow="ALWAYS"/>
         <Label fx:id="rawStringCountLabel" styleClass="right"/>
-        <Label fx:id="runtStringCountLabel" styleClass="right" />
-        <Label fx:id="nGramCountLabel" styleClass="right" />
+        <Label fx:id="runtStringCountLabel" styleClass="right"/>
+        <Label fx:id="nGramCountLabel" styleClass="right"/>
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
-            <CheckBox fx:id="splitInputCheckBox" text="Split Into" selected="true"/>
-            <RadioButton text="Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
-                         userData="\\s+" selected="true"/>
-            <RadioButton text="Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
-                         userData="\\n"/>
+            <CheckBox fx:id="splitInputCheckBox" text="Split Into" selected="true" userData="^">
+                <properties splitterName="Strings" splitterPattern="^"/>
+            </CheckBox>
+            <RadioButton fx:id="splitIntoWords" text="Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
+                         selected="true">
+                <properties splitterName="Words" splitterPattern="\\s+"/>
+            </RadioButton>
+            <RadioButton fx:id="splitIntoLines" text="Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}">
+                <properties splitterName="Lines" splitterPattern="\\n"/>
+            </RadioButton>
         </VBox>
         <TextArea fx:id="inputTextArea" wrapText="true" HBox.hgrow="ALWAYS"/>
     </HBox>
@@ -55,7 +60,7 @@
             <HBox>
                 <Spinner fx:id="batchSizeSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
                          min="1" max="100" initialValue="10"
-                         />
+                />
                 <Label text="Batch Size"/>
             </HBox>
             <HBox>
@@ -69,7 +74,7 @@
 
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Gibberish"/>
-        <Region HBox.hgrow="ALWAYS" />
+        <Region HBox.hgrow="ALWAYS"/>
         <Label fx:id="generatedGibberishCountLabel" styleClass="right"/>
         <Label fx:id="distinctGibberishCountLabel" styleClass="right"/>
         <Label fx:id="acceptedGibberishCountLabel" styleClass="right"/>

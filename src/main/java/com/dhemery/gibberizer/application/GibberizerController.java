@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
@@ -88,17 +89,26 @@ public class GibberizerController {
         persistence.bind(persistenceSpinner.valueProperty());
         similarity.bind(similaritySpinner.valueProperty());
         allowInputs.bind(acceptInputsCheckBox.selectedProperty());
-
-        ObjectExpression<Toggle> selectedInputSplitterToggle = inputSplitterToggles.selectedToggleProperty();
-        StringExpression selectedInputSplitterPattern = userDataOf(selectedInputSplitterToggle);
-        ObjectExpression<Function<String, List<String>>> selectedInputSplitter = createObjectBinding(
-                () -> t -> List.of(t.split(selectedInputSplitterPattern.get())).stream().map(String::trim).filter(s -> !s.isEmpty()).collect(toList()),
-                selectedInputSplitterPattern
+        ObjectExpression<Node> selectedInputSplitterToggle = createObjectBinding(
+                () -> (Node) inputSplitterToggles.selectedToggleProperty().get(),
+                inputSplitterToggles.selectedToggleProperty()
         );
-        ObjectExpression<Function<String, List<String>>> inputSplitter = Bindings
+        ObjectExpression<Node> inputSplitterNode = Bindings
                 .when(splitInputCheckBox.selectedProperty())
-                .then(selectedInputSplitter)
-                .otherwise(new SimpleObjectProperty<>(t -> t.trim().isEmpty() ? Collections.emptyList() : List.of(t.trim())));
+                .then(selectedInputSplitterToggle)
+                .otherwise(splitInputCheckBox);
+        StringExpression inputSplitterPattern = createStringBinding(
+                () -> stringProperty(inputSplitterNode, "splitterPattern"),
+                inputSplitterNode
+        );
+        StringExpression inputSplitterName = createStringBinding(
+                () -> stringProperty(inputSplitterNode, "splitterName"),
+                inputSplitterNode
+        );
+        ObjectExpression<Function<String, List<String>>> inputSplitter = createObjectBinding(
+                () -> t -> split(t, inputSplitterPattern.get()),
+                inputSplitterPattern
+        );
         StringExpression inputText = inputTextArea.textProperty();
 
         ListExpression<String> rawInputStrings = createListBinding(
@@ -130,10 +140,6 @@ public class GibberizerController {
         StringExpression selectedInputSplitterName = createStringBinding(
                 () -> ((RadioButton) selectedInputSplitterToggle.get()).textProperty().get(),
                 selectedInputSplitterToggle);
-        StringExpression inputSplitterName = Bindings
-                .when(splitInputCheckBox.selectedProperty())
-                .then(selectedInputSplitterName)
-                .otherwise("Strings");
 
         IntegerExpression nGramCount = nGrams.sizeProperty();
 
@@ -199,6 +205,17 @@ public class GibberizerController {
         ));
     }
 
+    private static List<String> split(String text, String pattern) {
+        return Arrays.stream(text.split(pattern))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(toList());
+    }
+
+    private static String stringProperty(ObservableObjectValue<Node> node, String propertyName) {
+        return String.valueOf(node.get().getProperties().get(propertyName));
+    }
+
     private static UnaryOperator<NGram> successorOperatorFor(List<NGram> nGrams) {
         Map<String, List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
         return n -> Optional.of(n)
@@ -207,6 +224,10 @@ public class GibberizerController {
                 .map(nGramsByPrefix::get)
                 .map(GibberizerController::selectRandom)
                 .orElse(null);
+    }
+
+    private static StringBinding userDataOf(Node node) {
+        return createStringBinding(() -> node.getUserData().toString());
     }
 
     private static StringBinding userDataOf(ObservableObjectValue<Toggle> toggle) {
