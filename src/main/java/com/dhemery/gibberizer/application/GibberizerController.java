@@ -14,9 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.dhemery.gibberizer.application.Binders.createListBinding;
@@ -32,7 +30,8 @@ import static javafx.beans.binding.Bindings.*;
 // TODO: Validate spinner value edits
 public class GibberizerController {
     private static final Random RANDOM = new Random();
-    private static final Function<NGram, String> SUFFIX_OF = NGram::suffix;
+    private static final Predicate<NGram> HAS_SUCCESSOR = n -> !n.isEnder();
+    private static final Function<NGram, String> SUFFIX = NGram::suffix;
 
     private final ListProperty<String> inputStrings = new SimpleListProperty<>();
     private final SetProperty<String> distinctInputStrings = new SimpleSetProperty<>();
@@ -124,15 +123,9 @@ public class GibberizerController {
                 inputStrings, parser
         );
 
-        MapExpression<String, List<NGram>> nGramsByPrefix = createMapBinding(
-                () -> FXCollections.observableMap(nGrams.get().stream().collect(groupingBy(NGram::prefix))),
-                nGrams
-        );
-
-        // TODO: Make the callable prettier
         ObjectExpression<UnaryOperator<NGram>> successorOperator = createObjectBinding(
-                () -> n -> n.isEnder() ? null : SUFFIX_OF.andThen(nGramsByPrefix.get()::get).andThen(GibberizerController::selectRandom).apply(n),
-                nGramsByPrefix
+                () -> successorOperatorFor(nGrams),
+                nGrams
         );
 
         ListExpression<NGram> starters = Binders.createListBinding(
@@ -211,6 +204,16 @@ public class GibberizerController {
                 () -> format("%s: %d", name.get(), counter.intValue()),
                 name, counter
         ));
+    }
+
+    private static UnaryOperator<NGram> successorOperatorFor(List<NGram> nGrams) {
+        Map<String, List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
+        return n -> Optional.of(n)
+                .filter(HAS_SUCCESSOR)
+                .map(SUFFIX)
+                .map(nGramsByPrefix::get)
+                .map(GibberizerController::selectRandom)
+                .orElse(null);
     }
 
     private static StringBinding userDataOf(ObservableObjectValue<Toggle> toggle) {
