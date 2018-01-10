@@ -30,14 +30,14 @@
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
-            <CheckBox fx:id="splitInputCheckBox" text="Split Into" selected="true" userData="^">
+            <CheckBox fx:id="splitInputCheckBox" text="Split Into" selected="true">
                 <properties splitterName="Strings" splitterPattern="^"/>
             </CheckBox>
-            <RadioButton fx:id="splitIntoWords" text="Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
+            <RadioButton text="Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
                          selected="true">
                 <properties splitterName="Words" splitterPattern="\\s+"/>
             </RadioButton>
-            <RadioButton fx:id="splitIntoLines" text="Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}">
+            <RadioButton text="Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}">
                 <properties splitterName="Lines" splitterPattern="\\n"/>
             </RadioButton>
         </VBox>
@@ -82,9 +82,15 @@
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <Label text="Display As"/>
-            <RadioButton text="Words" toggleGroup="$outputFormatToggles" userData=" " selected="true"/>
-            <RadioButton text="Lines" toggleGroup="$outputFormatToggles" userData="&#10;"/>
-            <RadioButton text="Paragraphs" toggleGroup="$outputFormatToggles" userData="&#10;&#10;"/>
+            <RadioButton text="Words" toggleGroup="$outputFormatToggles" selected="true">
+                <properties delimiter=" " />
+            </RadioButton>
+            <RadioButton text="Lines" toggleGroup="$outputFormatToggles">
+                <properties delimiter="&#10;" />
+            </RadioButton>
+            <RadioButton text="Paragraphs" toggleGroup="$outputFormatToggles">
+                <properties delimiter="&#10;&#10;"/>
+            </RadioButton>
         </VBox>
         <ScrollPane HBox.hgrow="ALWAYS">
             <Text fx:id="outputText"/>

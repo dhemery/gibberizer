@@ -97,14 +97,9 @@ public class GibberizerController {
                 .when(splitInputCheckBox.selectedProperty())
                 .then(selectedInputSplitterToggle)
                 .otherwise(splitInputCheckBox);
-        StringExpression inputSplitterPattern = createStringBinding(
-                () -> stringProperty(inputSplitterNode, "splitterPattern"),
-                inputSplitterNode
-        );
-        StringExpression inputSplitterName = createStringBinding(
-                () -> stringProperty(inputSplitterNode, "splitterName"),
-                inputSplitterNode
-        );
+        StringExpression inputSplitterPattern = property(inputSplitterNode, "splitterPattern");
+        StringExpression inputSplitterName = property(inputSplitterNode, "splitterName");
+
         ObjectExpression<Function<String, List<String>>> inputSplitter = createObjectBinding(
                 () -> t -> split(t, inputSplitterPattern.get()),
                 inputSplitterPattern
@@ -137,9 +132,6 @@ public class GibberizerController {
         );
 
         IntegerExpression rawInputStringCount = rawInputStrings.sizeProperty();
-        StringExpression selectedInputSplitterName = createStringBinding(
-                () -> ((RadioButton) selectedInputSplitterToggle.get()).textProperty().get(),
-                selectedInputSplitterToggle);
 
         IntegerExpression nGramCount = nGrams.sizeProperty();
 
@@ -161,7 +153,12 @@ public class GibberizerController {
         showCounter(distinctGibberishCountLabel, "Distinct", distinctGibberishCount);
         showCounter(acceptedGibberishCountLabel, "Accepted", acceptedGibberishCount);
 
-        StringExpression selectedOutputDelimiter = userDataOf(outputFormatToggles.selectedToggleProperty());
+        ObjectExpression<Node> selectedOutputFormatNode = createObjectBinding(
+                () -> (Node) outputFormatToggles.selectedToggleProperty().get(),
+                outputFormatToggles.selectedToggleProperty()
+        );
+        StringExpression selectedOutputDelimiter = property(selectedOutputFormatNode, "delimiter");
+
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
                 gibberishStrings, selectedOutputDelimiter
@@ -190,6 +187,12 @@ public class GibberizerController {
                 .forEach(gibberishStrings::add);
     }
 
+    private static StringExpression property(ObservableObjectValue<Node> node, String propertyName) {
+        return createStringBinding(
+                () -> String.valueOf(node.get().getProperties().get(propertyName)),
+                node);
+    }
+
     private static <T> T selectRandom(List<? extends T> list) {
         return list.isEmpty() ? null : list.get(RANDOM.nextInt(list.size()));
     }
@@ -212,10 +215,6 @@ public class GibberizerController {
                 .collect(toList());
     }
 
-    private static String stringProperty(ObservableObjectValue<Node> node, String propertyName) {
-        return String.valueOf(node.get().getProperties().get(propertyName));
-    }
-
     private static UnaryOperator<NGram> successorOperatorFor(List<NGram> nGrams) {
         Map<String, List<NGram>> nGramsByPrefix = nGrams.stream().collect(groupingBy(NGram::prefix));
         return n -> Optional.of(n)
@@ -224,13 +223,5 @@ public class GibberizerController {
                 .map(nGramsByPrefix::get)
                 .map(GibberizerController::selectRandom)
                 .orElse(null);
-    }
-
-    private static StringBinding userDataOf(Node node) {
-        return createStringBinding(() -> node.getUserData().toString());
-    }
-
-    private static StringBinding userDataOf(ObservableObjectValue<Toggle> toggle) {
-        return createStringBinding(() -> toggle.get().getUserData().toString(), toggle);
     }
 }
