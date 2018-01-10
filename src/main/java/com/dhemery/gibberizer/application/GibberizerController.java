@@ -3,14 +3,16 @@ package com.dhemery.gibberizer.application;
 import com.dhemery.gibberizer.core.GibberishSupplier;
 import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
-import javafx.beans.binding.*;
+import javafx.beans.binding.IntegerExpression;
+import javafx.beans.binding.ListExpression;
+import javafx.beans.binding.ObjectExpression;
+import javafx.beans.binding.StringExpression;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
@@ -60,8 +62,6 @@ public class GibberizerController {
     @FXML
     private ToggleGroup inputSplitterToggles;
     @FXML
-    private CheckBox splitInputCheckBox;
-    @FXML
     private TextArea inputTextArea;
     @FXML
     private Spinner<Integer> batchSizeSpinner;
@@ -89,16 +89,8 @@ public class GibberizerController {
         persistence.bind(persistenceSpinner.valueProperty());
         similarity.bind(similaritySpinner.valueProperty());
         allowInputs.bind(acceptInputsCheckBox.selectedProperty());
-        ObjectExpression<Node> selectedInputSplitterToggle = createObjectBinding(
-                () -> (Node) inputSplitterToggles.selectedToggleProperty().get(),
-                inputSplitterToggles.selectedToggleProperty()
-        );
-        ObjectExpression<Node> inputSplitterNode = Bindings
-                .when(splitInputCheckBox.selectedProperty())
-                .then(selectedInputSplitterToggle)
-                .otherwise(splitInputCheckBox);
-        StringExpression inputSplitterPattern = property(inputSplitterNode, "splitterPattern");
-        StringExpression inputSplitterName = property(inputSplitterNode, "splitterName");
+        StringExpression inputSplitterPattern = property(inputSplitterToggles.selectedToggleProperty(), "splitterPattern");
+        StringExpression inputSplitterName = property(inputSplitterToggles.selectedToggleProperty(), "splitterName");
 
         ObjectExpression<Function<String, List<String>>> inputSplitter = createObjectBinding(
                 () -> t -> split(t, inputSplitterPattern.get()),
@@ -153,11 +145,7 @@ public class GibberizerController {
         showCounter(distinctGibberishCountLabel, "Distinct", distinctGibberishCount);
         showCounter(acceptedGibberishCountLabel, "Accepted", acceptedGibberishCount);
 
-        ObjectExpression<Node> selectedOutputFormatNode = createObjectBinding(
-                () -> (Node) outputFormatToggles.selectedToggleProperty().get(),
-                outputFormatToggles.selectedToggleProperty()
-        );
-        StringExpression selectedOutputDelimiter = property(selectedOutputFormatNode, "delimiter");
+        StringExpression selectedOutputDelimiter = property(outputFormatToggles.selectedToggleProperty(), "delimiter");
 
         outputText.textProperty().bind(createStringBinding(
                 () -> gibberishStrings.stream().collect(joining((selectedOutputDelimiter.get()))),
@@ -187,10 +175,10 @@ public class GibberizerController {
                 .forEach(gibberishStrings::add);
     }
 
-    private static StringExpression property(ObservableObjectValue<Node> node, String propertyName) {
+    private static StringExpression property(ObservableObjectValue<Toggle> toggle, String propertyName) {
         return createStringBinding(
-                () -> String.valueOf(node.get().getProperties().get(propertyName)),
-                node);
+                () -> String.valueOf(toggle.get().getProperties().get(propertyName)),
+                toggle);
     }
 
     private static <T> T selectRandom(List<? extends T> list) {

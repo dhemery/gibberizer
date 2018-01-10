@@ -30,14 +30,10 @@
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
-            <CheckBox fx:id="splitInputCheckBox" text="Split Into" selected="true">
-                <properties splitterName="Strings" splitterPattern="^"/>
-            </CheckBox>
-            <RadioButton text="Words" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}"
-                         selected="true">
+            <RadioButton text="Words" toggleGroup="$inputSplitterToggles" selected="true">
                 <properties splitterName="Words" splitterPattern="\\s+"/>
             </RadioButton>
-            <RadioButton text="Lines" toggleGroup="$inputSplitterToggles" disable="${!splitInputCheckBox.selected}">
+            <RadioButton text="Lines" toggleGroup="$inputSplitterToggles">
                 <properties splitterName="Lines" splitterPattern="\\n"/>
             </RadioButton>
         </VBox>
@@ -92,8 +88,8 @@
                 <properties delimiter="&#10;&#10;"/>
             </RadioButton>
         </VBox>
-        <ScrollPane HBox.hgrow="ALWAYS">
-            <Text fx:id="outputText"/>
+        <ScrollPane fx:id="outputPane" HBox.hgrow="ALWAYS">
+            <Text fx:id="outputText" wrappingWidth="${outputPane.width - 20}"/>
         </ScrollPane>
     </HBox>
 </VBox>
