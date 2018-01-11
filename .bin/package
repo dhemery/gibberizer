@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BUILD_DIR="$DIR/../build"
+
+javapackager -createjar -verbose -srcdir $BUILD_DIR/libs -outfile $BUILD_DIR/package/gibberizer.jar
+
+javapackager -deploy -verbose -native dmg -appclass com.dhemery.gibberizer.application.GibberizerApplication -outdir $BUILD_DIR/application -srcdir $BUILD_DIR/package
