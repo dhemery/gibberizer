@@ -3,10 +3,7 @@ package com.dhemery.gibberizer.application;
 import com.dhemery.gibberizer.core.GibberishSupplier;
 import com.dhemery.gibberizer.core.NGram;
 import com.dhemery.gibberizer.core.NGramParser;
-import javafx.beans.binding.IntegerExpression;
-import javafx.beans.binding.ListExpression;
-import javafx.beans.binding.ObjectExpression;
-import javafx.beans.binding.StringExpression;
+import javafx.beans.binding.*;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableObjectValue;
@@ -27,8 +24,7 @@ import static com.dhemery.gibberizer.application.Binders.createListBinding;
 import static com.dhemery.gibberizer.application.Binders.createSetBinding;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.*;
-import static javafx.beans.binding.Bindings.createObjectBinding;
-import static javafx.beans.binding.Bindings.createStringBinding;
+import static javafx.beans.binding.Bindings.*;
 
 // TODO: Input parameter: CheckBox to trim input strings
 // TODO: Input text area: Color adjacent strings to indicate where splitting occurs
@@ -44,7 +40,7 @@ public class GibberizerController {
 
     private final IntegerProperty batchSize = new SimpleIntegerProperty();
     private final IntegerProperty persistence = new SimpleIntegerProperty();
-    private final IntegerProperty similarity = new SimpleIntegerProperty();
+    private final IntegerProperty nGramSize = new SimpleIntegerProperty();
     private final BooleanProperty allowInputs = new SimpleBooleanProperty();
 
     private final ObjectProperty<Supplier<String>> gibberishSupplier = new SimpleObjectProperty<>();
@@ -66,7 +62,7 @@ public class GibberizerController {
     @FXML
     private Spinner<Integer> batchSizeSpinner;
     @FXML
-    private Spinner<Integer> similaritySpinner;
+    private Spinner<Integer> nGramSizeSpinner;
     @FXML
     private Spinner<Integer> persistenceSpinner;
     @FXML
@@ -87,7 +83,7 @@ public class GibberizerController {
     public void initialize() {
         batchSize.bind(batchSizeSpinner.valueProperty());
         persistence.bind(persistenceSpinner.valueProperty());
-        similarity.bind(similaritySpinner.valueProperty());
+        nGramSize.bind(nGramSizeSpinner.valueProperty());
         allowInputs.bind(acceptInputsCheckBox.selectedProperty());
         StringExpression inputSplitterPattern = property(inputSplitterToggles.selectedToggleProperty(), "splitterPattern");
         StringExpression inputSplitterName = property(inputSplitterToggles.selectedToggleProperty(), "splitterName");
@@ -104,8 +100,8 @@ public class GibberizerController {
         );
 
         inputStrings.bind(createListBinding(
-                () -> rawInputStrings.filtered(s -> s.length() >= similarity.get()),
-                rawInputStrings, similarity
+                () -> rawInputStrings.filtered(s -> s.length() >= nGramSize.get()),
+                rawInputStrings, nGramSize
         ));
 
         distinctInputStrings.bind(createSetBinding(
@@ -114,8 +110,8 @@ public class GibberizerController {
         ));
 
         ObjectExpression<NGramParser> parser = createObjectBinding(
-                () -> new NGramParser(similarity.get()),
-                similarity
+                () -> new NGramParser(nGramSize.get()),
+                nGramSize
         );
 
         ListExpression<NGram> nGrams = createListBinding(
@@ -123,19 +119,23 @@ public class GibberizerController {
                 inputStrings, parser
         );
 
+        NumberExpression distinctNGramCount = createLongBinding(
+                () -> nGrams.stream().map(String::valueOf).distinct().count(),
+                nGrams
+        );
+
         IntegerExpression rawInputStringCount = rawInputStrings.sizeProperty();
 
-        IntegerExpression nGramCount = nGrams.sizeProperty();
-
         StringExpression nGramTypeName = createStringBinding(
-                () -> format("%d-Grams", similarity.get()),
-                similarity
+                () -> format("%d-Grams", nGramSize.get()),
+                nGramSize
         );
+
         showCounter(rawStringCountLabel, inputSplitterName, rawInputStringCount);
         showCounter(runtStringCountLabel, "Runts", rawInputStringCount.subtract(inputStrings.sizeProperty()));
-        showCounter(nGramCountLabel, nGramTypeName, nGramCount);
+        showCounter(nGramCountLabel, nGramTypeName, distinctNGramCount);
 
-        generateButton.disableProperty().bind(nGramCount.lessThan(1));
+        generateButton.disableProperty().bind(nGrams.sizeProperty().lessThan(1));
 
         gibberishSupplier.bind(createObjectBinding(() -> gibberishSupplierFor(nGrams), nGrams));
 

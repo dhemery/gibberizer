@@ -19,23 +19,56 @@
         <Double fx:id="leftColumnWidth" fx:value="120"/>
         <String fx:id="spinnerStyle" fx:value="split-arrows-horizontal"/>
         <Integer fx:id="spinnerWidth" fx:value="85"/>
+        <Integer fx:id="maxTooltipWidth" fx:value="300"/>
     </fx:define>
 
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Input"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Label fx:id="rawStringCountLabel" styleClass="right"/>
-        <Label fx:id="runtStringCountLabel" styleClass="right"/>
-        <Label fx:id="nGramCountLabel" styleClass="right"/>
+        <Label fx:id="rawStringCountLabel" styleClass="right">
+            <tooltip>
+                <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                         text="The number of input strings in your text. Gibberizer will begin each string of gibberish with the first n-gram of a randomly chosen string."/>
+            </tooltip>
+        </Label>
+        <Label fx:id="runtStringCountLabel" styleClass="right">
+            <tooltip>
+                <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                         text="The number of input strings that are too short to make into n-grams. Gibberizer discards them."/>
+            </tooltip>
+        </Label>
+        <Label fx:id="nGramCountLabel" styleClass="right">
+            <tooltip>
+                <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                         text="The number of distinct n-grams in your text."/>
+            </tooltip>
+        </Label>
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
+            <Label text="Read text as"/>
             <RadioButton text="Words" toggleGroup="$inputSplitterToggles" selected="true">
                 <properties splitterName="Words" splitterPattern="\\s+"/>
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="Accept your text as words separated by spaces."/>
+                </tooltip>
             </RadioButton>
             <RadioButton text="Lines" toggleGroup="$inputSplitterToggles">
                 <properties splitterName="Lines" splitterPattern="\\n"/>
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="Accept your text as lines."/>
+                </tooltip>
             </RadioButton>
+            <Label text="N-Gram Size"/>
+            <Spinner fx:id="nGramSizeSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth" min="2" max="20"
+                     initialValue="2">
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="The size of the n-grams to use to generate gibberish from your text. This determines how similar the gibberish will be to the strings in your text."/>
+                </tooltip>
+            </Spinner>
         </VBox>
         <TextArea fx:id="inputTextArea" wrapText="true" HBox.hgrow="ALWAYS"/>
     </HBox>
@@ -49,43 +82,81 @@
         </VBox>
         <VBox spacing="10" styleClass="button-group">
             <HBox>
-                <Spinner fx:id="similaritySpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
-                         min="2" max="20" initialValue="2"/>
-                <Label text="Similarity"/>
-            </HBox>
-            <HBox>
-                <Spinner fx:id="batchSizeSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
-                         min="1" max="100" initialValue="10"
-                />
+                <Spinner fx:id="batchSizeSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth" min="1" max="100"
+                         initialValue="10"
+                >
+                    <tooltip>
+                        <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                                 text="How many strings of gibberish to generate."/>
+                    </tooltip>
+                </Spinner>
                 <Label text="Batch Size"/>
             </HBox>
             <HBox>
-                <Spinner fx:id="persistenceSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth"
-                         min="1" max="100" initialValue="5"/>
+                <Spinner fx:id="persistenceSpinner" styleClass="$spinnerStyle" prefWidth="$spinnerWidth" min="1"
+                         max="100" initialValue="5">
+                    <tooltip>
+                        <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                                 text="How hard Gibberizer will try to generate acceptable gibberish."/>
+                    </tooltip>
+                </Spinner>
                 <Label text="Persistence"/>
             </HBox>
-            <CheckBox fx:id="acceptInputsCheckBox" text="Accept Inputs in Output"/>
+            <CheckBox fx:id="acceptInputsCheckBox" prefWidth="$maxTooltipWidth" wrapText="true"
+                      text="Accept Inputs as Gibberish">
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="Whether to accept your input strings as gibberish."/>
+                </tooltip>
+            </CheckBox>
         </VBox>
     </HBox>
 
     <HBox styleClass="header" prefWidth="${root.width}">
         <Label text="Gibberish"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Label fx:id="generatedGibberishCountLabel" styleClass="right"/>
-        <Label fx:id="distinctGibberishCountLabel" styleClass="right"/>
-        <Label fx:id="acceptedGibberishCountLabel" styleClass="right"/>
+        <Label fx:id="generatedGibberishCountLabel" styleClass="right">
+            <tooltip>
+                <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                         text="The total number of strings of gibberish generated."/>
+            </tooltip>
+        </Label>
+        <Label fx:id="distinctGibberishCountLabel" styleClass="right">
+            <tooltip>
+                <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                         text="The number of distinct strings of gibberish generated.&#10;&#10;If this is significantly less than the total number generated, your input text probably has too few distinct n-grams to generate distinct strings of gibberish.&#10;&#10;Try adjusting your text, your Input settings, or your Similarity setting."/>
+            </tooltip>
+        </Label>
+        <Label fx:id="acceptedGibberishCountLabel" styleClass="right">
+            <tooltip>
+                <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                         text="A string is accepted if it is distinct and is not one of your input strings.&#10;&#10;If this is less than the number you requested, Gibberizer was unable to generate enough acceptable strings of gibberish.&#10;&#10;Try adjusting your text, your Input settings, or your Generator settings."/>
+            </tooltip>
+        </Label>
     </HBox>
     <HBox styleClass="section" VBox.vgrow="ALWAYS">
         <VBox minWidth="$leftColumnWidth" styleClass="button-group">
             <Label text="Display As"/>
             <RadioButton text="Words" toggleGroup="$outputFormatToggles" selected="true">
-                <properties delimiter=" " />
+                <properties delimiter=" "/>
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="Separate the strings of gibberish by spaces."/>
+                </tooltip>
             </RadioButton>
             <RadioButton text="Lines" toggleGroup="$outputFormatToggles">
-                <properties delimiter="&#10;" />
+                <properties delimiter="&#10;"/>
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="Begin each string of gibberish on a new line."/>
+                </tooltip>
             </RadioButton>
             <RadioButton text="Paragraphs" toggleGroup="$outputFormatToggles">
                 <properties delimiter="&#10;&#10;"/>
+                <tooltip>
+                    <Tooltip maxWidth="$maxTooltipWidth" wrapText="true"
+                             text="Show an empty line between strings of gibberish."/>
+                </tooltip>
             </RadioButton>
         </VBox>
         <ScrollPane fx:id="outputPane" HBox.hgrow="ALWAYS">
